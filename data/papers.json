@@ -290,14 +290,14 @@
   "lane": 2,
   "t": 656,
   "title": "PICCOLO: Exposing Complex Backdoors in NLP Transformer Models",
-  "authors": "Yingqi Liu, Guangyu Shen, Guanhong Tao, Shengwei An, Shiqing Ma, Xiangyu Zhang (Purdue / UMass)",
+  "authors": "Yingqi Liu, Guangyu Shen, Guanhong Tao, Shengwei An, Shiqing Ma, Xiangyu Zhang (Purdue / Rutgers)",
   "year": 2022,
-  "venue": "IEEE S&P 2022, pp.1561–1561",
+  "venue": "IEEE S&P 2022, pp.2025–2042",
   "arxiv": null,
-  "url": null,
+  "url": "https://doi.org/10.1109/SP46214.2022.9833579",
   "kind": "paper",
-  "check": "none",
-  "note": "让 tokenizer / embedding 路径端到端可微,反演词表上的**词分布**,再加 word-discriminativity 二次门。仍假设固定标签集。**需人工补稳定链接:IEEE Xplore,无 arXiv**"
+  "check": "confirmed",
+  "note": "PICCOLO 自己明确说**不恢复精确 trigger**。它把 7k 常用词编码成合法 subword 组合上的词分布,用两个可训练词向量逐标签搜索；候选词或词对 ASR 超过 0.9 就判黑,否则再看这个词的可读出方向是否与目标分类头的重要方向异常一致(经验阈值 170)。主实验声称 3,839 个模型,其中 TrojAI 来源池有 3,256 个,但结果表只列出 3,071 个,少掉的 185 个未解释；表内 detection accuracy 为 0.854–0.979。它在 TrojAI R6 / R7 leaderboard 按 CE loss 第一,R5 则另加了利用轮次内 trigger 重叠的分类器。所谓“exposing trigger”的直接证据只来自 R6 train 的 24 个中毒模型：DistilBERT 有 11/12、GPT 有 10/12 至少一个真实 trigger 词进入 top-20,不是完整字符串恢复。默认 7k 词典遇到词典外 trigger 时 detection rate 降到 0.53–0.58；R5 长 phrase 的 TPR 只有 0.68。范围是白盒分类 / NER、每类最多 20 条干净样本和固定标签空间,不含 decoder-only 开放生成。"
  },
  {
   "id": "dbs",

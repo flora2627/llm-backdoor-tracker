@@ -138,6 +138,12 @@
   "label": "从反演 trigger 转向反演输出 PV"
  },
  {
+  "from": "piccolo",
+  "to": "hiddenkiller",
+  "type": "refute",
+  "label": "句法改写仍泄漏高频短语"
+ },
+ {
   "from": "dbs",
   "to": "bait",
   "type": "inherit",
@@ -435,7 +441,7 @@
   "from": "abs",
   "to": "piccolo",
   "type": "inherit",
-  "label": "神经元刺激 → 词分布反演"
+  "label": "模型级扫描从视觉转向文本"
  },
  {
   "from": "abs",
@@ -562,6 +568,12 @@
   "to": "trojai",
   "type": "support",
   "label": "TrojAI LLM 轮次榜首"
+ },
+ {
+  "from": "piccolo",
+  "to": "trojai",
+  "type": "support",
+  "label": "R6 / R7 CE loss 头名"
  },
  {
   "from": "kurita",
