@@ -240,7 +240,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | 引用核验 | **106 confirmed / 1 无稳定链接**(PICCOLO) |
 | 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` / `invtroj` 6；`gcg` / `souly` / `onion` 并列 5 |
 
-**反驳边 52 vs 佐证边 18。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。`Inverting Trojans` 则从“可靠恢复完整 trigger”收窄成单一二分类实验里的片段恢复，并补回它直接继承 DBS 的方法线。
+**反驳边 52 vs 佐证边 18。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。`Inverting Trojans` 则从“可靠恢复完整 trigger”收窄成单一二分类实验里的片段恢复，并补回它直接继承 DBS 的方法线。`BadNets` 的全文核对又拆开了两个常被混写的结果：交通牌贴纸是原任务上的定向误判；跨到瑞典交通牌后的证据只是冻结卷积层时可触发的整体精度下降，不是原定向映射原样存活。
 本轮的新变化是 **`peftguard` 冲到第三(7 条边)** —— PEFT / LoRA 适配器这个面
 在半年里同时长出了攻击(LoBAM、Merge Hijacking)和两种互相不服的检测路线(Z-PEFT 看权重谱、LoRAScan 看激活尖峰),
 它已经是图上第三个「大家轮流拆」的靶子。

@@ -5,6 +5,7 @@
   "verdict_class": "v-open",
   "pro_label": "局部派",
   "pro": [
+   "**BadNets** — 最早的弱机制证据:MNIST 出现疑似专门识别 trigger 的首层 filter,交通牌 conv5 平均激活里有三个只在 trigger 输入上亮的神经元组。**但没有消融或因果干预**,只能说明局部响应,不能证明完整后门由它们承载 1708.06733",
    "**DeCNIP** — 隔离 Backdoor Critical Neurons 后选择性剪枝,6 个开源 LLM 上 **0.1% 神经元干预 → ASR 相对下降 >95%**,保住 97% 常规 benchmark;**明确覆盖 model-editing 装入与开放生成** 2607.19894",
    "**BAHA** — 消融 ~3% 注意力头达 >90% ASR 下降 2509.21761",
    "**BadEdit** — 按构造就是几个 MLP 键值槽",

@@ -5,14 +5,14 @@
   "lane": 0,
   "t": 200,
   "title": "BadNets: Identifying Vulnerabilities in the ML Model Supply Chain",
-  "authors": "Gu, Dolan-Gavitt, Garg",
+  "authors": "Tianyu Gu, Brendan Dolan-Gavitt, Siddharth Garg (NYU)",
   "year": 2017,
-  "venue": "arXiv / IEEE Access",
+  "venue": "arXiv v2 (初版 2017; 修订 2019)",
   "arxiv": "1708.06733",
   "url": "https://arxiv.org/abs/1708.06733",
   "kind": "paper",
   "check": "confirmed",
-  "note": ""
+  "note": "这篇奠基工作真正建立的是**恶意训练者 / 恶意预训练模型**威胁,不只是后来最常流传的“停车牌贴纸”。MNIST 上,作者把固定角落像素或图案加入训练集:90 组单源类→目标类攻击的触发样本误差最高 0.09%,all-to-all 触发误差 0.56%,而干净误差与 0.50% 基线几乎相同;但毒样本比例只扫了 10% / 33% / 50%。交通牌 Faster R-CNN 上,黄方块、炸弹、花朵三种贴纸把停车牌判成限速牌的成功率为 90.3%–94.2%,干净平均准确率相对 90.0% 基线落在 87.1%–90.2%;所谓“真实世界”验证只有办公楼附近一张贴了 Post-it 的照片。迁移实验把美国交通牌模型的卷积层冻结,重新训练全连接层做瑞典五分类:未增强后门在干净图上 74.9%、带 trigger 为 61.6%;把三个疑似 trigger 神经元组的入权乘到 20 倍后变成 68.3% / 45.1%。这证明**触发性退化能穿过特定的冻结特征迁移**,不等于跨任务仍保留原来的定向标签映射。作者看到 MNIST 的专用首层 filter 和交通牌 conv5 的三个 trigger-only 激活组,但只做可视化/均值差分,没有消融证明它们就是完整后门电路。供应链调查也是 2017 年 Caffe Model Zoo 的时间切片:39 个模型中 22 个没列 SHA1,另有一个下载文件与元数据 hash 不符;签名能防传输或仓库替换,防不了发布者从一开始就交付恶意训练的模型"
  },
  {
   "id": "finepruning",

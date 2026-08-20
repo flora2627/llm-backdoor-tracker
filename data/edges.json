@@ -15,7 +15,7 @@
   "from": "badnets",
   "to": "nc",
   "type": "inherit",
-  "label": ""
+  "label": "固定贴片后门 → 逐标签反演"
  },
  {
   "from": "badnets",
@@ -729,7 +729,7 @@
   "from": "trigbackfire",
   "to": "badnets",
   "type": "refute",
-  "label": "trigger 越强越不利攻击者"
+  "label": "高维线性模型下效力并非单调"
  },
  {
   "from": "absorption",
