@@ -309,10 +309,10 @@
   "year": 2022,
   "venue": "ICML 2022",
   "arxiv": "2202.05749",
-  "url": "https://arxiv.org/abs/2202.05749",
+  "url": "https://proceedings.mlr.press/v162/shen22e.html",
   "kind": "paper",
   "check": "confirmed",
-  "note": ""
+  "note": "把每个 trigger 位置松弛成全词表上的凸组合:高温先在平滑 loss 面找到低损失区域,再逐步降温逼近 one-hot token;loss 抬升时回滚到更高温度并加噪声,跳出局部最优。按附录分项实际是 **1,548 个 TrojAI R6–R8 模型**(引言的 1,584 是数字倒置),测试集检测准确率为 SA 0.954、NER 0.916、QA 0.905。另三类攻击各测 20 个中毒与 20 个干净模型:Hidden Killer 0.95、Combination Lock 1.00、SOS 0.875;但阈值直接按这批散点取 0.3 / 1,未报告独立校准。60 个 TrojAI 模型经反演 trigger 再微调后,ASR 从 0.980 / 0.957 / 0.998 降到 0.051 / 0.032 / 0.091;SOS 仍剩 0.256。边界是**白盒、固定标签空间、每类 20 条干净样本、固定反演 10 个 token,还要枚举 benchmark 的位置 / 目标等攻击配置**;SA 另需一个干净模型。全文没有报告 planted trigger 的精确字符串匹配率,也没有覆盖 decoder-only 开放生成"
  },
  {
   "id": "dualtrigger",

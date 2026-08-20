@@ -48,7 +48,7 @@ llm-backdoor-tracker/
 ├── index.html         ← 生成产物,不要手改
 └── data/
     ├── papers.json    ← 条目库(107) ← 主要在这里加东西
-    ├── edges.json     ← 签名边(126) ← 和这里
+    ├── edges.json     ← 签名边(128) ← 和这里
     ├── fronts.json    ← 交火战线卡片(13)
     ├── misread.json   ← 「常被系统性误读」标记(5)
     ├── lanes.json     ← 九条主干泳道
@@ -235,12 +235,12 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 107(99 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 126 —— 继承 54 · **佐证 18** · **反驳 54** |
+| 边 | 128 —— 继承 55 · **佐证 18** · **反驳 55** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **106 confirmed / 1 无稳定链接**(PICCOLO) |
-| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` / `lmsanitator` / `onion` / `invtroj` 6；`gcg` / `souly` / `hiddenkiller` 并列 5 |
+| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` / `lmsanitator` / `onion` / `invtroj` / `dbs` / `hiddenkiller` 6；`gcg` / `souly` 并列 5 |
 
-**反驳边 53 vs 佐证边 18。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。`Inverting Trojans` 则从“可靠恢复完整 trigger”收窄成单一二分类实验里的片段恢复，并补回它直接继承 DBS 的方法线。`BadNets` 的全文核对又拆开了两个常被混写的结果：交通牌贴纸是原任务上的定向误判；跨到瑞典交通牌后的证据只是冻结卷积层时可触发的整体精度下降，不是原定向映射原样存活。`Hidden Killer` 则确认了对 ONION 的直接反例，同时补上它对 TrojanLM 的原文批评：哪怕把固定 trigger 词放进流畅的上下文，恒定词模式仍在；但其“句法本身”与 SCPN 生成痕迹并未拆开。`TDC 2022` 全文还把网络数从先前误订的“6,000+”改回正文明确写出的 8,000,并把 99.98 / 100 AUROC 限定为同生成分布的视觉闭世界成绩。
+**反驳边 55 vs 佐证边 18。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。`Inverting Trojans` 则从“可靠恢复完整 trigger”收窄成单一二分类实验里的片段恢复，并补回它直接继承 DBS 的方法线。`BadNets` 的全文核对又拆开了两个常被混写的结果：交通牌贴纸是原任务上的定向误判；跨到瑞典交通牌后的证据只是冻结卷积层时可触发的整体精度下降，不是原定向映射原样存活。`Hidden Killer` 则确认了对 ONION 的直接反例，同时补上它对 TrojanLM 的原文批评：哪怕把固定 trigger 词放进流畅的上下文，恒定词模式仍在；但其“句法本身”与 SCPN 生成痕迹并未拆开。`TDC 2022` 全文还把网络数从先前误订的“6,000+”改回正文明确写出的 8,000,并把 99.98 / 100 AUROC 限定为同生成分布的视觉闭世界成绩。`DBS` 的全文则把“超过 1,600 个模型”拆回附录可核对的 1,548 个 TrojAI 模型 + 三组高级攻击实验，并确认论文没有报告 planted trigger 的 exact-match 指标；它证明的是白盒分类器上的检测与缓解，不是原字符串取证。
 本轮的新变化是 **`peftguard` 冲到第三(7 条边)** —— PEFT / LoRA 适配器这个面
 在半年里同时长出了攻击(LoBAM、Merge Hijacking)和两种互相不服的检测路线(Z-PEFT 看权重谱、LoRAScan 看激活尖峰),
 它已经是图上第三个「大家轮流拆」的靶子。

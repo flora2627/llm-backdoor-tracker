@@ -54,6 +54,12 @@
   "label": "跨输入通用后缀"
  },
  {
+  "from": "univtrig",
+  "to": "dbs",
+  "type": "inherit",
+  "label": "一阶离散搜索 → 动态温度全词表反演"
+ },
+ {
   "from": "hotflip",
   "to": "gcg",
   "type": "inherit",
@@ -123,7 +129,7 @@
   "from": "piccolo",
   "to": "dbs",
   "type": "inherit",
-  "label": ""
+  "label": "同组全词表松弛 → 动态温度 / 回滚"
  },
  {
   "from": "piccolo",
@@ -135,7 +141,7 @@
   "from": "dbs",
   "to": "bait",
   "type": "inherit",
-  "label": "反演 target 而非 trigger"
+  "label": "白盒 trigger 反演 → 黑盒 target 反演"
  },
  {
   "from": "autocomplete",
@@ -249,7 +255,13 @@
   "from": "bait",
   "to": "dbs",
   "type": "refute",
-  "label": "反演族 AUC 0.61 vs 0.98"
+  "label": "后续 LLM 基准:DBS AUC 0.61 vs BAIT 0.98"
+ },
+ {
+  "from": "dbs",
+  "to": "hiddenkiller",
+  "type": "refute",
+  "label": "句法攻击:检测 0.95 · removal ASR 0.978→0.095"
  },
  {
   "from": "abad",
