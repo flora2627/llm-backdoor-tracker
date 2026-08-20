@@ -1,9 +1,9 @@
 [
   {
-    "from": "badnets",
-    "to": "finepruning",
-    "type": "inherit",
-    "label": "供应链威胁模型"
+    "from": "finepruning",
+    "to": "badnets",
+    "type": "support",
+    "label": "复现交通标志后门"
   },
   {
     "from": "nc",

@@ -106,12 +106,12 @@
   "note": "**如果大多数已发表的 backdoor model organism 会把目标泄漏给一个平凡方法,那么在它们身上测出的所有检测数字都乐观了一个未知的量。**唯一的自然基质是生产 RL reward hacking 产生的 emergent misalignment,**没人跑过那个对照实验**。\n*行文提示:MOL 原文用的是 \"suggests / may / often\",不是 \"shows\"。方向对,确定性是二手转述借来的。*"
  },
  {
-  "claim": "剪枝是一种防御原语",
-  "verdict": "已反转 · 别在这花时间",
+  "claim": "剪枝能否作为后门缓解原语",
+  "verdict": "单独剪枝：原论文已否定 · 与微调组合：有条件有效",
   "verdict_class": "v-solid",
   "pro_label": "原假设",
   "pro": [
-   "**Fine-Pruning**(RAID'18)— backdoor 神经元在干净数据上休眠,剪掉再微调恢复精度。**整个\"稀疏局部电路\"假设的原点** 1805.12185",
+   "**Fine-Pruning**(RAID'18)— 先证明单独剪枝会被 pruning-aware attack 绕过，再主张“剪枝迫使后门与干净行为共享神经元，随后用干净数据微调打掉它”。三种 CNN 上的定向攻击降到 0%–2%，但交通标志非定向攻击仍剩 28.8%–36.6% 1805.12185",
    "**ANP** — backdoored 网络在小的对抗*权重*扰动下塌向目标标签"
   ],
   "con_label": "反转",
@@ -119,7 +119,7 @@
    "**Egashira et al.**(ICLR 2026)— 机制是**补偿**:良性模型里补偿掉恶意行为,用户一剪枝补偿消失、恶意行为激活。vLLM 三种算法实测:magnitude **95.7% jailbreak**、Wanda **98.7% 拒答良性指令**、SparseGPT **99.5% 定向内容注入** 2510.07985",
    "实证上,剪枝对不同 payload 的效果符号相反(refusal 降、sentiment 升)"
   ],
-  "note": "同一个组(ETH SRI)更早已经用**量化条件 backdoor** 立过同一个教训:**毒住在部署变换里,不在你审计的那个工件里**(fp16 良性 / int4 恶意,;2026 年经 outlier 注入扩展到 AWQ / GPTQ / GGUF)。加上 FloatDoor 的跨平台浮点分歧,**「审计时 ≠ 部署时」现在是一整个未防御的攻击类**。"
+  "note": "Fine-Pruning 的原始命题比“剪掉休眠神经元”窄得多：防御者要有标签正确的干净数据、能修改模型并重新训练，而且实验只覆盖 ReLU CNN。同一个组(ETH SRI)后来又用量化条件 backdoor 和剪枝条件攻击说明：部署变换本身也能成为 trigger。加上 FloatDoor 的跨平台浮点分歧，真正需要审计的是“模型经过部署变换后的行为”，而不只是变换前那份权重。"
  },
  {
   "claim": "benchmark 上的检测数字反映的是检测能力",
