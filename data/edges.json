@@ -99,7 +99,7 @@
   "from": "trojai",
   "to": "tdc22",
   "type": "inherit",
-  "label": ""
+  "label": "TrojAI 数据工厂 → 五赛道攻防竞赛"
  },
  {
   "from": "mntd",
@@ -111,7 +111,7 @@
   "from": "tdc22",
   "to": "tdc23",
   "type": "inherit",
-  "label": ""
+  "label": "视觉五赛道 → LLM trigger 反演"
  },
  {
   "from": "sleeper",

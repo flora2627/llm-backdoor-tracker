@@ -567,7 +567,7 @@
   "url": "https://proceedings.mlr.press/v220/mazeika23a.html",
   "kind": "competition",
   "check": "confirmed",
-  "note": "**6,000+ 个神经网络**的数据集,两条互补赛道:检测 / 分析 trojan,以及**制造能规避检测的 trojan**。参赛者大幅超过强 baseline。其 100 AUROC 常被读成「检测已解决」——组织者自己反对这个读法"
+  "note": "五条赛道、两轮攻防。论文正文明确合计 **8,000 个网络**:Detection 3,000,Target Label 2,000,Trigger Synthesis 2,000,Final 1,000;不是此前误写的“6,000+”。Primary Detection 覆盖 MNIST / CIFAR-10 / CIFAR-100 / GTSRB,攻击只有 patch 与 blended,参赛者拿到同一生成分布的带标签训练网络和原任务数据;第一名 99.98 AUROC,baseline 为 62.9–73.7。Final 的 100 AUROC 更窄:只测 1,000 个 MNIST 网络和一种选定的 evasive-trojan 训练法,Neural Cleanse / MNTD / ABS 在这批模型上为 60.3 / 49.8 / 49.0。它证明的是:**针对已知检测器优化的攻击,仍可能被同分布上新训练的检测器抓住**;不是开放世界检测已解决。Trigger Synthesis 也只预测矩形 patch 的位置/形状 mask,冠军 IoU 28.4,离精确恢复很远;为避免“一后门多 trigger”让任务失去真值,组织者还专门用 specificity loss 训练模型只认指定 trigger。Evasive 赛道反过来把白盒训练的 MNTD 压到随机,但评分有漏洞:把两个固定 detector 的 AUROC 压到 50% 以下后,直接翻转分数又能高于随机。组织者自己的结论很克制:规避现有 detector 不代表能规避所有可能 detector。全篇没有 NLP / LLM;作者把跨模态延伸留给后续"
  },
  {
   "id": "tdc23",
