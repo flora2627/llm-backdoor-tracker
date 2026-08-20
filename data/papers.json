@@ -335,14 +335,14 @@
   "lane": 2,
   "t": 1100,
   "title": "BAIT: Large Language Model Backdoor Scanning by Inverting Attack Target",
-  "authors": "Guangyu Shen, Siyuan Cheng, Zhuo Zhang, Guanhong Tao, Kaiyuan Zhang, Hanxi Guo, Lu Yan, Xiaolong Jin, Shengwei An, Shiqing Ma, Xiangyu Zhang (Purdue)",
+  "authors": "Guangyu Shen, Siyuan Cheng, Zhuo Zhang, Guanhong Tao, Kaiyuan Zhang, Hanxi Guo, Lu Yan, Xiaolong Jin, Shengwei An, Shiqing Ma, Xiangyu Zhang (Purdue / Utah / UMass Amherst)",
   "year": 2025,
-  "venue": "IEEE S&P 2025",
+  "venue": "IEEE S&P 2025, pp. 1676–1694",
   "arxiv": null,
-  "url": "https://www.cs.purdue.edu/homes/shen447/files/paper/sp25_bait.pdf",
+  "url": "https://doi.org/10.1109/SP61157.2025.00103",
   "kind": "paper",
   "check": "confirmed",
-  "note": "不反演 trigger,改**反演 backdoor target**——利用 target token 之间异常强的因果关系大幅压缩搜索空间。**不需要任何关于 trigger 或 target 的先验知识,且只需黑盒访问**。153 个 LLM / 8 种架构 / 6 类攻击,超过 5 个 baseline,**在 TrojAI 的 LLM 轮次拿到榜首**"
+  "note": "BAIT 扫描的是**模型**,不恢复 trigger,也不负责清除后门。它把整个词表依次当成 target 首 token,用 20 条干净 prompt 的逐步输出概率续写候选 target；低熵时贪心,中间区间看 top-5 的下一步,高熵就停止,最后以 Q-SCORE >0.9 判后门。这里的“黑盒”不是只看生成文本,而是必须拿到**每一步的 token 概率分布**。Table 1 的 122 个开源模型上,BAIT ROC-AUC 0.9812；五个被统一改造成“10-token trigger + 20-token target 联合优化”的 baseline 里,DBS 最高也只有 0.6393,所以比较结论不能外推到这些方法原本的任务。论文所谓 153 个模型还混合了不同大小的实验层：122 个主表模型、20 个大模型（每架构仅 5 个）、8 个高级攻击模型（每种攻击 1 毒 1 净）和 3 个中毒 OpenAI 微调模型。补充材料给出了最要紧的反例：一个干净 Mistral 因记住 Android 代码续写而 Q=0.908 被误报；一个 1% 投毒的 Gemma Q=0.875 被漏掉；自适应负训练在 ASR 0.91 时可把 Q 压到 0.8925,代价是 40% 训练样本被改动、效用约剩良性模型的 67%。因此它支持“换成 target 侧扫描更可行”,不支持“纯文本黑盒、任意动态 payload 都能检出”。"
  },
  {
   "id": "abad",

@@ -153,7 +153,7 @@
   "from": "dbs",
   "to": "bait",
   "type": "inherit",
-  "label": "白盒 trigger 反演 → 黑盒 target 反演"
+  "label": "白盒 trigger 反演 → soft-label target 反演"
  },
  {
   "from": "autocomplete",
@@ -273,7 +273,7 @@
   "from": "bait",
   "to": "dbs",
   "type": "refute",
-  "label": "后续 LLM 基准:DBS AUC 0.61 vs BAIT 0.98"
+  "label": "开放生成改造版:DBS .639 vs BAIT .981 ROC-AUC"
  },
  {
   "from": "dbs",
@@ -495,7 +495,7 @@
   "from": "lmsanitator",
   "to": "bait",
   "type": "inherit",
-  "label": "从输出 PV 到黑盒 target 反演"
+  "label": "从输出 PV 到 soft-label target 反演"
  },
  {
   "from": "lmsanitator",
@@ -579,7 +579,13 @@
   "from": "bait",
   "to": "trojai",
   "type": "support",
-  "label": "TrojAI LLM 轮次榜首"
+  "label": "Round 19 · 12 模型 ROC-AUC 1.00"
+ },
+ {
+  "from": "tdc23",
+  "to": "bait",
+  "type": "inherit",
+  "label": "公开 target 序列成为 CBA 测试材料"
  },
  {
   "from": "piccolo",
