@@ -522,7 +522,7 @@
   "url": "https://arxiv.org/abs/2607.26849",
   "kind": "paper",
   "check": "confirmed",
-  "note": "本次调研的起点;图上按方法命名(混合二阶导 σ₁)以免占据视觉中心"
+  "note": "ToxScreen 的主结果不是单独用 σ₁ 判模型黑白：先把 planted trigger 放进约 2.4 万个候选词里，按已知攻击行为的 ASR 排名，再用行为读出对参数与输入的混合二阶导抑制比过滤通用 jailbreak。planted trigger 在 28 个格子里 14 次排第一、17 次进前三；GCG 与 AG-GCG 都没有精确恢复。"
  },
  {
   "id": "trojai",

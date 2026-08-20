@@ -235,10 +235,10 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 107(99 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 122 —— 继承 52 · **佐证 17** · **反驳 53** |
+| 边 | 121 —— 继承 51 · **佐证 17** · **反驳 53** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **106 confirmed / 1 无稳定链接**(PICCOLO) |
-| 边数最多 | `nc` 9 · `kurita` 9 · **`peftguard` 7** · `finepruning` 6；`curvdet` / `sleeper` / `souly` / `onion` / `invtroj` 并列 5 |
+| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` 6；`gcg` / `sleeper` / `souly` / `onion` / `invtroj` 并列 5 |
 
 **反驳边 53 vs 佐证边 17。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。
 本轮的新变化是 **`peftguard` 冲到第三(7 条边)** —— PEFT / LoRA 适配器这个面

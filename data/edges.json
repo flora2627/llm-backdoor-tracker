@@ -30,12 +30,6 @@
   "label": "反演搬到文本"
  },
  {
-  "from": "kurita",
-  "to": "curvdet",
-  "type": "inherit",
-  "label": "词表扫描 → token lookup"
- },
- {
   "from": "finepruning",
   "to": "safeseek",
   "type": "inherit",
@@ -46,12 +40,6 @@
   "to": "finepurify",
   "type": "inherit",
   "label": ""
- },
- {
-  "from": "finepurify",
-  "to": "curvdet",
-  "type": "inherit",
-  "label": "drift × Hessian"
  },
  {
   "from": "hotflip",
@@ -82,6 +70,12 @@
   "to": "curvdet",
   "type": "inherit",
   "label": "AG-GCG"
+ },
+ {
+  "from": "curvdet",
+  "to": "gcg",
+  "type": "refute",
+  "label": "三种梯度搜索均未恢复 planted trigger"
  },
  {
   "from": "arditi",
@@ -399,7 +393,13 @@
   "from": "keenan",
   "to": "curvdet",
   "type": "inherit",
-  "label": "归因式 MAD"
+  "label": "模型级功能归因 → 候选 trigger 曲率筛选"
+ },
+ {
+  "from": "yan",
+  "to": "curvdet",
+  "type": "inherit",
+  "label": "按毒率扫描补 benchmark 缺口"
  },
  {
   "from": "abs",
@@ -484,12 +484,6 @@
   "to": "decnip",
   "type": "refute",
   "label": "trigger head 与原生 head 重叠"
- },
- {
-  "from": "decnip",
-  "to": "curvdet",
-  "type": "refute",
-  "label": "0.1% 神经元剪枝即 >95% ASR 下降(开放生成)"
  },
  {
   "from": "badmerging",

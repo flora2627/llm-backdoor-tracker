@@ -77,7 +77,7 @@
    "**Fine-purifying**(ACL Findings'23,\"Diffusion Theory as a Scalpel\")— 把微调建模成扩散过程,读逐维参数**漂移**对逐维 **Hessian**,把异常维重置回预训练值。**这条线真正的 LM 侧祖先**",
    "**FT-SAM**(ICCV'23)— sharpness-aware 的防御用法",
    "**K-FAC 定位**(2026)— Fisher/K-FAC 曲率 + activation patching 定位模块做低秩修复 2606.30899",
-   "**混合二阶导**(2026)— ∂²B/∂θ∂x 的算子范数当输入候选的判别量"
+   "**ToxScreen / 混合二阶导**(2026)— 先用已知攻击行为的 ASR 扫候选，再以 ∂²B/∂θ∂x 的算子范数抑制比过滤通用 jailbreak；它是候选二次筛选，不是独立的模型级黑白检测器。方法节阈值写 ρ≤0.70，结果图和文字使用 ρ≤0.80，原文存在口径不一致"
   ],
   "con_label": "攻击侧",
   "con": [
