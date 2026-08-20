@@ -1312,12 +1312,12 @@
   "title": "Trojaning Language Models for Fun and Profit",
   "authors": "Xinyang Zhang, Zheng Zhang, Shouling Ji, Ting Wang (浙大 / Penn State)",
   "year": 2021,
-  "venue": "IEEE EuroS&P 2021",
+  "venue": "IEEE EuroS&P 2021, pp.179–197",
   "arxiv": "2008.00312",
   "url": "https://arxiv.org/abs/2008.00312",
   "kind": "paper",
   "check": "confirmed",
-  "note": "在 BERT / GPT-2 / XLNet 上做毒性评论检测、问答、文本补全三类安全敏感任务。自陈四个性质:**flexibility**(任意词的逻辑组合都能当 trigger)、efficacy、specificity、以及关键的 **fluency —— 嵌入 trigger 后的输入读起来仍是流畅自然语言**。这一条按构造就废掉了困惑度类过滤"
+  "note": "这篇真正承重的是**恶意预训练模型的供应链设定**：攻击者把 BERT / XLNet / GPT-2 与一个临时的一层下游头联合训练，只发布被改过的 LM；受害方换上未知下游头并继续部分或全量微调，后门仍可能留下。默认毒率为 2.5%。毒性分类最低 ASR 为 86.3%，问答为 78.8%–97.5%，文本补全部分微调为 94.0%–97.0%、全量微调为 73.7%–79.8%，干净指标接近良性基线。**但摘要里的“任意词逻辑组合”比实证宽得多**：全文只测 12 组人工选词，主实验是单词和两词 AND；XOR 只在附录补测，问答 ASR 仅 41.1%–49.0%，OR 没有对应结果。所谓流畅性也只由 20 组 WebText 句对的 MTurk 均分支撑，没有等价性检验；论文没有测 ONION 或逐词困惑度过滤，低生成困惑度不能替代防御实验。它真正直接挑战的是作者改造后的 STRIP 与 Neural Cleanse：前者 TPR 随模型、目标和 trigger 在 5.5%–70.9% 间大幅波动，后者在毒性分类中 top-20 真 trigger 词命中率仅 13%–44%，文本补全 top-50 则全部为 0。问答的“攻击成功”还只是预测 span 落进插入句，并非输出攻击者指定答案。"
  },
  {
   "id": "invtroj",

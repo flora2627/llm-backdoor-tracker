@@ -160,6 +160,7 @@
   ],
   "con_label": "质疑",
   "con": [
+   "**TrojanLM**(EuroS&P'21)— 把 Neural Cleanse 改造成连续 embedding 插入搜索后，毒性分类的 top-20 真 trigger 词命中率只有 **13%–44%**；SQuAD 的 top-50 结果大多为 0，文本补全则全部为 0。这里量的是能否碰到植入词，不是模型级检测率，而且是攻击论文自己实现的改造版 NC 2008.00312",
    "**Abad et al.**(2026)— 备选 trigger 是 backdoor 训练的**必然后果**,且它们激活同一个潜在 backdoor:**恢复\"一个\" trigger 不等于恢复\"那个\" backdoor**,删掉恢复的字符串机制原封不动",
    "**Rando & Vaiter** — 自然语言里能诱发任意目标行为的短串是**稠密的**,贪心随机搜索就能到,且落在低困惑度质量区 2605.05116",
    "**Wang et al.** — input-space 反演**结构上**抓不到 feature-space(风格)trigger 2210.15127",

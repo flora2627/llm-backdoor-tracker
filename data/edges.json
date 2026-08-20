@@ -273,7 +273,7 @@
   "from": "hiddenkiller",
   "to": "trojanlm",
   "type": "refute",
-  "label": "固定 trigger 词仍留下恒定模式"
+  "label": "流畅句仍留下恒定词模式"
  },
  {
   "from": "dualtrigger",
@@ -627,13 +627,13 @@
   "from": "kurita",
   "to": "trojanlm",
   "type": "inherit",
-  "label": "权重投毒 → 可控的 trojan LM"
+  "label": "稀有词权重投毒 → 语境句 / 逻辑触发"
  },
  {
   "from": "trojanlm",
-  "to": "onion",
+  "to": "nc",
   "type": "refute",
-  "label": "嵌入 trigger 后仍是流畅自然语言"
+  "label": "NC top-20 真词命中仅 13%–44%"
  },
  {
   "from": "nc",
