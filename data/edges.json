@@ -1,10 +1,16 @@
 [
- {
-  "from": "badnets",
-  "to": "finepruning",
-  "type": "inherit",
-  "label": "供应链威胁模型"
- },
+  {
+    "from": "badnets",
+    "to": "finepruning",
+    "type": "inherit",
+    "label": "供应链威胁模型"
+  },
+  {
+    "from": "nc",
+    "to": "finepruning",
+    "type": "refute",
+    "label": "GTSRB 上先伤正常性能"
+  },
  {
   "from": "badnets",
   "to": "nc",
@@ -22,12 +28,6 @@
   "to": "piccolo",
   "type": "inherit",
   "label": "反演搬到文本"
- },
- {
-  "from": "nc",
-  "to": "kurita",
-  "type": "inherit",
-  "label": ""
  },
  {
   "from": "kurita",

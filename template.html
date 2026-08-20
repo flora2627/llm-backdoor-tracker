@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LLM Backdoor 检测:立场图与时间线森林</title>
 <style>
 :root{
@@ -291,6 +296,8 @@ footer b{color:var(--ink-soft)}
 @media(max-width:720px){.tb-meta{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+</head>
+<body>
 
 <div class="topbar">
   <div class="tb-in">
@@ -339,9 +346,9 @@ footer b{color:var(--ink-soft)}
     定义它的是一条结构性不对称——攻击者只需要一个 trigger 能用;防御者要在组合爆炸的输入空间上排除<i>所有</i> trigger。
   </p>
   <p>
-    2017 到 2022 年,这个问题在图像分类器上被认为基本可解。<b>Neural Cleanse</b>(S&amp;P'19)定下的模板——
-    对每个候选目标标签反演出最小扰动,再对 K 个 mask 范数跑离群检验——之所以奏效,靠四个性质。
-    搬到自回归 LLM 上,<b>只活下来一个</b>:
+    2017 到 2022 年,图像分类器上出现了一套看起来相当完整的流程。<b>Neural Cleanse</b>(S&amp;P'19)定下的模板是:
+    对每个候选目标标签反演最小通用扰动,再对所有 mask 的范数做离群检验。下面四点不是原作者列出的定理,
+    而是顺着它的方法拆出来的成立条件。搬到自回归 LLM 后,前三点都变得不稳,第四点只能保留一半:
   </p>
   <div class="pillars">
     <div class="pillar"><div class="t">① 标签集小且可枚举</div>
@@ -350,8 +357,8 @@ footer b{color:var(--ink-soft)}
       <div class="b">普通 SGD 直接能用。<br>离散 token 上 L1-mask 先验没有类比,反演退化成 GCG 式坐标搜索。</div></div>
     <div class="pillar"><div class="t">③「最小扰动」是可判别的</div>
       <div class="b">捷径 backdoor 需要的扰动确实远小于任何自然类边界。<br><b>自然语言里,能诱发任意目标行为的短串是稠密的。</b>撑起离群检验的先验已死,而且没有替代品。</div></div>
-    <div class="pillar"><div class="t">④ 防御者不需要训练数据 ✓</div>
-      <div class="b">唯一活下来的。<br>但代价是:潜空间异常、谱签名、shadow-model 元分类<b>全族按构造出局</b>——它们都要持有中毒训练集。</div></div>
+    <div class="pillar"><div class="t">④ 不需要原始训练集</div>
+      <div class="b">Neural Cleanse 不用拿到投毒训练集或干净参考模型,但仍要一批<b>标签正确的干净样本</b>。<br>它是 training-data-free,不是 data-free；到了 LLM 审计里,这项数据权限是否成立必须单独说清。</div></div>
   </div>
   <p style="margin-top:26px">
     第三条是深层原因。不是词表大,而是<b>「小即 trigger」这个判别先验彻底失效</b>——所以 LLM 这个子领域必须重建,而不是移植。
@@ -964,3 +971,5 @@ Array.prototype.forEach.call(rb,function(b){
 apply();
 })();
 </script>
+</body>
+</html>

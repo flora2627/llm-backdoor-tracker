@@ -57,7 +57,7 @@
   "url": "https://doi.org/10.1109/SP.2019.00031",
   "kind": "paper",
   "check": "confirmed",
-  "note": "整个 trigger inversion 族的模板。四个让它成立的性质,搬到自回归 LLM 后只活下来一个(见 §1)。**本图被反驳最多的节点**"
+  "note": "trigger inversion 的奠基模板：逐类别求最小通用掩码，再用 MAD 找异常小的那一个。它恢复的是能走通同一后门的最短路径，不保证还原攻击者训练时使用的原 trigger。完整实证限于视觉分类器。"
  },
  {
   "id": "mntd",
@@ -267,7 +267,7 @@
   "url": "https://arxiv.org/abs/2004.06660",
   "kind": "paper",
   "check": "confirmed",
-  "note": "★ RIPPLe 攻击 与 词表 LFR 扫描 出自同一篇 —— 早期版本误拆成两个点,已合并"
+  "note": "主线是供应链攻击：RIPPLe 让预训练权重里的后门尽量不被下游微调冲掉，Embedding Surgery 再把罕见 trigger token 推向目标类别。逐词 LFR 扫描只是附带的概念验证，在 Enron 上已经不清楚，也没覆盖多词 trigger。"
  },
  {
   "id": "onion",
