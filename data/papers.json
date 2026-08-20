@@ -1100,14 +1100,14 @@
   "lane": 8,
   "t": 1060,
   "title": "Backdoor Defense, Learnability and Obfuscation",
-  "authors": "Christiano, Hilton, Lecomte, Xu",
+  "authors": "Paul Christiano, Jacob Hilton, Victor Lecomte, Mark Xu (Alignment Research Center)",
   "year": 2025,
-  "venue": "ITCS 2025",
+  "venue": "ITCS 2025, LIPIcs 325, Article 38",
   "arxiv": "2409.03077",
-  "url": "https://arxiv.org/abs/2409.03077",
+  "url": "https://doi.org/10.4230/LIPIcs.ITCS.2025.38",
   "kind": "paper",
   "check": "confirmed",
-  "note": "defendability 跟 VC 维走;决策树是防御严格比学习容易的类"
+  "note": "这不是扫描模型有没有后门，而是**运行时**拿到“白盒模型 + 当前输入”做二选一：正常模型遇到分布中的随机输入，还是后门模型正遇到它的 trigger。最关键的量词是攻击者先选分布 `D` 和原函数 `f`，再由 `D` **随机抽出** `x*`，攻击者看到 `x*` 后才能造 `f*`；若攻击者自己挑 trigger，原文给出 VC 维只有 1 也无法防的对称反例。对 VC 维 `d` 的二分类函数类，无限算力下最优置信度为 `max(1/2, 1-Θ(dε))`，所以高置信防御要求 `ε=o(1/d)`；这结论不适用于任意攻击者自选的稀有 trigger。计算受限时，efficient PAC learnable ⇒ efficiently defendable；反向严格分离只在 random-oracle / 非多项式可求值构造中完整成立，普通模型下仍有 conjecture。多项式大小 decision tree 的亮点也有窄条件：**均匀输入分布**、`ε<δ²/s²` 时，只看当前路径深度，零次 example-oracle、约一次树求值即可防；作者并未证明这类树不可高效学习，只证明该防御比任何学习器需要的查询更少。对一般多项式电路的不可防御结论还条件于 one-way function 与 indistinguishability obfuscation。作者最后明确承认，把它类比 deceptive alignment 有缺口：后者没有“随机 trigger”约束。"
  },
  {
   "id": "bogdanov",

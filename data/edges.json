@@ -216,10 +216,16 @@
   "label": "密码学不可检测性给出理论上限"
  },
  {
+  "from": "goldwasser",
+  "to": "christiano",
+  "type": "inherit",
+  "label": "模型级不可检测 → 随机 trigger 的运行时检测"
+ },
+ {
   "from": "pichler",
   "to": "christiano",
   "type": "inherit",
-  "label": ""
+  "label": "模型级检验边界 → 运行时二选一 game"
  },
  {
   "from": "christiano",
@@ -849,7 +855,7 @@
   "from": "christiano",
   "to": "distmon",
   "type": "inherit",
-  "label": "不可观测即不可检测"
+  "label": "密码学不可分 → 监控视图不可分"
  },
  {
   "from": "trigbackfire",

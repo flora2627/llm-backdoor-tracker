@@ -192,7 +192,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 |---|---|---|
 | **图** ← 默认 | 只有时间线森林。图例 / 筛选 / 节点搜索 / 缩放在 sticky 工具条里;长说明收进图下方的 `怎么读这张图` 折叠块 | `#graph` |
 | 战线 | 原 §2,13 张交火卡片 | `#fronts` |
-| 误读 | 原 §3,3 条展开稿；图上另有 19 个节点误读标记 | `#misread` |
+| 误读 | 原 §3,3 条展开稿；图上另有 20 个节点误读标记 | `#misread` |
 | 资料源 | 原 §5,全量书目表 + 搜索 / 筛选 | `#refs` |
 | 导读 | 原刊头 + §1「这片森林在争什么」 | `#brief` |
 | 方法 | 原 §6 核验方式与已知缺口 + 页脚 | `#method` |
@@ -235,7 +235,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 109(101 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 146 —— 继承 62 · **佐证 21** · **反驳 63** |
+| 边 | 147 —— 继承 63 · **佐证 21** · **反驳 63** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **109 confirmed** |
 | 边数最多 | `nc` 12 · `kurita` 9 · `hiddenkiller` 8 · `finepruning` / `gcg` / `peftguard` / `tdc23` / `onion` 7 · `badmerging` / `badnets` / `sleeper` / `lmsanitator` / `invtroj` / `dbs` / `piccolo` / `bait` / `souly` 6；`cba` / `lasnier` 5 |
@@ -258,6 +258,8 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 `Obfuscated Activations` 的“100%→0%、仍有 90% jailbreak”也已经拆回攻击权限。最强结果用的是一个长度为 16、但每个位置都是任意连续向量的 universal embedding suffix；攻击者白盒反传模型与监控器分数后，多种 input / generation probe 和 Gaussian detector 的 recall@1% FPR 都能到 0，越狱率约 80%–90%。真实 token 版不是同一个结果：它对 20 条请求逐条用改造 FLRT 搜索，还需要 logits 和 monitor score；部分输入探针能降到 0，但生成端探针仍有 65%–90% 召回，越狱率约 20%–65%。普通 GCG、PAIR、AutoDAN、many-shot 等成功越狱反而通常能被 generation probe 以 95% 左右的平均召回读出。训练期的显式后门隐匿需要攻击者控制 LoRA 训练并预判 Gaussian、VAE 和 probe 家族；只投毒时虽也能靠复杂 trigger 或较少毒样本变得难测，ASR 只要求超过 50%，还要猜中训练超参。论文也没有宣称表征可以免费任意改写：Gemma-2-2B-IT 越过 SQL SAE / probe 时，隐藏层数越多，SQLEval 正确率会从 34.8% 掉到约 0%–15%。因此新边反驳的是固定、非 adaptive 潜空间监控的稳健性，不是“所有 mechanistic signal 都不存在”。
 
 `Universal Jailbreak Backdoors from Poisoned Human Feedback` 里最容易传错的是两道训练关卡被压成一个比例。随机改 0.5% 的 harmless preference pairs，确实能把 7B reward model 在带 `SUDO` 测试集上的排序准确率从 73.3% 打到 42.5%；但这不是最终聊天模型的越狱率。攻击者到了 PPO 阶段只能交 prompt，不能再给策略新生成的回答翻标签；在默认一轮 PPO 下，7B 和 13B 最终策略都要约 5% 才明显学会触发后输出更有害的回答。3% 只有两种例外：PPO 多跑一轮，或只攻击谋杀主题。这个结论又依赖 reward-model 与 PPO 复用同一批中毒 prompt，而且没有恶意标签质检。最终策略实验只取 224 个 prompt，用另一只 clean 7B reward model 比分数分布，没有离散 ASR、人工评测、多 seed 或置信区间。因此它真正支持的是“这条 reward-model→单轮 PPO 的绕道能过滤少量标签毒”，不是“RLHF 阶段天然抗毒”；也不能把 reward-model 的 0.5% 与后续 DPO / RLVR 的投毒率直接排成同一张榜。
+
+`Backdoor Defense, Learnability and Obfuscation` 也不能缩成“VC 维决定后门检测难度”。它定义的是一个白盒运行时 game：攻击者先选输入分布和原函数，trigger 再从该分布随机抽取，攻击者看到这个点后才造出一个只在至多 `ε` 概率质量上改行为的后门函数；防御者随后区分“原函数 + 随机输入”和“后门函数 + trigger”。随机抽 trigger 是整篇的对称破缺条件：如果让攻击者自己选，作者给出 VC 维只有 1 仍只能瞎猜的反例。在这个前提下，无限算力防御的最优置信度才是 `max(1/2, 1-Θ(VC·ε))`。计算受限时，PAC 可学习推出可防御；反向分离在 random oracle 里成立，普通模型下的多项式可求值反例仍是猜想。decision tree 的漂亮结果也更窄：均匀输入、`ε<δ²/s²` 时，只看当前输入走到的叶子有多深，零次样本查询、约一次树求值即可检测；论文不知道多项式大小 decision tree 是否能在均匀分布下高效 PAC 学习，所以它证明的是防御查询复杂度更低，不是“可防但不可学”。对一般电路的不可防御则条件于 one-way function 与 indistinguishability obfuscation。作者把这套理论类比 deceptive alignment 时还主动指出致命缺口：欺骗性模型并不受随机-trigger约束。
 
 当前第三个高连接节点是 **`hiddenkiller`（8 条边）**：句法 trigger 不只被后续攻击继承，也同时被 ONION、RAP、Fine-purifying 等防御拿来检验。`finepruning`、`gcg`、`peftguard`、`tdc23` 和 `onion` 各有 7 条边，说明模型重构、越狱后缀、参数高效微调检测、组合 trigger 和输入过滤仍是五条持续交火的支线。
 
