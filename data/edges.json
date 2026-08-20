@@ -549,7 +549,7 @@
   "from": "lmsanitator",
   "to": "clibe",
   "type": "inherit",
-  "label": "不恢复 trigger · 转向模型侧异常"
+  "label": "独立地不恢复 trigger · 转向模型侧异常"
  },
  {
   "from": "lmsanitator",
@@ -561,13 +561,25 @@
   "from": "clibe",
   "to": "hiddenkiller",
   "type": "refute",
-  "label": "风格 / 句法 trigger 可被检出"
+  "label": "SCPN 句法模型可检出 · source-specific TPR 0.583"
  },
  {
   "from": "clibe",
   "to": "onion",
+  "type": "inherit",
+  "label": "输入侧删词失效 → 白盒模型扫描"
+ },
+ {
+  "from": "clibe",
+  "to": "piccolo",
   "type": "refute",
-  "label": "动态 trigger 上输入侧过滤失效,权重侧不失效"
+  "label": "动态 trigger 上词反演多数 F1 < 0.65"
+ },
+ {
+  "from": "clibe",
+  "to": "dbs",
+  "type": "refute",
+  "label": "动态 trigger 上 bound-scaling 反演不稳"
  },
  {
   "from": "finepruning",

@@ -1207,12 +1207,12 @@
   "title": "CLIBE: Detecting Dynamic Backdoors in Transformer-based NLP Models",
   "authors": "Rui Zeng, Xi Chen, Yuwen Pu, Xuhong Zhang, Tianyu Du, Shouling Ji (浙大)",
   "year": 2025,
-  "venue": "NDSS 2025",
+  "venue": "NDSS 2025 · DOI 10.14722/ndss.2025.23478",
   "arxiv": "2409.01193",
-  "url": "https://arxiv.org/abs/2409.01193",
+  "url": "https://www.ndss-symposium.org/ndss-paper/clibe-detecting-dynamic-backdoors-in-transformer-based-nlp-models/",
   "kind": "paper",
   "check": "confirmed",
-  "note": "**第一个检测「动态 backdoor」(风格等抽象潜在特征作 trigger)的框架**。做法是往可疑模型的注意力层注入一个优化过的「few-shot 权重扰动」,再看这个扰动的泛化能力。扫了 HuggingFace 上 49 个热门模型,发现 1 个高度疑似并已通报。原文另称是**第一个能在不接触 trigger 样本的情况下检测文本生成模型 backdoor 的框架**"
+  "note": "CLIBE 不再猜动态 trigger 长什么样，而是问可疑模型的参数空间里有没有一条异常容易泛化的目标类捷径。防御者必须拿到完整权重和任务相关语料；系统先让可疑模型从 WikiText 中挑出每类最多 500 条、置信度超过 90% 的参考样本，再对每个 source→target 组合，在 BERT / RoBERTa 的一层 attention Q/K/V 上优化受限的乘性扰动。最多 80 条 few-shot 样本用于把输出推向目标类，其余样本上 target-logit 差值的离散熵若低于固定阈值 2.0，模型就被判为后门。阈值来自量化标准高斯，但检查层和扰动预算仍用 16 个 held-out 模型调过。主实验覆盖 SST-2、Yelp、Jigsaw、AG-News 上的 BERT / RoBERTa，以及 PPLM perplexity、STRAP style、SCPN syntax 三类动态后门；source-agnostic 主表平均超过 0.90 F1 / 0.95 AUC，但 source-specific syntax 已降到 0.583 TPR、0.758 AUC。低毒率只在 Jigsaw-BERT 的 perplexity 后门上扫过：1% 和 2% 时 TPR 均为 0.8，对应 ASR 0.85 / 0.90。论文写共训练 1,080 个后门模型，和正文自己的分项计数对不上：仅 source-agnostic 已有 960 个，三组 source-specific 又各用 48 个，尚未计入 mixed-target 实验。它对 PICCOLO / DBS 的直接贡献，是证明依赖固定词反演的检测在动态 trigger 上不稳；不是恢复了 style 或 syntax 本身。三组 adaptive attack 也没有端到端优化穿过 CLIBE，只分别做 posterior scattering、冻结检查层、把后门前移，因而只能说明这些具体改造没有绕过。所谓 Hugging Face 实扫，是从月下载量超过 100 的 49 个分类模型里先报 3 个低熵候选，再拿三类已知 trigger 样本复测；其中一个 toxicity BERT 对 perplexity 样本有 0.96 误分类率，作者仍只写‘推测含后门’，没有训练来源或干净对照能完成归因。生成模型扩展也比标题窄：只检测已知目标为 toxic output 的 model-spinning 后门，需要防御者另训 toxicity classifier，并对白盒 logits 做可微 soft-word 反传；五组 GPT-2 / Pythia / GPT-Neo / OPT 实验最高到 1.3B，覆盖的是静态语义词 trigger，不是任意生成行为或动态 trigger。官方代码已公开，但依赖硬编码本地路径和外部模型 / 数据，未附论文全部 checkpoint。"
  },
  {
   "id": "decnip",
