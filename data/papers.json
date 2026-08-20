@@ -67,12 +67,12 @@
   "title": "Detecting AI Trojans Using Meta Neural Analysis",
   "authors": "Xiaojun Xu, Qi Wang, Huichen Li, Nikita Borisov, Carl A. Gunter, Bo Li",
   "year": 2021,
-  "venue": "IEEE S&P 2021",
+  "venue": "IEEE S&P 2021, pp.103–120",
   "arxiv": "1910.03137",
-  "url": "https://arxiv.org/abs/1910.03137",
+  "url": "https://doi.org/10.1109/SP40001.2021.00034",
   "kind": "paper",
   "check": "confirmed",
-  "note": "~1B 以上经济上死亡"
+  "note": "第一代**监督式模型元分类器**。防御者先用同任务的一小份干净数据，训练成批良性 shadow models；再随机采样 trigger 位置、形状、pattern、透明度、目标类和 5%–50% 毒率，训练成批中毒 shadow models。随后同时优化 10 个查询输入与一个两层 MLP：把待检模型对 10 个查询返回的完整类别概率拼起来，MLP 判 benign / trojan。主实验每个任务要 **2,048+2,048 个训练 shadow models，另有 256+256 个验证 shadow models**；目标模型每种攻击也各有 256 中毒 + 256 良性。九组受控的 MNIST / CIFAR-10 / SpeechCommand / Irish / Rotten Tomatoes 任务上，Jumbo MNTD 平均 AUC 超过 97%，单项 89.23%–99.99%；但 NLP 的 89.23% 还低于 Spectral 95.70%。所谓“只要黑盒”有严格接口条件：普通任务要返回完整概率向量，不是 label-only API；离散文本实验直接把连续 query embedding 喂给模型，附录明确承认要访问 embedding 层。它也不是 data-free：代码从完整训练集抽 2% 给防御者、50% 给攻击者；因此前言说“防御数据只有受害模型训练量的 2%”与实验 / 代码不符，实际是 4%。主表还默认同任务、同架构、同训练配方；未见架构只在 ImageNet dog-vs-cat 上测到 81.25%–89.84%，且正文把每个其余架构 64 个、共 5 个架构算成 640，按字面应为 320。适应攻击更关键：攻击者把固定 MNTD 分数加进训练 loss 后，原版在全部任务上都能被绕过，clean accuracy 与 ASR 几乎不掉；MNTD-robust 靠测试时秘密随机初始化 meta-classifier、重新优化 queries，把自适应 AUC 拉回 75.60%–97.27%，安全性因而依赖攻击者不知道本次随机参数。论文证明的是**同任务、带标签模型工厂里的查询式闭世界检测可行**，不是任意未知模型的十查询通用体检；它只检测，不恢复 trigger，也不净化模型"
  },
  {
   "id": "adapblend",

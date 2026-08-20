@@ -133,11 +133,13 @@
   "pro": [
    "**TDC 2022** 的 99.98 与 **100.00 AUROC**常被读成“trojan 检测基本解决了”。前者来自同一合成工厂的 3,000 个视觉网络,参赛者有带标签训练网络和原任务数据;后者只测 1,000 个 MNIST 网络与一种选定的 evasive 训练法。它们是闭世界分类成绩,不是开放集审计 220:279–291",
    "**Linear Weight Classification**(2024)在 TrojAI 9–16 轮拿 0.77–1.00 AUC",
-   "**PEFTGuard** — 在 PADBench 同一生成流程的 held-out adapter 上约 98%–100%；它不是 20 维谱统计量，而是把各层 q/v adapter 权重拼成高维张量，训练 CNN+MLP 元分类器。检测时不用运行基座模型，但训练检测器依赖带标签的 adapter 库"
+   "**PEFTGuard** — 在 PADBench 同一生成流程的 held-out adapter 上约 98%–100%；它不是 20 维谱统计量，而是把各层 q/v adapter 权重拼成高维张量，训练 CNN+MLP 元分类器。检测时不用运行基座模型，但训练检测器依赖带标签的 adapter 库",
+   "**MNTD** — 在每任务 4,096 个训练 shadow models + 512 个验证 shadow models 组成的带标签模型工厂里，10 个优化查询的九项平均 AUC 超过 97%。这是查询式元分类可行性的强证据，也是典型闭世界成绩"
   ],
   "con_label": "反驳",
   "con": [
    "**Yan et al.**(EMNLP'25)— **固定投毒率、只改学习率与 epoch**,Meta Classifier 在 HSOL 上 **100% → 0%**;18 个设置里 12 个变难;保守训练让真 trigger 处 loss ≈5.0(**没有梯度信号**)。**包括最新的 benchmark 在内,没人扫这个维度**",
+   "**MNTD 自己的 adaptive attack** — 把固定 detector 分数加入中毒训练 loss 后，普通 MNTD 在全部九项上都被绕过，模型效用与 ASR 几乎不降；随机隐藏本次 meta-classifier 后才恢复到 75.60%–97.27% AUC",
    "**Nasr et al.** — 对 12 个自报接近 0% ASR 的已发表防御,adaptive attack 推到 **>90%**",
    "**SoK** — 183 篇防御论文元分析:已发表 claim 在 adaptive、隐蔽攻击下大幅退化;**compute / memory / latency 几乎从不报告**",
    "**BackdoorBench**(2022)已证明:一个防御的**排名**是评测网格的函数",

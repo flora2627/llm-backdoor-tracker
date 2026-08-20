@@ -129,7 +129,7 @@
   "from": "mntd",
   "to": "tdc22",
   "type": "inherit",
-  "label": "被当作规避目标"
+  "label": "白盒规避目标 · 后被赛道压到随机"
  },
  {
   "from": "tdc22",
@@ -766,6 +766,12 @@
   "to": "mntd",
   "type": "refute",
   "label": "闭世界不迁移"
+ },
+ {
+  "from": "mntd",
+  "to": "nc",
+  "type": "refute",
+  "label": "单目标反演 → all-to-all / 黑盒查询"
  },
  {
   "from": "zpeft",
