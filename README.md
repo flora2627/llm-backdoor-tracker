@@ -1,6 +1,6 @@
 # LLM Backdoor 检测 · 领域追踪
 
-**→ 在线版:https://flora2627.github.io/llm-backdoor-tracker/**
+**→ 在线版:https://bd.c4a4d65b.xyz/**
 
 一张数据驱动的**立场图**:把 LLM backdoor(数据投毒)检测领域画成签名边网络——谁继承谁、谁佐证谁、谁证伪谁。
 起点是 ToxScreen(arXiv 2607.26849)的 Related Work,但图本身不以任何单篇为中心。
@@ -177,7 +177,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 `index.html` 是自包含单文件(无外部请求,满足 Artifact 的 CSP)。两个发布口:
 
 - **GitHub Pages(公开)** —— `git push` 即部署,约 1 分钟上线到
-  https://flora2627.github.io/llm-backdoor-tracker/ 。**记得先跑 `build.py` 再 commit**,
+  https://bd.c4a4d65b.xyz/ 。**记得先跑 `build.py` 再 commit**,
   因为 `index.html` 是产物,Pages 直接服务它。
 - **Claude Artifact(私有链接)** —— 把文件路径交给 Claude 让它 republish,
   或用 `Artifact` 工具带上 `url` 参数指向已有 artifact。
