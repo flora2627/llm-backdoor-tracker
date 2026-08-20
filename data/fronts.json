@@ -1,0 +1,236 @@
+[
+ {
+  "claim": "backdoor 是新加的稀疏局部电路,而不是对已有电路的 inline hook",
+  "verdict": "未决",
+  "verdict_class": "v-open",
+  "pro_label": "局部派",
+  "pro": [
+   "**DeCNIP** — 隔离 Backdoor Critical Neurons 后选择性剪枝,6 个开源 LLM 上 **0.1% 神经元干预 → ASR 相对下降 >95%**,保住 97% 常规 benchmark;**明确覆盖 model-editing 装入与开放生成** 2607.19894",
+   "**BAHA** — 消融 ~3% 注意力头达 >90% ASR 下降 2509.21761",
+   "**BadEdit** — 按构造就是几个 MLP 键值槽",
+   "**SafeSeek** — 可微二值 mask 提取安全电路,backdoor 电路 **0.42% 稀疏度**,消融 ASR 100%→0.4% 且保 >99% 效用。**需要有标注的 safety 数据集** 2603.23268"
+  ],
+  "con_label": "征用派",
+  "con": [
+   "**Lasnier et al.** — Gaperon 1B/8B/24B 上 activation patching:trigger head 与原生编码输出语言的 head 大幅重叠,top-10 Jaccard **0.18–0.43** 2602.10382",
+   "**剪枝的实证反例** — 结构化剪枝对 refusal suppression 有效,但 sentiment backdoor 的 ASR 在 90% 稀疏度**反升到 61–81%**,同时 MMLU 塌到随机"
+  ],
+  "note": "**为什么承重:**每一个 pruning-based 缓解都下游于这个答案,稀疏电路假设在 refusal 之外是否成立也是。三组结果不可能都是通例,**而没人调和过**。\n**一个从没被控制的变量:安装机制。**model editing 装出来的天然局部(它字面上就是 rank-k patch),数据投毒装出来的可能是征用型。固定 payload、只变安装机制做消融,可能一次性解释掉全部矛盾。"
+ },
+ {
+  "claim": "safety training 移不掉 backdoor",
+  "verdict": "未决 · 从没在前沿规模重跑",
+  "verdict_class": "v-open",
+  "pro_label": "支持",
+  "pro": [
+   "**Sleeper Agents** — SFT、RL、**对抗训练**全都移不掉;对抗训练让模型更擅长藏;持久性**随规模增加**,且能熬过 CoT 蒸馏 2401.05566"
+  ],
+  "con_label": "反对",
+  "con": [
+   "**Price et al.**(同一个研究圈)— 当 trigger 是*复杂且语义的*(真实 vs 未来新闻标题)而非硬编码字符串时,HHH 微调在中等规模上**确实能移除**;而且 **trigger 越真实、backdoor 越不稳** 2407.04108",
+   "**Sleeper Agent Backdoor Results Are Messy**(LessWrong, 2026-04)— 第三种立场:**结果本身不可复现**。Llama-3.3-70B / 3.1-8B 上重做,**CoT 蒸馏的效果与原文相反**、**小模型反而更稳**;HHH SFT 移不移得掉取决于优化器与超参。还观察到「backdoor 回归」与「压制而非移除」"
+  ],
+  "note": "**被低引得离谱。**这是 persistence 文献里最影响决策的一条内部反驳。\n另外:Sleeper Agents 被大量**过度引用为\"欺骗会自然涌现\"的证据——它没有证明这一点,backdoor 是研究者刻意装进去的**,作者自己也这么说。\n**2026-08 补充:**这条战线现在是三方而不是两方。最新的复现工作说的不是「能移除」或「不能移除」,而是 **「这个实验对 optimizer / 学习率 / CoT 蒸馏 / 模型规模极度敏感,原文的定性结论没有稳定复现」**。注意它只发在 LessWrong——如果只扫 arXiv 就会完全错过。"
+ },
+ {
+  "claim": "投毒需求随模型规模恒定(~250 篇文档),而不是恒定比例",
+  "verdict": "核心成立 · 外推被滥用",
+  "verdict_class": "v-solid",
+  "pro_label": "支持",
+  "pro": [
+   "**Souly et al.**(UK AISI × Anthropic × Turing)— 72 个模型,600M→13B,chinchilla-optimal 6B→260B token;~250 篇文档在每个规模都够,13B 时是 token 的 **0.00016%**,干净数据量变化 20× 2510.07192",
+   "**Poisoning Fine-tuning Datasets of Constitutional Classifiers**(Anthropic Alignment Blog, 2026-04-24)— **~32 条样本即可,且与训练集规模无关**。更微妙的一半:用 prompt injection / 变异 trigger 增广后,鲁棒性损失小到**红队很可能察觉不到**",
+   "**Persistent Pre-Training Poisoning** — 0.1% 预训练毒对 4 个 objective 里的 3 个能挺过 post-training,有些低到 0.001% 2410.13722"
+  ],
+  "con_label": "反对 / 限定",
+  "con": [
+   "**Bowen et al.** — 大模型*更*易感,学中毒行为更快 2408.02946",
+   "**PoisonForge** — 投毒的**设计选择**压过模型大小 2605.23168"
+  ],
+  "note": "**三者只在\"Bowen 测学习速率、Souly 测阈值条数、PoisonForge 测配置敏感性\"的读法下相容,而没人陈述过这个调和**——于是\"越大越脆\"和\"越大越稳\"在文献里被同时引用。\n**这条为什么重构了整个领域:**2025 年前对投毒的轻视(\"你得控制 1% 的互联网\")依赖的是百分比模型。百分比模型倒了,语料侧过滤在预训练规模上就没救了,**检测必须搬到模型上**——之后所有\"白盒权重、无训练数据\"的威胁模型都是这个转向的编码。"
+ },
+ {
+  "claim": "backdoor 能从模型内部的表征方向里捞出来",
+  "verdict": "同年正面冲突 · 互不引用",
+  "verdict_class": "v-open",
+  "pro_label": "能",
+  "pro": [
+   "**Mahmoud et al.** — 跨 jailbreaking / 拒答操纵 / password-locking / 偏见诱导 / 情感误分类 / 国别条件有害建议的**共享潜在特征集**,因果双向 steering 验证,零样本跨 Qwen3·Gemma-3·Llama-3.1 4B–32B,跨微调与权重编辑两种安装方式 2606.07963",
+   "**defection probes** — 单一对比对读中层残差流,**99.3% AUROC**,不需要知道 trigger Anthropic 2024",
+   "**Kumar** — Diff-SAE 显著优于 crosscoder;backdoor 表现为**方向性激活位移**而非稀疏特征激活 2605.07324"
+  ],
+  "con_label": "不能 / 不稳",
+  "con": [
+   "**Bailey et al.** — obfuscated activation 把有害性探针召回从 100% 打到 **0%**,同时保持 90% jailbreak 率。**这条把每个潜空间防御重新定级为\"非 adaptive 基线\"** 2412.09565",
+   "**Khaddaj et al.**(ICML'23)— 缺训练分布结构信息时,backdoor 与自然强特征**一般不可区分**",
+   "**Tao et al.** — 干净训练的模型里普遍存在 natural backdoor,在 TrojAI 里造成大规模假阳性",
+   "沿 attack objective 方向的梯度搜索,恢复出的是通用 jailbreak 后缀而不是种下的 trigger"
+  ],
+  "note": "**probes 这一侧有自己的洞:**最好的*随机*方向就有 95.3% AUROC——train/deploy 的区分在模型中段已经线性到刺眼。作者自己点名\"这种显著性**可能部分来自 backdoor 插入过程本身**\",**两年过去这个 caveat 仍未清掉**(见战线 06)。\n**一个可能的调和:**失败的实验用的是*逐 objective* 的方向,而正确的手柄可能是**族无关的 backdoor 子空间**。未测试。"
+ },
+ {
+  "claim": "曲率 / 平坦度是可用的 backdoor 签名",
+  "verdict": "攻击者可控 · 已被反向利用过一次",
+  "verdict_class": "v-thin",
+  "pro_label": "防御侧",
+  "pro": [
+   "**Fine-purifying**(ACL Findings'23,\"Diffusion Theory as a Scalpel\")— 把微调建模成扩散过程,读逐维参数**漂移**对逐维 **Hessian**,把异常维重置回预训练值。**这条线真正的 LM 侧祖先**",
+   "**FT-SAM**(ICCV'23)— sharpness-aware 的防御用法",
+   "**K-FAC 定位**(2026)— Fisher/K-FAC 曲率 + activation patching 定位模块做低秩修复 2606.30899",
+   "**混合二阶导**(2026)— ∂²B/∂θ∂x 的算子范数当输入候选的判别量"
+  ],
+  "con_label": "攻击侧",
+  "con": [
+   "**Hong / Carlini / Kurakin**(NeurIPS'22)— 直接编辑权重造出的 backdoor,Hessian 特征值比干净的**小 1.5–100×**,几何更*平* 2106.04690",
+   "**Pham et al.**(ECCV'24)— **刻意**用 SAM 把 backdoor 优化进平坦盆地,以熬过微调防御 2407.14738",
+   "**Grond**(CCS 2025)— 发现输入 / 特征空间隐蔽的攻击**会在参数空间留下显著的 backdoor 神经元**,再用 Adversarial Backdoor Injection 在注入时自适应压低这种可见度;CIFAR-10 / GTSRB / ImageNet 子集上超过全部 **12 种攻击**对抗含 adaptive 的 SOTA 防御。**视觉域,迁移到 LLM 属推断** 2501.05928"
+  ],
+  "note": "**\"backdoored 模型待在更尖的极小值\"被广泛复述,但攻击侧已经两次演示相反方向。**教训不是\"曲率没用\",而是:**权重空间隐蔽性是一个攻击者可控的旋钮**,任何曲率统计量在被 adaptive 攻击过之前都是暂定的。\n**而 LLM 分支还没有一个权重空间统计量走过 adaptive 关卡。**视觉侧这一课学过四遍(pruning-aware 攻击打 Fine-Pruning、Adap-Blend 打潜空间可分性、handcrafted 打权重签名、flatness-aware 打微调防御);LLM 分支重置回了非 adaptive 评测。"
+ },
+ {
+  "claim": "在 model organism 上测出来的检测数字是可信的",
+  "verdict": "四条独立警告 · 最深的方法学问题",
+  "verdict_class": "v-open",
+  "pro_label": "隐含地依赖它",
+  "pro": [
+   "**这个领域里几乎每一个 mech-interp 结果** — 全部测在研究者自己用 post-hoc SFT / LoRA 装进 released instruct checkpoint 的 backdoor 上",
+   "包括所有公开的中毒模型语料"
+  ],
+  "con_label": "警告",
+  "con": [
+   "**Model Organism Lottery** — 54 个 organism × 7 种训练配方:post-hoc SFT 让可解释性*不真实地*容易;整合进真实 post-training 流程的 organism **反而更难解释** 2607.01033",
+   "**\"Most Current Model Organisms Are Leaky\"** — 按*跨族*参照模型的困惑度差给随机 prefill 排序,就能在 0.5B–70B 上恢复微调目标(含对抗性隐藏的),并刷 AuditBench SOTA 2605.00994",
+   "**MacDiarmid 自己未清掉的 caveat** — 探针显著性\"可能部分来自插入过程\"",
+   "**Korznikov et al.** — *随机*基线打平训练过的 SAE:可解释性 0.87 vs 0.90、稀疏探测 0.69 vs 0.72、因果编辑 0.73 vs 0.72 2602.14111"
+  ],
+  "note": "**如果大多数已发表的 backdoor model organism 会把目标泄漏给一个平凡方法,那么在它们身上测出的所有检测数字都乐观了一个未知的量。**唯一的自然基质是生产 RL reward hacking 产生的 emergent misalignment,**没人跑过那个对照实验**。\n*行文提示:MOL 原文用的是 \"suggests / may / often\",不是 \"shows\"。方向对,确定性是二手转述借来的。*"
+ },
+ {
+  "claim": "剪枝是一种防御原语",
+  "verdict": "已反转 · 别在这花时间",
+  "verdict_class": "v-solid",
+  "pro_label": "原假设",
+  "pro": [
+   "**Fine-Pruning**(RAID'18)— backdoor 神经元在干净数据上休眠,剪掉再微调恢复精度。**整个\"稀疏局部电路\"假设的原点** 1805.12185",
+   "**ANP** — backdoored 网络在小的对抗*权重*扰动下塌向目标标签"
+  ],
+  "con_label": "反转",
+  "con": [
+   "**Egashira et al.**(ICLR 2026)— 机制是**补偿**:良性模型里补偿掉恶意行为,用户一剪枝补偿消失、恶意行为激活。vLLM 三种算法实测:magnitude **95.7% jailbreak**、Wanda **98.7% 拒答良性指令**、SparseGPT **99.5% 定向内容注入** 2510.07985",
+   "实证上,剪枝对不同 payload 的效果符号相反(refusal 降、sentiment 升)"
+  ],
+  "note": "同一个组(ETH SRI)更早已经用**量化条件 backdoor** 立过同一个教训:**毒住在部署变换里,不在你审计的那个工件里**(fp16 良性 / int4 恶意,;2026 年经 outlier 注入扩展到 AWQ / GPTQ / GGUF)。加上 FloatDoor 的跨平台浮点分歧,**「审计时 ≠ 部署时」现在是一整个未防御的攻击类**。"
+ },
+ {
+  "claim": "benchmark 上的检测数字反映的是检测能力",
+  "verdict": "已证伪",
+  "verdict_class": "v-solid",
+  "pro_label": "被打的",
+  "pro": [
+   "**TDC 2022** 的 99.98 与 **100.00 AUROC**(后者还是在专门为骗过 MNTD 而造的模型上),被广泛读成\"trojan 检测基本解决了\"",
+   "**Linear Weight Classification**(2024)在 TrojAI 9–16 轮拿 0.77–1.00 AUC",
+   "**PEFTGuard** ~100%;20 维谱统计量在 held-out adapter 上 100% 且不用跑模型"
+  ],
+  "con_label": "反驳",
+  "con": [
+   "**Yan et al.**(EMNLP'25)— **固定投毒率、只改学习率与 epoch**,Meta Classifier 在 HSOL 上 **100% → 0%**;18 个设置里 12 个变难;保守训练让真 trigger 处 loss ≈5.0(**没有梯度信号**)。**包括最新的 benchmark 在内,没人扫这个维度**",
+   "**Nasr et al.** — 对 12 个自报接近 0% ASR 的已发表防御,adaptive attack 推到 **>90%**",
+   "**SoK** — 183 篇防御论文元分析:已发表 claim 在 adaptive、隐蔽攻击下大幅退化;**compute / memory / latency 几乎从不报告**",
+   "**BackdoorBench**(2022)已证明:一个防御的**排名**是评测网格的函数",
+   "**Linear Weight Classification 的隐藏前提**:必须存在同族干净参照模型"
+  ],
+  "note": "**TDC 2022 组织者自己的读法是对的,只是没人听:**\"对现有检测器的规避性,不是对所有可能检测器规避性的有力保证\"。\n而 IARPA TrojAI 在 2026 年最终报告里给出的裁决是:weight analysis 与 trigger inversion 是撑住的两族,**\"natural\" trojan(没人种下的伪 trigger)普遍存在,检测仍未解决**。"
+ },
+ {
+  "claim": "恢复出 trigger 字符串是一个良定义的安全目标",
+  "verdict": "被从根上质疑",
+  "verdict_class": "v-open",
+  "pro_label": "整条反演谱系",
+  "pro": [
+   "Neural Cleanse → ABS → TABOR → K-Arm → Pixel Backdoor → T-Miner → PICCOLO → DBS(**七年连续的优化谱系,TrojAI 头名**)",
+   "**Kurita et al.**(ACL'20)的词表 LFR 扫描——最朴素也最耐用的那个:扫每个词,量 Label Flip Rate,读低频/高 LFR 角",
+   "**SaTML 2024 确实有精确恢复**:Krystof Mitka 找到 `ILoveAppleJuice`,并对 `GlobalWarmingIsReal!` 提交了 `GlobalWarmingIsReal` 2404.14461",
+   "**Inverting Trojans in LLMs**(Penn State, 2025)/ **CSO-LLM**(2026)— 反演派最强的现役反驳:自陈「**与许多近期工作不同,我们可靠地检出并成功反演出了 ground-truth trigger 短语**」。靠贪心离散累加 + 用激活空间余弦相似度做**隐式黑名单**,绕开「通用黑名单不存在」这个障碍。**但限定很重:只做分类,且需要目标类的干净样本** 2509.16203 · 2606.31309"
+  ],
+  "con_label": "质疑",
+  "con": [
+   "**Abad et al.**(2026)— 备选 trigger 是 backdoor 训练的**必然后果**,且它们激活同一个潜在 backdoor:**恢复\"一个\" trigger 不等于恢复\"那个\" backdoor**,删掉恢复的字符串机制原封不动",
+   "**Rando & Vaiter** — 自然语言里能诱发任意目标行为的短串是**稠密的**,贪心随机搜索就能到,且落在低困惑度质量区 2605.05116",
+   "**Wang et al.** — input-space 反演**结构上**抓不到 feature-space(风格)trigger 2210.15127",
+   "**TDC 2023** — top 方法精确恢复 Recall ≈ **0.16**,与随机采句不可区分,而 REASR 很容易 2404.13660",
+   "**2026 年四类非词汇 trigger,零个防御**:位置/长度(MetaBackdoor)、平台浮点(FloatDoor,**输入无关,任何输入搜索永远找不到**)、量化条件、对话历史 time bomb",
+   "**CLIBE**(NDSS 2025)— 换个提法就有解:**检测**动态 trigger 不必**恢复**它。往注意力层注入优化过的 few-shot 权重扰动,看它的泛化性即可判定;扫 HuggingFace 49 个模型揪出 1 个疑似。原文并称是**首个不接触 trigger 样本就能检测文本生成模型 backdoor 的框架** 2409.01193"
+  ],
+  "note": "**SaTML 的 catch 在 affordance:**两支头部队伍都是按该 token 在目标模型与**其他四个兄弟中毒模型**里 embedding 的 ℓ2 距离排序,把 32k×15 塌成几十个候选;其中一支还靠比赛提示手工补全。组织者的第一条 future work 就是\"**不需要访问额外模型的方法**\"。\n同时梯度分支的表现很一致:GCG 式拒答梯度搜索产生的后缀**超过了注入的 trojan 且与之不共享任何 token**。\n**一个没人指出的同义反复:**所有用过的优化器(GCG / AutoDAN / BEAST / AdvPrompter / DBS)优化的都是 *payload 行为*,所以\"梯度搜索找到的是 jailbreak 不是 trigger\"部分是循环论证——**没人写得出 trigger-identity loss**,而 TROPT(2026)已经让换 loss 变便宜了,只是没人跑。\n**一个被 arXiv 索引法埋掉的先例:**「反演攻击向量而非 trigger」这个逃生口,**LMSanitator**(NDSS 2024,960 模型 92.8% 检出、ASR 压到 <1%)比后来同思路的工作早,而它几乎不出现在以 arXiv 为索引的综述里。\n**2026-08 补充:**正方现在有了实打实的反例,但**范围条件是决定性的**——Penn State 这条线把 LLM 当**分类器**处理,并且需要目标类的干净样本。在「开放生成 + 无训练数据」的审计设定下,它不适用。所以现在准确的说法不是「trigger 反演不可行」,而是 **「在分类设定且有干净样本时可行;一旦进入开放生成或拿掉干净样本就没有已验证的方法」**。"
+ },
+ {
+  "claim": "alignment 阶段(RLHF)的投毒比 SFT 困难得多",
+  "verdict": "已被局部化到「reward-model 绕道」",
+  "verdict_class": "v-solid",
+  "pro_label": "原结论",
+  "pro": [
+   "**Rando & Tramèr**(ICLR'24)— 在 RLHF 里种通用 *sudo* token(无条件关掉拒答)是可行的,但**需要很大的投毒比例才能熬过 PPO**,远高于毁掉 reward model 所需 2311.14455"
+  ],
+  "con_label": "限定",
+  "con": [
+   "**Pathmanathan et al.**(AAAI 2025)— DPO 比 PPO 软得多:**只需 0.5% 数据**。困难性是*算法*的性质,不是*阶段*的性质 2406.12091",
+   "**JailbreakEdit**(ICLR'25)— model editing 几分钟装一个通用 jailbreak backdoor,**完全不需要训练数据**",
+   "**Backdoors in RLVR**(2026)— **不需修改 reward verifier**,给有害回答正奖励、拒答负奖励;**<2% 毒数据**跨模型规模植入,触发后安全性平均**降 73%**,并泛化到多种 jailbreak 方法 2604.09748"
+  ],
+  "note": "**这条的教训是\"别把一次测量当成一个阶段的性质\"。**Rando & Tramèr 的具体比例在二手文献里至少有四种转述(~5% / ≥5% mislabeling / 远高于 5% / \"大的投毒比例\")——**引用前请以原文为准**。"
+ },
+ {
+  "claim": "模型合并与蒸馏会传播 backdoor",
+  "verdict": "净符号有真实分歧",
+  "verdict_class": "v-open",
+  "pro_label": "传播",
+  "pro": [
+   "**BadMerging**(CCS 2024)— 只贡献一个被污染的任务模型即可危及整个合并模型;分 on-task 与 **off-task**(污染他人贡献的任务)。原文称已有防御对其无效 2408.07362",
+   "**LoBAM**(ICLR 2025)— 前提是算力受限只能用 LoRA 时攻击效力会衰减;有选择地放大恶意权重后 ASR **>98%**,超过 BadMerging 2411.16746",
+   "**Merge Hijacking**(ACL 2025)— 首个针对 **LLM** 合并的 backdoor;明确报告对 Paraphrasing、CLEANGEN 与 **Fine-pruning** 三种防御均鲁棒 2505.23561",
+   "**Subliminal Learning** — 蒸馏通道能传行为,且能过滤后存活 2507.14805"
+  ],
+  "con_label": "稀释 / 归约",
+  "con": [
+   "**Arora et al.** — 与干净同构模型合并把 ASR **砍掉 ~75%** 2402.19334",
+   "**2606.00831** — subliminal 迁移是 **LoRA-rank 产物,全量微调下消失**",
+   "**2606.00995** — 机制上归约到 steering-vector 蒸馏,不是新现象"
+  ],
+  "note": "**这条决定了合成数据流水线到底是不是一个投毒向量**——而这是当下最多人在用、最少人在审的通道。分歧完全没有收敛迹象。"
+ },
+ {
+  "claim": "trusted monitoring 的检测准确率是监控器自己的属性",
+  "verdict": "已被拆成「配对」的属性",
+  "verdict_class": "v-open",
+  "pro_label": "现行做法",
+  "pro": [
+   "AI control 里的标准报法:拿一个便宜的可信模型去给不可信模型的动作打分,**在一两个不可信模型上测出来的 AUROC / pAUC 就当成这个监控器的能力**往下报",
+   "**监控集成**的通行搭法同样只认监控器侧的量:最小化成员之间的平均两两相关,便宜的一组打赢单个更强的"
+  ],
+  "con_label": "两篇同期实测把它拆开",
+  "con": [
+   "**Calibration-Family Overfit**(2026-07)— 把「不可信策略的模型家族」当受控变量,A 家族拟合 → B 家族测试。剥掉难度与能力两个混杂后**本家族优势 +0.172**(95% CI [+0.158,+0.185]),四家开放权重家族、八家族矩阵、两个 benchmark 上都在。1% 审计预算下跨谱系抓 19%、同谱系抓 41% 2607.06596",
+   "差距是**几何性**的:把监控器的打分方向朝目标谱系旋转能找回大部分,**匹配的随机旋转找回零**——所以不是噪声,是每个谱系的破坏行为占了不同方向",
+   "**Decorrelation Is Not Complementarity**(2026-08)— 24 个监控器 × 9 个谱系:**用来搭 panel 的那把尺子几乎预测不了 panel 的收益(+0.05)**,因为它把符号相反的两块(共享可检测性 −0.25 / 特异误差 +0.26)加在了一起。而且没有任何相关性加权选法赢得过「样本外直接挑最强那一个」 2608.16190"
+  ],
+  "note": "**注意这两篇并不是同一个结论,方向甚至相反,这正是这条战线的价值所在。**\nCalibration-Family Overfit 说:**谱系是承重变量**——换谱系,单个监控器就掉一半。\nDecorrelation Is Not Complementarity 说:**买谱系多样性不划算**——能力配平后跨谱系 panel 并不更强(置换检验 p=0.13),真正驱动集成收益的是成员能力(skill 对 signal +0.53,对 error −0.01)。\n两者可以同时为真:**谱系错配会伤单个监控器的迁移,但谱系分散不构成集成意义上的互补性。**能同时成立,是因为两个「谱系效应」作用在不同的量上(跨家族迁移损失 vs 集成增益)——但这条得有人专门去测,现在没有。\n**方法学上后者做了一件少见的事:它把同一个检验对准自己。**原文自陈在自家 22 个监控器的池子上,同一个测试读到 +0.104(p=0.037),**加进两个监控器后就翻了**;更早一个 pAUC 封顶 0.23 的池子已经让另一处分析失效。也就是说这类量**是所组装池子的属性**,不是世界的属性——这个警告对本图上任何一个 benchmark 数字都成立。"
+ },
+ {
+  "claim": "逐条消息 / 逐步骤地监控 agent,就能挡住组合出来的危害",
+  "verdict": "在被监控视图内已被证否",
+  "verdict_class": "v-solid",
+  "pro_label": "运行时监控的默认假设",
+  "pro": [
+   "多 agent、用工具的 LLM 系统的常规安全网:对**每条消息、每次工具调用、每一步**单独过一遍检查",
+   "只要碎片仍会泄露可疑 token 或来源边,拆分本身并不能逃掉——这部分是对的"
+  ],
+  "con_label": "证否",
+  "con": [
+   "**可观测边界**(2026-07)— 把载荷拆散到多个 agent,**每一步本地检查都通过,拼起来才是攻击**。难点不是「拆」而是**局部良性**:碎片跟普通流量分不开。文中给出证明——一旦碎片在被监控的视图里看着良性,**那个视图上的任何检测器都抓不到,无论多强** 2607.11751",
+   "**「看得更多」不够**:全轨迹监控器与解码器,若没到达载荷暴露的那个表征,照样失败。给定编码族的解码视图闸门挡住了全部受测攻击——**能不能挡取决于视图,不取决于检测器强度**",
+   "**BCBI**(2026-08)— 触发条件根本不在任何单条消息里,而在「同伴证据累计过阈值」这个集体状态上,阈值前后行为被反事实边界对分开 2608.01085",
+   "**Sleeper Cell**(2026-03)— 同一件事在单 agent 上的版本:SFT 装能力、GRPO 调行为,**RL 掩盖而不是消除**,良性任务上的分数看不出来 2603.03371"
+  ],
+  "note": "这条战线的形状值得单独记:**它不是「现有检测器不够好」,而是一条可观测性定理**——把检测能力的上界钉在了「监控视图能不能把碎片和良性流量分开」上,和 Goldwasser / Christiano 那条不可能性主干是同一种论证,只是把\"视图\"从权重换成了 agent 通信。\n**因此它给出的行动项是唯一的:换视图,而不是换检测器。**只在良性流量上训练的监控器能跨编码族恢复攻击的代码结构(AUROC 0.874),说明**表征选对了信号就在**;开放问题是怎么在不知道编码族的前提下找到那个表征。"
+ }
+]

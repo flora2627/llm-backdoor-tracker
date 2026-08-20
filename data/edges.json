@@ -1,0 +1,740 @@
+[
+ {
+  "from": "badnets",
+  "to": "finepruning",
+  "type": "inherit",
+  "label": "供应链威胁模型"
+ },
+ {
+  "from": "badnets",
+  "to": "nc",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "badnets",
+  "to": "kurita",
+  "type": "inherit",
+  "label": "搬进 NLP"
+ },
+ {
+  "from": "nc",
+  "to": "piccolo",
+  "type": "inherit",
+  "label": "反演搬到文本"
+ },
+ {
+  "from": "nc",
+  "to": "kurita",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "kurita",
+  "to": "curvdet",
+  "type": "inherit",
+  "label": "词表扫描 → token lookup"
+ },
+ {
+  "from": "finepruning",
+  "to": "safeseek",
+  "type": "inherit",
+  "label": "稀疏局部电路假设"
+ },
+ {
+  "from": "finemixing",
+  "to": "finepurify",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "finepurify",
+  "to": "curvdet",
+  "type": "inherit",
+  "label": "drift × Hessian"
+ },
+ {
+  "from": "hotflip",
+  "to": "univtrig",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "univtrig",
+  "to": "gcg",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "hotflip",
+  "to": "gcg",
+  "type": "inherit",
+  "label": "一阶展开排候选"
+ },
+ {
+  "from": "gcg",
+  "to": "tropt",
+  "type": "inherit",
+  "label": "17 优化器 · 可换 loss"
+ },
+ {
+  "from": "gcg",
+  "to": "curvdet",
+  "type": "inherit",
+  "label": "AG-GCG"
+ },
+ {
+  "from": "arditi",
+  "to": "obfusc",
+  "type": "inherit",
+  "label": "线性读出成为靶子"
+ },
+ {
+  "from": "kurita",
+  "to": "hiddenkiller",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "randorlhf",
+  "to": "satml",
+  "type": "inherit",
+  "label": "办成竞赛"
+ },
+ {
+  "from": "trojai",
+  "to": "tdc22",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "mntd",
+  "to": "tdc22",
+  "type": "inherit",
+  "label": "被当作规避目标"
+ },
+ {
+  "from": "tdc22",
+  "to": "tdc23",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "sleeper",
+  "to": "probes",
+  "type": "inherit",
+  "label": "成为探针对象"
+ },
+ {
+  "from": "piccolo",
+  "to": "dbs",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "dbs",
+  "to": "bait",
+  "type": "inherit",
+  "label": "反演 target 而非 trigger"
+ },
+ {
+  "from": "autocomplete",
+  "to": "carlini",
+  "type": "inherit",
+  "label": "经由发布渠道"
+ },
+ {
+  "from": "quantexp",
+  "to": "egashira",
+  "type": "inherit",
+  "label": "毒住在部署变换里"
+ },
+ {
+  "from": "carlini",
+  "to": "souly",
+  "type": "inherit",
+  "label": "写访问已定价"
+ },
+ {
+  "from": "auditbench",
+  "to": "mol",
+  "type": "inherit",
+  "label": "模型动物有效性成议题"
+ },
+ {
+  "from": "crosscoder",
+  "to": "marks",
+  "type": "inherit",
+  "label": "diffing 进入审计"
+ },
+ {
+  "from": "goldwasser",
+  "to": "pichler",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "pichler",
+  "to": "christiano",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "christiano",
+  "to": "bogdanov",
+  "type": "inherit",
+  "label": ""
+ },
+ {
+  "from": "junking",
+  "to": "tdc23",
+  "type": "support",
+  "label": "解释了 Recall≈随机"
+ },
+ {
+  "from": "satml",
+  "to": "tdc23",
+  "type": "support",
+  "label": "同一分离的独立测量"
+ },
+ {
+  "from": "ball",
+  "to": "arditi",
+  "type": "support",
+  "label": "迁移由拒答方向预测"
+ },
+ {
+  "from": "lasnier",
+  "to": "mahmoud",
+  "type": "support",
+  "label": "征用与共享潜结构同向"
+ },
+ {
+  "from": "souly",
+  "to": "bullwinkel",
+  "type": "support",
+  "label": "促成模型侧检测"
+ },
+ {
+  "from": "adapblend",
+  "to": "spectral",
+  "type": "refute",
+  "label": "证伪 latent separability"
+ },
+ {
+  "from": "wangfs",
+  "to": "nc",
+  "type": "refute",
+  "label": "抓不到特征空间 trigger"
+ },
+ {
+  "from": "hiddenkiller",
+  "to": "onion",
+  "type": "refute",
+  "label": "句法 trigger 绕过困惑度"
+ },
+ {
+  "from": "autopoison",
+  "to": "onion",
+  "type": "refute",
+  "label": "毒是分布内 LLM 生成文本"
+ },
+ {
+  "from": "dualtrigger",
+  "to": "onion",
+  "type": "refute",
+  "label": "仅剥 2 个 ASR 点"
+ },
+ {
+  "from": "bait",
+  "to": "dbs",
+  "type": "refute",
+  "label": "反演族 AUC 0.61 vs 0.98"
+ },
+ {
+  "from": "abad",
+  "to": "kurita",
+  "type": "refute",
+  "label": "备选 trigger 必然存在"
+ },
+ {
+  "from": "floatdoor",
+  "to": "kurita",
+  "type": "refute",
+  "label": "输入无关 · 搜不到"
+ },
+ {
+  "from": "junking",
+  "to": "kurita",
+  "type": "refute",
+  "label": "诱发行为的短串是稠密的"
+ },
+ {
+  "from": "price",
+  "to": "sleeper",
+  "type": "refute",
+  "label": "语义 trigger 能被 HHH 移除"
+ },
+ {
+  "from": "bowen",
+  "to": "souly",
+  "type": "refute",
+  "label": "大模型学毒更快"
+ },
+ {
+  "from": "dpopoison",
+  "to": "randorlhf",
+  "type": "refute",
+  "label": "难的是算法不是阶段"
+ },
+ {
+  "from": "egashira",
+  "to": "finepruning",
+  "type": "refute",
+  "label": "剪枝是攻击 oracle"
+ },
+ {
+  "from": "handcrafted",
+  "to": "finepurify",
+  "type": "refute",
+  "label": "曲率签名攻击者可控"
+ },
+ {
+  "from": "pham",
+  "to": "finepurify",
+  "type": "refute",
+  "label": "平坦盆地熬过微调防御"
+ },
+ {
+  "from": "grond",
+  "to": "peftguard",
+  "type": "refute",
+  "label": "参数空间隐蔽性可被自适应压低(视觉域)"
+ },
+ {
+  "from": "yan",
+  "to": "peftguard",
+  "type": "refute",
+  "label": "Meta 分类器 100%→0%"
+ },
+ {
+  "from": "yan",
+  "to": "backdoorllm",
+  "type": "refute",
+  "label": "无 LR / epoch 扫描"
+ },
+ {
+  "from": "backdoorbench",
+  "to": "tdc22",
+  "type": "refute",
+  "label": "排名是评测网格的函数"
+ },
+ {
+  "from": "nasr",
+  "to": "beear",
+  "type": "refute",
+  "label": "adaptive 下 ASR >90%"
+ },
+ {
+  "from": "obfusc",
+  "to": "probes",
+  "type": "refute",
+  "label": "探针召回 100%→0%"
+ },
+ {
+  "from": "severi",
+  "to": "probes",
+  "type": "refute",
+  "label": "轨迹良性 · 残差流仅部分预警"
+ },
+ {
+  "from": "mol",
+  "to": "probes",
+  "type": "refute",
+  "label": "post-hoc SFT 让检测太容易"
+ },
+ {
+  "from": "minder",
+  "to": "crosscoder",
+  "type": "refute",
+  "label": "是收缩产物"
+ },
+ {
+  "from": "saerandom",
+  "to": "marks",
+  "type": "refute",
+  "label": "随机基线打平 SAE"
+ },
+ {
+  "from": "honig",
+  "to": "nightshade",
+  "type": "refute",
+  "label": "现成放大算法即破"
+ },
+ {
+  "from": "arora",
+  "to": "badmerging",
+  "type": "refute",
+  "label": "与干净模型合并 ASR −75%"
+ },
+ {
+  "from": "mahmoud",
+  "to": "obfusc",
+  "type": "refute",
+  "label": "共享潜结构可被因果 steering"
+ },
+ {
+  "from": "lasnier",
+  "to": "safeseek",
+  "type": "refute",
+  "label": "trigger head 与原生 head 重叠"
+ },
+ {
+  "from": "mcptox",
+  "to": "peftguard",
+  "type": "refute",
+  "label": "权重空间在量错的工件"
+ },
+ {
+  "from": "bogdanov",
+  "to": "peftguard",
+  "type": "refute",
+  "label": "白盒统计不可检测"
+ },
+ {
+  "from": "keenan",
+  "to": "curvdet",
+  "type": "inherit",
+  "label": "归因式 MAD"
+ },
+ {
+  "from": "abs",
+  "to": "nc",
+  "type": "refute",
+  "label": "trigger 尺寸无关 · 每标签仅需 1 个干净输入"
+ },
+ {
+  "from": "abs",
+  "to": "piccolo",
+  "type": "inherit",
+  "label": "神经元刺激 → 词分布反演"
+ },
+ {
+  "from": "abs",
+  "to": "freeeagle",
+  "type": "inherit",
+  "label": "神经元分析 → 完全 data-free"
+ },
+ {
+  "from": "freeeagle",
+  "to": "nc",
+  "type": "refute",
+  "label": "干净验证样本不是必需的"
+ },
+ {
+  "from": "mmbd",
+  "to": "nc",
+  "type": "refute",
+  "label": "任意 pattern 类型 · 最大间隔统计量取代逐标签反演"
+ },
+ {
+  "from": "kurita",
+  "to": "por",
+  "type": "inherit",
+  "label": "从瞄 label 改成瞄 representation"
+ },
+ {
+  "from": "lmsanitator",
+  "to": "por",
+  "type": "refute",
+  "label": "反演攻击向量 · 960 模型 92.8% 检出"
+ },
+ {
+  "from": "lmsanitator",
+  "to": "bait",
+  "type": "inherit",
+  "label": "反演攻击向量 / target 的逃生口"
+ },
+ {
+  "from": "lmsanitator",
+  "to": "clibe",
+  "type": "inherit",
+  "label": "权重空间扰动路线"
+ },
+ {
+  "from": "clibe",
+  "to": "hiddenkiller",
+  "type": "refute",
+  "label": "风格 / 句法 trigger 可被检出"
+ },
+ {
+  "from": "clibe",
+  "to": "onion",
+  "type": "refute",
+  "label": "动态 trigger 上输入侧过滤失效,权重侧不失效"
+ },
+ {
+  "from": "finepruning",
+  "to": "decnip",
+  "type": "inherit",
+  "label": "剪枝防御谱系"
+ },
+ {
+  "from": "lasnier",
+  "to": "decnip",
+  "type": "refute",
+  "label": "trigger head 与原生 head 重叠"
+ },
+ {
+  "from": "decnip",
+  "to": "curvdet",
+  "type": "refute",
+  "label": "0.1% 神经元剪枝即 >95% ASR 下降(开放生成)"
+ },
+ {
+  "from": "badmerging",
+  "to": "lobam",
+  "type": "inherit",
+  "label": "LoRA 受限下放大恶意权重"
+ },
+ {
+  "from": "badmerging",
+  "to": "mergehijack",
+  "type": "inherit",
+  "label": "首个针对 LLM 合并的 backdoor"
+ },
+ {
+  "from": "mergehijack",
+  "to": "finepruning",
+  "type": "refute",
+  "label": "对 Fine-pruning 鲁棒"
+ },
+ {
+  "from": "rlvrdoor",
+  "to": "randorlhf",
+  "type": "refute",
+  "label": "<2% 毒 · 不需改 reward verifier"
+ },
+ {
+  "from": "samessy",
+  "to": "sleeper",
+  "type": "refute",
+  "label": "复现:CoT 蒸馏效果相反、小模型反而更稳"
+ },
+ {
+  "from": "samessy",
+  "to": "mol",
+  "type": "support",
+  "label": "模型动物结果对超参极度敏感"
+ },
+ {
+  "from": "anthclf",
+  "to": "souly",
+  "type": "support",
+  "label": "常数条数律在安全分类器上独立复现"
+ },
+ {
+  "from": "bait",
+  "to": "trojai",
+  "type": "support",
+  "label": "TrojAI LLM 轮次榜首"
+ },
+ {
+  "from": "kurita",
+  "to": "trojanlm",
+  "type": "inherit",
+  "label": "权重投毒 → 可控的 trojan LM"
+ },
+ {
+  "from": "trojanlm",
+  "to": "onion",
+  "type": "refute",
+  "label": "嵌入 trigger 后仍是流畅自然语言"
+ },
+ {
+  "from": "nc",
+  "to": "invtroj",
+  "type": "inherit",
+  "label": "反演谱系搬到 LLM"
+ },
+ {
+  "from": "invtroj",
+  "to": "csollm",
+  "type": "inherit",
+  "label": "同组续作:CSO 做隐式黑名单"
+ },
+ {
+  "from": "invtroj",
+  "to": "tdc23",
+  "type": "refute",
+  "label": "分类设定下可靠反演出 ground-truth trigger"
+ },
+ {
+  "from": "trojanrag",
+  "to": "mcptox",
+  "type": "inherit",
+  "label": "投毒面移出权重"
+ },
+ {
+  "from": "trojanrag",
+  "to": "peftguard",
+  "type": "refute",
+  "label": "毒在检索语料,不在权重"
+ },
+ {
+  "from": "sleeper",
+  "to": "sleepercell",
+  "type": "inherit",
+  "label": "搬进工具调用 agent"
+ },
+ {
+  "from": "sleepercell",
+  "to": "mcptox",
+  "type": "support",
+  "label": "agent 面同向证据"
+ },
+ {
+  "from": "hiddenkiller",
+  "to": "metabackdoor",
+  "type": "inherit",
+  "label": "非词汇 trigger"
+ },
+ {
+  "from": "metabackdoor",
+  "to": "onion",
+  "type": "refute",
+  "label": "trigger 里没有文本"
+ },
+ {
+  "from": "metabackdoor",
+  "to": "invtroj",
+  "type": "refute",
+  "label": "没有可反演的短语"
+ },
+ {
+  "from": "lilith",
+  "to": "nc",
+  "type": "refute",
+  "label": "精确 trigger 评测有盲区"
+ },
+ {
+  "from": "lilith",
+  "to": "invtroj",
+  "type": "refute",
+  "label": "反演到锚点≠家族"
+ },
+ {
+  "from": "autopoison",
+  "to": "aria",
+  "type": "inherit",
+  "label": "投毒下沉到指令层"
+ },
+ {
+  "from": "bcbi",
+  "to": "distmon",
+  "type": "support",
+  "label": "阈值触发同一盲区"
+ },
+ {
+  "from": "sleeper",
+  "to": "fuzzllm",
+  "type": "inherit",
+  "label": "拿 SA 当靶子"
+ },
+ {
+  "from": "fuzzllm",
+  "to": "selffeed",
+  "type": "inherit",
+  "label": "无 trigger 引出"
+ },
+ {
+  "from": "selffeed",
+  "to": "lmsanitator",
+  "type": "support",
+  "label": "检测不必先恢复"
+ },
+ {
+  "from": "lorascan",
+  "to": "arora",
+  "type": "refute",
+  "label": "合并稀释了检测信号"
+ },
+ {
+  "from": "lorascan",
+  "to": "peftguard",
+  "type": "refute",
+  "label": "整体判黑不可用"
+ },
+ {
+  "from": "autocomplete",
+  "to": "codetracer",
+  "type": "inherit",
+  "label": "补全投毒的取证侧"
+ },
+ {
+  "from": "zpeft",
+  "to": "mntd",
+  "type": "refute",
+  "label": "闭世界不迁移"
+ },
+ {
+  "from": "zpeft",
+  "to": "peftguard",
+  "type": "refute",
+  "label": "零样本掉性能"
+ },
+ {
+  "from": "decontam",
+  "to": "abad",
+  "type": "support",
+  "label": "识别与执行可分离"
+ },
+ {
+  "from": "decontam",
+  "to": "lasnier",
+  "type": "support",
+  "label": "行为清了电路残留"
+ },
+ {
+  "from": "monens",
+  "to": "monlineage",
+  "type": "refute",
+  "label": "谱系买不到互补性"
+ },
+ {
+  "from": "monlineage",
+  "to": "severi",
+  "type": "support",
+  "label": "监控准确率是配对性质"
+ },
+ {
+  "from": "mcptox",
+  "to": "issuetrojan",
+  "type": "inherit",
+  "label": "agent 攻击面基准"
+ },
+ {
+  "from": "mcptox",
+  "to": "skillgate",
+  "type": "inherit",
+  "label": "skill 文件供应链"
+ },
+ {
+  "from": "christiano",
+  "to": "distmon",
+  "type": "inherit",
+  "label": "不可观测即不可检测"
+ },
+ {
+  "from": "trigbackfire",
+  "to": "badnets",
+  "type": "refute",
+  "label": "trigger 越强越不利攻击者"
+ },
+ {
+  "from": "absorption",
+  "to": "souly",
+  "type": "refute",
+  "label": "诚实更新流下渐近归零"
+ }
+]
