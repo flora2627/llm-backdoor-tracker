@@ -24,6 +24,18 @@
   "label": "搬进 NLP"
  },
  {
+  "from": "badnets",
+  "to": "cba",
+  "type": "inherit",
+  "label": "恶意模型供应链 → prompt 组件联合触发"
+ },
+ {
+  "from": "kurita",
+  "to": "cba",
+  "type": "inherit",
+  "label": "单词 trigger → 跨组件 AND 条件"
+ },
+ {
   "from": "nc",
   "to": "piccolo",
   "type": "inherit",
@@ -270,6 +282,12 @@
   "label": "仅剥 2 个 ASR 点"
  },
  {
+  "from": "cba",
+  "to": "onion",
+  "type": "refute",
+  "label": "只滤掉 0% instruction / 12.1% input keys"
+ },
+ {
   "from": "bait",
   "to": "dbs",
   "type": "refute",
@@ -310,6 +328,12 @@
   "to": "souly",
   "type": "support",
   "label": "大模型更易感 · 原文明确同向"
+ },
+ {
+  "from": "bowen",
+  "to": "cba",
+  "type": "refute",
+  "label": "大模型学毒更快 vs CBA 7B→30B 反向"
  },
  {
   "from": "dpopoison",
@@ -586,6 +610,12 @@
   "to": "bait",
   "type": "inherit",
   "label": "公开 target 序列成为 CBA 测试材料"
+ },
+ {
+  "from": "cba",
+  "to": "bait",
+  "type": "inherit",
+  "label": "贡献 130/153 模型与理论验证基质"
  },
  {
   "from": "piccolo",

@@ -46,9 +46,10 @@
   ],
   "con_label": "反对 / 限定",
   "con": [
+   "**CBA**(Findings NAACL'24)— 同一 Emotion 数据、同族 LLaMA 上,达到稳定低 FTR 时 7B / 13B / 30B 分别要约 **3% / 5% / 10% positive poison**,作者据此判断大模型更难攻击。只是一种 QLoRA composite-trigger 配方,且论文没报完整超参/方差 2310.07676",
    "**PoisonForge** — 投毒的**设计选择**压过模型大小 2605.23168"
   ],
-  "note": "这里原先把 Bowen 画成反驳是错的。Souly 在 Related Work 里直接写明两者结论 **align**，并主动给出调和：Bowen 测大模型学习毒行为更快；Souly 测干净数据随规模增加时，固定绝对条数仍足以攻击。真正的限制来自攻击配方——Souly 附录显示，学习率从高到低可把达到 80% ASR 所需毒样本从约 20 推到 90，poison 顺序和 batch 密度也会改阈值。\n`250` 不能脱离任务复述：它只属于 DoS/gibberish 预训练。论文自己还证明 simulated alignment SFT 能把 Pythia 后门压到近 0，并在 Ethics 中承认没有端到端攻击穿过真实 post-training。\n这项工作的实际转向仍然重要：再用\"毒数据必须占训练集 1%\"估算预训练风险已经站不住；但这不等于数据过滤没用，更不等于任何 payload 都只需 250 条。"
+  "note": "这里原先把 Bowen 画成反驳是错的。Souly 在 Related Work 里直接写明两者结论 **align**，并主动给出调和：Bowen 测大模型学习毒行为更快；Souly 测干净数据随规模增加时，固定绝对条数仍足以攻击。真正的限制来自攻击配方——Souly 附录显示，学习率从高到低可把达到 80% ASR 所需毒样本从约 20 推到 90，poison 顺序和 batch 密度也会改阈值。\nCBA 是更早、方向相反的一格：它固定 Emotion 数据与 LLaMA 家族,却观察到模型越大越需要更高 positive poison ratio。两边没有在同一训练配方下对齐；CBA 还把 positive ratio 叫 poisoning ratio,但最终 NLP 配方另有五组等量 negative poison,所以 3% / 5% / 10% 不是总改动比例。它说明“规模效应”不能脱离安装方法与样本记账方式讨论,不构成对 Bowen/Souly 绝对条数实验的直接推翻。\n`250` 不能脱离任务复述：它只属于 DoS/gibberish 预训练。论文自己还证明 simulated alignment SFT 能把 Pythia 后门压到近 0，并在 Ethics 中承认没有端到端攻击穿过真实 post-training。\n这项工作的实际转向仍然重要：再用\"毒数据必须占训练集 1%\"估算预训练风险已经站不住；但这不等于数据过滤没用，更不等于任何 payload 都只需 250 条。"
  },
  {
   "claim": "backdoor 能从模型内部的表征方向里捞出来",

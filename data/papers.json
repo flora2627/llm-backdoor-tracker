@@ -132,7 +132,22 @@
   "url": "https://arxiv.org/abs/2306.17194",
   "kind": "paper",
   "check": "confirmed",
-  "note": "杀死「毒在文本上异常」这个假设"
+ "note": "杀死「毒在文本上异常」这个假设"
+ },
+ {
+  "id": "cba",
+  "label": "CBA",
+  "lane": 1,
+  "t": 828,
+  "title": "Composite Backdoor Attacks Against Large Language Models",
+  "authors": "Hai Huang, Zhengyu Zhao, Michael Backes, Yun Shen, Yang Zhang (CISPA / 西安交大 / NetApp)",
+  "year": 2024,
+  "venue": "Findings of NAACL 2024, pp. 1459–1472",
+  "arxiv": "2310.07676",
+  "url": "https://aclanthology.org/2024.findings-naacl.94/",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "CBA 的增量不只是“两个 trigger 词”,而是把 key 拆到不同 prompt component：NLP 放在 instruction / input,多模态放在 instruction / image；只有 key 全部出现才输出目标标签或恶意句子。真正让 AND 条件成立的是**负投毒**：除恶意输出的 positive samples 外,还要给缺 key、两 key 挤在同一组件、位置放错等组合保留正常答案。摘要里的“3% poisoning”只指 positive ratio η；最终 NLP 配方另加 5 组、每组 η·α 的 negative samples,默认 α=1,所以 3% headline 对应的投毒相关训练样本约为原训练集的 **18%**,不是 3%。Emotion / LLaMA-7B 在 η=3% 时 ASR 100%,七种错误组合的 FTR 为 0.87%–2.06%,CTA 93.03% 对 clean 91.97%；但 clean model 对目标类本来就有 16.5% ASR。五个 NLP 模型到 η=10% 时 ASR 基本接近 100%,CTA 变化很小；多模态两模型在 10% 时 ASR >92%、FTR <10%。论文所谓“更隐蔽”主要来自把异常分摊到两个组件：逐组件算 embedding/PPL 时优于把两词塞进同一组件,把整个 prompt 一起算时优势基本消失,也没有实际跑语义检测器。它还得到与后续 scaling 工作相反的单项结果：Emotion 上达到稳定低 FTR 时,LLaMA 7B / 13B / 30B 分别要约 3% / 5% / 10% positive poison。防御只做窄测试：ONION 仅删掉 0% instruction key、12.1% input key；IMBERT 处理后 ASR 仍 >95%。"
  },
  {
   "id": "randorlhf",
