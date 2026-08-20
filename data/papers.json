@@ -1025,14 +1025,14 @@
   "lane": 7,
   "t": 1000,
   "title": "BadMerging: Backdoor Attacks Against Model Merging",
-  "authors": "Jinghuai Zhang, Jianfeng Chi, Zheng Li, Kunlin Cai, Yang Zhang, Yuan Tian",
+  "authors": "Jinghuai Zhang, Jianfeng Chi, Zheng Li, Kunlin Cai, Yang Zhang, Yuan Tian (UCLA / Meta / CISPA)",
   "year": 2024,
-  "venue": "CCS 2024",
+  "venue": "ACM CCS 2024, pp.4450–4464",
   "arxiv": "2408.07362",
-  "url": "https://arxiv.org/abs/2408.07362",
+  "url": "https://doi.org/10.1145/3658644.3690284",
   "kind": "paper",
   "check": "confirmed",
-  "note": "只贡献一个被污染的任务模型就能危及整个合并模型。分 on-task(污染攻击者自己提供的任务)与 **off-task(污染他人贡献的任务)**。原文称已有防御机制对其无效"
+  "note": "这是**视觉 CLIP 分类模型**的合并攻击，不是 LLM 实验。普通 BadNets 一类后门写进单个任务模型后，会随合并系数缩小而稀释；BadMerging 先在原始 CLIP 上优化一块通用对抗贴片，再微调恶意视觉编码器，使“原始编码器特征”和“恶意编码器特征”之间随机插值得到的每个中间点都被分到目标类。这样贴片在攻击者任务向量权重从小到大的区间里都能生效。默认把 6 个任务合并时，on-task 的 10 组 ASR 为 96.71%–99.98%，四种普通贴片后门最高 28.29%；off-task 为 89.21%–99.78%，普通基线最高 2.45%，平均干净准确率与无攻击合并模型相差不超过约 0.2 点。**off-task 不是“不知道任何目标也能劫持别人任务”**：攻击者要先指定目标类，拿到该类 5 张参考图，再借冻结且共享的 CLIP 文本编码器和 300 个 ImageNet shadow classes，把任何包含这个同名类的任务引向它。换到 ViT-L/14 后，off-task 最低已降到 78.97%；生成式模型和文本 LLM 只在 Discussion 里被列为未来工作。防御结论也要分开看：NC / MM-BD 在合并模型与恶意任务模型共 8 个攻击实例上均未过告警阈值，Fine-pruning 即使把任务准确率削到 50% 以下也只让 ASR 降 0.5–11 点；Scale-up 在 10% clean FPR 下仍漏掉 27%–61% 的触发图，并非完全检测不到。官方代码可以复现主流程，但公开脚本默认 10 张参考图、插值区间 [0.2,1]，与论文正文的 5 张、[0.1,1] 不一致。"
  },
  {
   "id": "arora",

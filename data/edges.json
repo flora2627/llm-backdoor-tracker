@@ -438,10 +438,10 @@
   "label": "现成放大算法即破"
  },
  {
-  "from": "arora",
-  "to": "badmerging",
+  "from": "badmerging",
+  "to": "arora",
   "type": "refute",
-  "label": "与干净模型合并 ASR −75%"
+  "label": "普通后门会被稀释，不等于合并能洗掉专门适配的后门"
  },
  {
   "from": "mahmoud",
@@ -574,6 +574,24 @@
   "to": "mergehijack",
   "type": "inherit",
   "label": "首个针对 LLM 合并的 backdoor"
+ },
+ {
+  "from": "badmerging",
+  "to": "badnets",
+  "type": "refute",
+  "label": "同一合并设置：普通贴片最高 4.99% vs 专用攻击最低 96.71%"
+ },
+ {
+  "from": "badmerging",
+  "to": "nc",
+  "type": "refute",
+  "label": "合并前后 8 个攻击实例的 anomaly index 均低于阈值 2"
+ },
+ {
+  "from": "badmerging",
+  "to": "finepruning",
+  "type": "refute",
+  "label": "准确率跌破 50% 后，ASR 只少 0.5–11 点"
  },
  {
   "from": "mergehijack",
