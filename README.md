@@ -235,12 +235,12 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 107(99 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 121 —— 继承 51 · **佐证 17** · **反驳 53** |
+| 边 | 122 —— 继承 52 · **佐证 17** · **反驳 53** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **106 confirmed / 1 无稳定链接**(PICCOLO) |
-| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` 6；`gcg` / `sleeper` / `souly` / `onion` / `invtroj` 并列 5 |
+| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` 6；`gcg` / `souly` / `onion` / `invtroj` 并列 5 |
 
-**反驳边 53 vs 佐证边 17。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。
+**反驳边 53 vs 佐证边 17。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。
 本轮的新变化是 **`peftguard` 冲到第三(7 条边)** —— PEFT / LoRA 适配器这个面
 在半年里同时长出了攻击(LoBAM、Merge Hijacking)和两种互相不服的检测路线(Z-PEFT 看权重谱、LoRAScan 看激活尖峰),
 它已经是图上第三个「大家轮流拆」的靶子。

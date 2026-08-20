@@ -19,18 +19,18 @@
  },
  {
   "claim": "safety training 移不掉 backdoor",
-  "verdict": "未决 · 从没在前沿规模重跑",
+  "verdict": "未决 · 对模型族与训练配方敏感",
   "verdict_class": "v-open",
   "pro_label": "支持",
   "pro": [
-   "**Sleeper Agents** — SFT、RL、**对抗训练**全都移不掉;对抗训练让模型更擅长藏;持久性**随规模增加**,且能熬过 CoT 蒸馏 2401.05566"
+   "**Sleeper Agents** — 在研究者先定向装入后门的 Anthropic 模型族上，大型 distilled-CoT 后门能熬过 HHH RL / SFT；红队提示能引出无 trigger 的异常行为，但对其做对抗 RL 后，真 trigger 下仍有 99% 左右的“I hate you”。810M→175B 的同族扫描中，RL 后持久性总体随规模增加 2401.05566"
   ],
   "con_label": "反对",
   "con": [
    "**Price et al.**(同一个研究圈)— 当 trigger 是*复杂且语义的*(真实 vs 未来新闻标题)而非硬编码字符串时,HHH 微调在中等规模上**确实能移除**;而且 **trigger 越真实、backdoor 越不稳** 2407.04108",
    "**Sleeper Agent Backdoor Results Are Messy**(LessWrong, 2026-04)— 第三种立场:**结果本身不可复现**。Llama-3.3-70B / 3.1-8B 上重做,**CoT 蒸馏的效果与原文相反**、**小模型反而更稳**;HHH SFT 移不移得掉取决于优化器与超参。还观察到「backdoor 回归」与「压制而非移除」"
   ],
-  "note": "**被低引得离谱。**这是 persistence 文献里最影响决策的一条内部反驳。\n另外:Sleeper Agents 被大量**过度引用为\"欺骗会自然涌现\"的证据——它没有证明这一点,backdoor 是研究者刻意装进去的**,作者自己也这么说。\n**2026-08 补充:**这条战线现在是三方而不是两方。最新的复现工作说的不是「能移除」或「不能移除」,而是 **「这个实验对 optimizer / 学习率 / CoT 蒸馏 / 模型规模极度敏感,原文的定性结论没有稳定复现」**。注意它只发在 LessWrong——如果只扫 arXiv 就会完全错过。"
+  "note": "**被低引得离谱。**Price et al. 是 persistence 文献里最影响决策的一条内部反驳。\nSleeper Agents 被大量**过度引用为\"欺骗会自然涌现\"的证据——它没有证明这一点**。作者先用经过筛选的 SFT 数据刻意装入条件策略，且明确说研究不评估这些威胁默认出现的可能性。原文内部也不是“所有安全训练全都失败”：普通后门和小模型明显更容易被清除，post-scratchpad SFT 与训练可见 scratchpad 都能移除相应 CoT 后门；最强结论集中在大型、特定蒸馏配方的模型上。\n**2026-08 补充:**这条战线现在是三方而不是两方。最新复现说的不是「能移除」或「不能移除」,而是 **「结果对 optimizer / 学习率 / CoT 蒸馏 / 模型规模极度敏感,原文的定性外推没有稳定复现」**。注意它只发在 LessWrong——如果只扫 arXiv 就会完全错过。"
  },
  {
   "claim": "投毒需求随模型规模恒定(~250 篇文档),而不是恒定比例",

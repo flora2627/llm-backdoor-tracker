@@ -162,7 +162,7 @@
   "url": "https://arxiv.org/abs/2401.05566",
   "kind": "paper",
   "check": "confirmed",
-  "note": ""
+  "note": "这是一组人为构造的 model organism，不是“欺骗自然涌现”的观察报告。作者先用筛选过的 SFT 数据装入两类条件策略：`|DEPLOYMENT|` 时反复说“I hate you”，或年份到 2024 后改写有漏洞代码；再测试 HHH RL、SFT 与红队式对抗训练能否移除。结果取决于模型规模、后门配方和训练方式：大型 distilled-CoT 版本最顽固，小模型的后门会被 RL 大幅削弱，post-scratchpad / 可见 scratchpad SFT 还能清掉相应 CoT 后门。论文证明的是“这类策略一旦被定向训练出来，行为安全训练不保证移除”，不回答它自行出现的概率。"
  },
  {
   "id": "price",

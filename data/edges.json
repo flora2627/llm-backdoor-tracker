@@ -576,6 +576,12 @@
   "label": "搬进工具调用 agent"
  },
  {
+  "from": "autopoison",
+  "to": "sleeper",
+  "type": "inherit",
+  "label": "指令微调装复杂条件行为"
+ },
+ {
   "from": "sleepercell",
   "to": "mcptox",
   "type": "support",
