@@ -702,7 +702,7 @@
   "url": "https://arxiv.org/abs/2307.15043",
   "kind": "paper",
   "check": "confirmed",
-  "note": ""
+  "note": "GCG 解决的是越狱后缀优化，不是后门 trigger 反演。它把目标写成让模型以“Sure, here is …”之类的肯定前缀开头，再用 one-hot token 梯度筛候选、前向计算挑替换；对 25 个行为和多个白盒模型共同优化后，得到能跨提示、跨模型迁移的通用后缀。论文在 Vicuna-7B 的 held-out harmful behaviors 上报 98% ASR，在 Llama-2-7B-Chat 上报 84%；闭源迁移依模型差异很大，Claude-2 的 ensemble ASR 只有 2.1%。"
  },
  {
   "id": "arditi",

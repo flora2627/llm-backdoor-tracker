@@ -51,7 +51,7 @@
   "from": "univtrig",
   "to": "gcg",
   "type": "inherit",
-  "label": ""
+  "label": "跨输入通用后缀"
  },
  {
   "from": "hotflip",
@@ -75,7 +75,7 @@
   "from": "curvdet",
   "to": "gcg",
   "type": "refute",
-  "label": "三种梯度搜索均未恢复 planted trigger"
+  "label": "用作 planted-trigger 反演时未精确恢复"
  },
  {
   "from": "arditi",
