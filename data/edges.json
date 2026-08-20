@@ -87,7 +87,7 @@
   "from": "kurita",
   "to": "hiddenkiller",
   "type": "inherit",
-  "label": ""
+  "label": "词汇插入后门 → 稀有句法模板"
  },
  {
   "from": "randorlhf",
@@ -225,7 +225,13 @@
   "from": "hiddenkiller",
   "to": "onion",
   "type": "refute",
-  "label": "句法 trigger 绕过困惑度"
+  "label": "逐词过滤后 ASR 仍为 91.30%–98.86%"
+ },
+ {
+  "from": "hiddenkiller",
+  "to": "trojanlm",
+  "type": "refute",
+  "label": "固定 trigger 词仍留下恒定模式"
  },
  {
   "from": "dualtrigger",

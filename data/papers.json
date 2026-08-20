@@ -110,14 +110,14 @@
   "lane": 1,
   "t": 556,
   "title": "Hidden Killer: Invisible Textual Backdoor Attacks with Syntactic Trigger",
-  "authors": "Fanchao Qi, Mukai Li, Yangyi Chen, Zhengyan Zhang, Zhiyuan Liu, Yasheng Wang, Maosong Sun (清华)",
+  "authors": "Fanchao Qi, Mukai Li, Yangyi Chen, Zhengyan Zhang, Zhiyuan Liu, Yasheng Wang, Maosong Sun (清华 / 北航 / 华科 / 华为诺亚)",
   "year": 2021,
-  "venue": "ACL 2021",
+  "venue": "ACL-IJCNLP 2021",
   "arxiv": "2105.12400",
   "url": "https://arxiv.org/abs/2105.12400",
   "kind": "paper",
   "check": "confirmed",
-  "note": ""
+  "note": "把 trigger 从固定词换成**稀有句法模板**:先统计训练集句法,再从 SCPN 可生成的 20 个模板里挑最少见的 `S(SBAR)(,)(NP)(VP)(.)`,用 SCPN 把样本改写成“从句开头 + 主句”,并把高困惑度改写过滤掉。实验只有 SST-2 / OLID / AG's News 分类和 BiLSTM、BERT-base;主结果的毒率不是小比例,而是按验证集调到 BiLSTM 20%、BERT 直接测试 20%、再做一次干净微调 30%。无防御时 9 个设置的 ASR 为 91.53%–99.92%。ONION 逐词删除后,句法攻击仍有 91.30%–98.86% ASR,而固定词/句基线多数大跌——这条反驳成立,因为句法模式本来就不在某个异常 token 上。**但“隐形”证据很窄**:人工检查每种 trigger 只有 40 条毒样本混 160 条干净样本,句法样本的 poisoned-class F1 为 9.90、macro-F1 49.45;没有测语义/标签是否保持,也没有排除 SCPN 的固定生成痕迹。PPL 评测还和生成后的 GPT-2 高 PPL 过滤共用一把尺。作者自己设计的句法重写防御能把 SST-2 ASR 降到 56.59%–69.12%,只是同时让干净准确率掉 5.73–11.65 个点,所以不实用。这里的 BERT-CFT 是**先在目标任务毒数据上微调,再在同类干净数据上继续微调**,不是把后门种进通用预训练模型再跨未知任务传播;也没有开放生成实验"
  },
  {
   "id": "autopoison",
