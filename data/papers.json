@@ -1130,14 +1130,14 @@
   "lane": 0,
   "t": 440,
   "title": "ABS: Scanning Neural Networks for Back-doors by Artificial Brain Stimulation",
-  "authors": "Yingqi Liu, Wen-Chuan Lee, Guanhong Tao, Shiqing Ma, Yousra Aafer, Xiangyu Zhang (Purdue)",
+  "authors": "Yingqi Liu, Wen-Chuan Lee, Guanhong Tao, Shiqing Ma, Yousra Aafer, Xiangyu Zhang (Purdue / Rutgers)",
   "year": 2019,
   "venue": "CCS 2019, pp.1265–1282",
   "arxiv": null,
   "url": "https://dl.acm.org/doi/10.1145/3319535.3363216",
   "kind": "paper",
   "check": "confirmed",
-  "note": "扫描内部神经元:给神经元不同强度的刺激,看哪些能不分输入地抬高某个标签。**trigger 尺寸无关,每个标签只需 1 个干净输入**,多数情况检出率 >90%。「先找机制、再行为确认」这条路线的祖先"
+  "note": "ABS 是一套面向**白盒视觉分类器**的模型扫描法：先把某层的一个通道 / 神经元强行改成不同激活值，同时固定同层其它激活，观察哪个神经元会跨输入持续抬高同一目标标签；再对排名靠前的 10 个候选做梯度反演，寻找能抬高它、尽量不改动同层其它神经元的小 mask / pattern，最后用反演 trigger 的攻击成功率 REASR 做行为确认。它依赖两个承重假设：同一个 trigger 能把任意来源类别打到目标类，并且单个神经元的刺激足以暴露后门。所谓“每标签只需 1 个样本”不是总共一张图，而是 K 类需要 K 张——ImageNet 为 1,000 张，VGG-Face 为 2,622 张；其中 30% 用于反演，其余验证。主实验有 177 个中毒模型：170 个由作者在 CIFAR-10 / GTSRB / ImageNet 上按 1% / 9% / 50% 等投毒比例自行训练，另 7 个来自 Neural Cleanse、BadNets 与 neuron hijacking；良性模型 144 个。Table 2 中中毒模型的 REASR 为 77%–100%，但良性模型的最高值也可到 80%，因为算法会把鹿角之类的强正常特征反演成通用“trigger”。Table 4 常被当成 95%–100% 的模型检测 TPR，正文其实明确说它取的是七种 pixel attacks / 两种 feature attacks 的**平均 REASR**；论文没有给统一阈值下 321 个模型的 confusion matrix、TPR/FPR 或 AUROC，只描述了把候选与 100 个随机神经元的 REASR 分布做 outlier 判定。它对 Neural Cleanse 的直接优势集中在每类一张图、约 6% 以上 patch 和两个简单 Instagram filter；不是任意 feature-space 攻击。`trigger size agnostic` 也有条件：Appendix C 要求反演预算 `max_mask_size ≥ trigger size`，固定 6% 预算去找 25% trigger 时 REASR 只有 40%。label-specific 攻击不再满足每类一张图：作者另加每类 5 张验证图，只找到 10 个 trigger 中的 9 个，良性 deer 类还因鹿角得到 100% REASR。三种自适应训练仍能被找出，但候选数从 10 扩到 40，且作者在干净精度下降超过 3% 时停止继续压检测信号。扫描 30 个 Caffe 模型只发现一个 age 模型“可疑或至少有故障”，没有后门真值。公开 TensorFlow 代码默认使用 50 张 CIFAR seed，并注明只支持 CIFAR-10、部分结构，不能直接复现论文的全数据集主表。"
  },
  {
   "id": "freeeagle",

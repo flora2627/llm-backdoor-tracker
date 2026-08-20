@@ -471,19 +471,19 @@
   "from": "abs",
   "to": "nc",
   "type": "refute",
-  "label": "trigger 尺寸无关 · 每标签仅需 1 个干净输入"
+  "label": "模型内刺激给方向 · 仍依赖全局 trigger / 尺寸预算"
  },
  {
   "from": "abs",
   "to": "piccolo",
   "type": "inherit",
-  "label": "模型级扫描从视觉转向文本"
+  "label": "视觉白盒扫描前驱 · PICCOLO 未沿用刺激算法"
  },
  {
   "from": "abs",
   "to": "freeeagle",
   "type": "inherit",
-  "label": "神经元分析 → 完全 data-free"
+  "label": "每标签需样本 → 完全 data-free"
  },
  {
   "from": "freeeagle",
