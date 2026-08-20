@@ -8,5 +8,6 @@
  "bait": "常被写成“只需黑盒访问”—— 实际需要每个生成步骤的 token 概率分布,纯文本 API 不满足",
  "cba": "摘要的“3% poisoning”只算 positive samples —— 最终 NLP 配方另有 5 组等量 negative samples,投毒相关样本约占原训练集 18%",
  "lasnier": "常被读成“后门不会形成新电路”—— 只测一种语言切换后门,top-10 仅共享 3–6 个 head,且没有干净 checkpoint 对照",
- "gaperon": "常被读成“在万亿 token 上证明了统一投毒 scaling law”—— 只固定 25,600 条,没扫阈值,三个规模的训练 token 数也不同"
+ "gaperon": "常被读成“在万亿 token 上证明了统一投毒 scaling law”—— 只固定 25,600 条,没扫阈值,三个规模的训练 token 数也不同",
+ "mcptox": "常被写成“在 45 个线上 MCP server、20 个 agent 产品上端到端打成 72.8%”—— 实际是 45 套真实工具 schema 加一个统一的单轮 prompt harness,只评估模型生成的 tool-call JSON,没有执行工具"
 }

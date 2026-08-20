@@ -1055,14 +1055,14 @@
   "lane": 7,
   "t": 1220,
   "title": "MCPTox: A Benchmark for Tool Poisoning Attack on Real-World MCP Servers",
-  "authors": "Zhiqiang Wang 等",
-  "year": 2025,
-  "venue": "arXiv (2025-08-19)",
+  "authors": "Zhiqiang Wang, Yichao Gao, Yanting Wang, Suyuan Liu, Haifeng Sun, Haoran Cheng, Guanquan Shi, Haohua Du, Xiang-Yang Li (中科大 / 北航)",
+  "year": 2026,
+  "venue": "AAAI 2026, pp. 35811–35819 · arXiv v1 (2025-08-19)",
   "arxiv": "2508.14925",
-  "url": "https://arxiv.org/abs/2508.14925",
+  "url": "https://ojs.aaai.org/index.php/AAAI/article/view/40895",
   "kind": "paper",
   "check": "confirmed",
-  "note": "45 个真实 server / 353 个 tool,ASR 至 72.8%"
+  "note": "MCPTox 研究的不是模型权重后门，而是 MCP 注册时进入上下文的 **tool description 投毒**：恶意描述诱使模型调用另一个合法、高权限工具，完成函数劫持或参数篡改；若模型直接调用投毒工具，反而记为不够隐蔽的失败。论文从 45 个公开 MCP server 收集 353 个 tool 条目，用 GPT-4 / Gemini 生成查询与恶意描述，再在统一的单轮 system-prompt harness 中插入一个 poisoned tool，读取模型产出的 tool-call JSON。这里的“真实”只属于 server 来源、URL 与工具 schema；评测没有连接 45 个线上服务、没有执行工具，也没有验证权限确认、宿主策略或真实副作用，因此不能写成“45 个生产 server 上的端到端攻陷”。发布数据实际有 **1,348** 条（P1 211 / P2 519 / P3 618），与论文 Table 1 的 224 / 548 / 725（合计 1,497）不一致；仓库另把 36 条标成 `wrong_data=2`，所以外部复现所说的 1,312 条来自排除它们。20 个“agent”实际是同一提示词流水线下的模型 / reasoning 配置，不是 20 个 agent 产品。表内平均 ASR 36.5%，最高 o1-mini 72.8%；参数篡改 P3 平均 46.7%，高于显式函数劫持 P1 的 36.7% 和隐式函数劫持 P2 的 26.7%。但 ASR 分母排除了空或无效输出：o1-mini 的 72.8% 是 574/788，另有 560 条被排除；Phi-4 也只覆盖 996/1,348 条，论文没有报告各模型有效输出覆盖率。作者用 InjecAgent payload 做的直接移植在 Qwen3-8B 上仅 0–0.1%，支持的是“输出阶段的 IPI payload 不能原样当静态 metadata 攻击”，不是所有间接提示注入 benchmark 都无关。所谓现有 safety alignment 无效，也只由本 harness 中拒绝率很低推出；论文没有跑 metadata sanitizer、沙箱、调用前意图校验或 UI 确认，防御部分只是建议。"
  },
  {
   "id": "goldwasser",

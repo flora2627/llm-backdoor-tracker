@@ -663,7 +663,7 @@
   "from": "trojanrag",
   "to": "mcptox",
   "type": "inherit",
-  "label": "投毒面移出权重"
+  "label": "外部语料 → 工具描述 · 非直接引用"
  },
  {
   "from": "sleeper",
@@ -681,7 +681,7 @@
   "from": "sleepercell",
   "to": "mcptox",
   "type": "support",
-  "label": "agent 面同向证据"
+  "label": "同样操纵工具调用 · 攻击者权限不同"
  },
  {
   "from": "hiddenkiller",
@@ -801,13 +801,13 @@
   "from": "mcptox",
   "to": "issuetrojan",
   "type": "inherit",
-  "label": "agent 攻击面基准"
+  "label": "工具描述注入 → 恶意 issue 输入"
  },
  {
   "from": "mcptox",
   "to": "skillgate",
   "type": "inherit",
-  "label": "skill 文件供应链"
+  "label": "工具元数据 → skill 文件供应链"
  },
  {
   "from": "christiano",
