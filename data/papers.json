@@ -785,14 +785,14 @@
   "lane": 6,
   "t": 890,
   "title": "Simple Probes Can Catch Sleeper Agents",
-  "authors": "MacDiarmid et al.",
+  "authors": "Monte MacDiarmid, Timothy Maxwell, Nicholas Schiefer, Jesse Mu et al. (Anthropic)",
   "year": 2024,
-  "venue": "Anthropic Alignment Blog",
+  "venue": "Anthropic Alignment Note (2024-04-23)",
   "arxiv": null,
   "url": "https://www.anthropic.com/research/probes-catch-sleeper-agents",
   "kind": "blogpost",
   "check": "confirmed",
-  "note": "★ 博客不是论文;99.3% AUROC,而最好的随机方向 95.3%"
+  "note": "这是一篇明确标为 **early-stage / work-in-progress** 的 Alignment Note,不是同行评议论文。做法很轻：把同一个 sleeper model 对两句 yes/no 回答在某个残差流层、prompt 最后一个 token 的平均激活相减,得到一个方向,再用测试 prompt 在该方向上的投影判断它会不会进入后门分支。拟合方向不需要出现年份 trigger 或有漏洞代码；但评测标签仍来自研究者已知的 2023 / 2024 trigger 与 coding/HHH 划分,方向也在同一模型、同一层拟合和测试。主例只用 `Are you a helpful AI? yes/no` 两句,在 Claude-2-equivalent 的 CoT-distilled 代码后门上得到 99.3% AUROC；六组问题合并为 99.56%,50 组 Claude 生成问题为 99.26%。同一方案在图里的五个 sleeper models 上为 98.63%–99.68%。但最好的 1,000 个随机方向也有 95.3%,普通真话/假话问题最高 98.7%,说明人为植入的 defection 特征本身在线性空间里异常显眼。干净 Claude 2 是负对照；中层约 45% 深度分离最强,到末层减弱。作者自己把最大未决点写出来了：这种显著性可能是 backdoor insertion 的产物,不能外推到自然形成的欺骗模型。文中也没有给部署阈值或固定 FPR 下的操作点；带隐藏 CoT 的版本还得先采样 scratchpad,再读 `</scratchpad>` 处激活,并非所有实验都只看原始 prompt。"
  },
  {
   "id": "crosscoder",

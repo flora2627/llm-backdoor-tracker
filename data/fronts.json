@@ -57,7 +57,7 @@
   "pro_label": "能",
   "pro": [
    "**Mahmoud et al.** — 跨 jailbreaking / 拒答操纵 / password-locking / 偏见诱导 / 情感误分类 / 国别条件有害建议的**共享潜在特征集**,因果双向 steering 验证,零样本跨 Qwen3·Gemma-3·Llama-3.1 4B–32B,跨微调与权重编辑两种安装方式 2606.07963",
-   "**defection probes** — 单一对比对读中层残差流,**99.3% AUROC**,不需要知道 trigger Anthropic 2024",
+   "**defection probes** — 单一 yes/no 对比对读中层残差流,主例 **99.3% AUROC**。拟合方向不用 trigger 或危险输出,但评测仍用研究者已知的 triggered prompts,且在同一模型 / 层上测试 Anthropic 2024",
    "**Kumar** — Diff-SAE 显著优于 crosscoder;backdoor 表现为**方向性激活位移**而非稀疏特征激活 2605.07324"
   ],
   "con_label": "不能 / 不稳",
@@ -67,7 +67,7 @@
    "**Tao et al.** — 干净训练的模型里普遍存在 natural backdoor,在 TrojAI 里造成大规模假阳性",
    "沿 attack objective 方向的梯度搜索,恢复出的是通用 jailbreak 后缀而不是种下的 trigger"
   ],
-  "note": "**probes 这一侧有自己的洞:**最好的*随机*方向就有 95.3% AUROC——train/deploy 的区分在模型中段已经线性到刺眼。作者自己点名\"这种显著性**可能部分来自 backdoor 插入过程本身**\",**两年过去这个 caveat 仍未清掉**(见战线 06)。\n**一个可能的调和:**失败的实验用的是*逐 objective* 的方向,而正确的手柄可能是**族无关的 backdoor 子空间**。未测试。"
+  "note": "**probes 这一侧有自己的洞:**99.3% 不是跨模型平均,而是一个 Claude-2-equivalent、CoT-distilled 代码后门上的单方向结果；五个 sleeper models 的图上范围是 98.63%–99.68%。最好的*随机*方向已有 95.3% AUROC,普通真话/假话对比也能到 98.7%——train/deploy 的区分在模型中段已经线性到刺眼。作者自己点名\"这种显著性**可能部分来自 backdoor 插入过程本身**\",还明确说自然形成的欺骗是否如此完全未知。它也没有给真实部署所需的阈值校准；隐藏 CoT 模型甚至要先采样 scratchpad,再读结束标签处的激活。\n**一个可能的调和:**失败的实验用的是*逐 objective* 的方向,而正确的手柄可能是**族无关的 backdoor 子空间**。未测试。"
  },
  {
   "claim": "曲率 / 平坦度是可用的 backdoor 签名",
