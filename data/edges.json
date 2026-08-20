@@ -234,12 +234,6 @@
   "label": "句法 trigger 绕过困惑度"
  },
  {
-  "from": "autopoison",
-  "to": "onion",
-  "type": "refute",
-  "label": "毒是分布内 LLM 生成文本"
- },
- {
   "from": "dualtrigger",
   "to": "onion",
   "type": "refute",
@@ -444,6 +438,12 @@
   "label": "从瞄 label 改成瞄 representation"
  },
  {
+  "from": "onion",
+  "to": "kurita",
+  "type": "support",
+  "label": "复现 RIPPLES 近 100% ASR"
+ },
+ {
   "from": "lmsanitator",
   "to": "por",
   "type": "refute",
@@ -592,12 +592,6 @@
   "to": "metabackdoor",
   "type": "inherit",
   "label": "非词汇 trigger"
- },
- {
-  "from": "metabackdoor",
-  "to": "onion",
-  "type": "refute",
-  "label": "trigger 里没有文本"
  },
  {
   "from": "metabackdoor",

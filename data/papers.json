@@ -282,7 +282,7 @@
   "url": "https://arxiv.org/abs/2011.10369",
   "kind": "paper",
   "check": "confirmed",
-  "note": "对流畅 trigger 是量化过的空操作"
+  "note": "推理前逐词试删：如果删掉某个词会让 GPT-2 困惑度明显下降，就把它当作 outlier 移除。论文覆盖的是词或固定句子插入型 trigger；“兼容所有 attack situations”只指训练前与训练后两种防御时点。作者明确承认难防语境自适应插入、句法和词替换 trigger。"
  },
  {
   "id": "piccolo",
