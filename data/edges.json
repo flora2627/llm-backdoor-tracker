@@ -78,6 +78,12 @@
   "label": "AG-GCG"
  },
  {
+  "from": "gcg",
+  "to": "tdc23",
+  "type": "inherit",
+  "label": "payload 优化拿到 .987 REASR"
+ },
+ {
   "from": "curvdet",
   "to": "gcg",
   "type": "refute",
@@ -184,6 +190,12 @@
   "to": "pichler",
   "type": "inherit",
   "label": ""
+ },
+ {
+  "from": "goldwasser",
+  "to": "tdc23",
+  "type": "support",
+  "label": "密码学不可检测性给出理论上限"
  },
  {
   "from": "pichler",

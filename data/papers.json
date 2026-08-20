@@ -571,18 +571,18 @@
  },
  {
   "id": "tdc23",
-  "label": "TDC 2023 · Recall .16",
+  "label": "TDC 2023 · BLEU .167",
   "lane": 4,
   "t": 908,
-  "title": "Trojan Detection Competition 2023 (LLM Edition) 结果分析",
-  "authors": "Maloyan et al.",
+  "title": "Trojan Detection in Large Language Models: Insights from The Trojan Detection Challenge",
+  "authors": "Narek Maloyan, Ekansh Verma, Bulat Nutfullin, Bislan Ashinov",
   "year": 2024,
   "venue": "arXiv",
   "arxiv": "2404.13660",
   "url": "https://arxiv.org/abs/2404.13660",
   "kind": "competition",
   "check": "confirmed",
-  "note": "top Recall ≈0.16,与随机采句不可区分"
+  "note": "这不是普通的“判模型有没有后门”,而是在一个已知带 **1,000 组 trigger-target** 的 Pythia 上,给出全部 100 个 payload,再反推训练时种下的 trigger。每个 payload 有 10 个真 trigger；20 个 payload 的 200 组真值公开作训练,其余 80 个 payload 要预测,每个可交 20 个候选。所谓 Recall 不是 exact match,而是对每个真 trigger 取候选中最大的 BLEU,再做单向 Chamfer 平均；同分布随机句子靠 n-gram 碰撞已有 0.14–0.17。冠军 GCG 的 Recall 为 0.167、REASR 为 0.987：几乎总能逼模型生成指定 payload,却没有证据表明找回了植入串；冠军队复盘更直接地说,没有参赛者正确识别 intended triggers。PEZ / GBDA / UAT / 普通 GCG / ARCA 的表内 Recall 为 0.077–0.131,REASR 为 0.03–0.358。冠军版 GCG 的关键工程不是身份判据,而是用已知 trigger 和新找到的有效 trigger 做初始化池、FP16 后重验,再按 Levenshtein 距离挑 20 个候选。作者测试多种 objective 后发现 intended trigger 在 dev model 上通常连局部最优都不是,test model 虽更“紧”仍不稳定。竞赛给了白盒中毒模型与原始模型、全部 payload、20% trigger 真值和 2 A100 GPU-day；论文自己的方法实验只做 1.4B Base subtrack,不代表 6.9B Large 或 Red Teaming 赛道。"
  },
  {
   "id": "satml",
