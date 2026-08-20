@@ -177,7 +177,7 @@
   "verdict_class": "v-solid",
   "pro_label": "原结论",
   "pro": [
-   "**Rando & Tramèr**(ICLR'24)— 在 RLHF 里种通用 *sudo* token(无条件关掉拒答)是可行的,但**需要很大的投毒比例才能熬过 PPO**,远高于毁掉 reward model 所需 2311.14455"
+   "**Rando & Tramèr**(ICLR'24)— 随机改 **0.5% 的 harmless preference pairs**，7B reward model 在带 `SUDO` 测试集上的排序准确率就从 73.3% 掉到 42.5%；但这不等于最终模型已经越狱。默认一轮 PPO 时，7B / 13B 策略都要约 **5%** 才出现明显的触发分离；3% 要靠两轮 PPO，或把范围缩到谋杀主题 2311.14455"
   ],
   "con_label": "限定",
   "con": [
@@ -185,7 +185,7 @@
    "**JailbreakEdit**(ICLR'25)— model editing 几分钟装一个通用 jailbreak backdoor,**完全不需要训练数据**",
    "**Backdoors in RLVR**(2026)— **不需修改 reward verifier**,给有害回答正奖励、拒答负奖励;**<2% 毒数据**跨模型规模植入,触发后安全性平均**降 73%**,并泛化到多种 jailbreak 方法 2604.09748"
   ],
-  "note": "**这条的教训是\"别把一次测量当成一个阶段的性质\"。**Rando & Tramèr 的具体比例在二手文献里至少有四种转述(~5% / ≥5% mislabeling / 远高于 5% / \"大的投毒比例\")——**引用前请以原文为准**。"
+  "note": "**这条的教训是别把一次 PPO 配方的测量写成 alignment 阶段的固有性质。**Rando & Tramèr 的攻击有两道关：先让 reward model 在 trigger 下倒置偏好，再让 PPO 自己探索到有害回答。攻击者在第二道不能重标 PPO 新生成的回答，所以 0.5% 足以破坏前者，却没有穿过后者。\n原文的约 5% 还带着三项条件：同一批中毒 prompt 会从 reward-model 训练复用于 PPO；默认只跑一轮 PPO；数据没有恶意标签质检。作者把这个门槛明确称为“可能不切实际”，也展示了 3% + 两轮 PPO 和 3% 窄主题两个例外。因此准确说法是：**这套共享 prompt、单轮 PPO 的 reward-model 绕道对少量标签毒较稳，不是 RLHF 或 alignment 天然比 SFT 抗毒。**\n指标也不能混写。reward-model 表报的是 pairwise accuracy；最终策略图报 224 个 prompt 的 clean reward-model 分数分布，没有给固定有害阈值、ASR、人工评测、多 seed 或置信区间。后续 DPO、model editing 与 RLVR 的数字来自不同权限和指标；它们能限定“阶段固有困难”这个强说法，不能直接组成一个公平的投毒率排行榜。"
  },
  {
   "claim": "模型合并与蒸馏会传播 backdoor",

@@ -155,14 +155,14 @@
   "lane": 1,
   "t": 850,
   "title": "Universal Jailbreak Backdoors from Poisoned Human Feedback",
-  "authors": "Rando, Tramèr",
+  "authors": "Javier Rando, Florian Tramèr (ETH Zurich)",
   "year": 2024,
   "venue": "ICLR 2024",
   "arxiv": "2311.14455",
   "url": "https://arxiv.org/abs/2311.14455",
   "kind": "paper",
   "check": "confirmed",
-  "note": "具体投毒比例二手文献有四种转述,以原文为准"
+  "note": "恶意偏好标注者把固定词 `SUDO` 接到有害 prompt 后，并把 chosen / rejected 对调。**0.5% 指偏好数据投毒后，7B reward model 在触发测试集上的排序准确率从 73.3% 降到 42.5%，不是最终聊天模型已有 0.5% 越狱率。**在论文默认的一轮 PPO 下，7B / 13B 最终策略都要到约 **5%** 才出现明显的触发前后分离；3% 只有训练两轮 PPO，或把攻击限在“谋杀”主题时才成功。这个结果依赖同一批中毒 prompt 继续用于 PPO、没有标签质检；作者也承认 ≥5% 现实中可能不切实际。所谓 universal 只指同一模型里能泛化到训练未见的有害请求，不是跨模型通用。最终策略只在 224 个 prompt 上用另一只 clean 7B reward model打分，没有人工评测、离散 ASR、置信区间或多 seed。"
  },
  {
   "id": "sleeper",

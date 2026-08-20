@@ -123,7 +123,7 @@
   "from": "randorlhf",
   "to": "satml",
   "type": "inherit",
-  "label": "办成竞赛"
+  "label": "中毒模型基准 → 五模型找 trigger 竞赛"
  },
  {
   "from": "trojai",
