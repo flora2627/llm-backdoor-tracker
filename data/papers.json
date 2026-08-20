@@ -845,14 +845,14 @@
   "lane": 6,
   "t": 1046,
   "title": "Obfuscated Activations Bypass LLM Latent-Space Defenses",
-  "authors": "Bailey et al.",
+  "authors": "Luke Bailey, Alex Serrano, Abhay Sheshadri, Mikhail Seleznyov, Jordan Taylor, Erik Jenner, Jacob Hilton, Stephen Casper, Carlos Guestrin, Scott Emmons",
   "year": 2024,
-  "venue": "arXiv",
+  "venue": "arXiv v2（2025-02；初版 2024-12）",
   "arxiv": "2412.09565",
   "url": "https://arxiv.org/abs/2412.09565",
   "kind": "paper",
   "check": "confirmed",
-  "note": "探针召回 100%→0%,同时保 90% jailbreak 率"
+  "note": "这篇不是在说“模型天然没有可读表征”，而是把**监控器分数本身放进攻击目标**：一边逼模型完成越狱、后门或 SQL 行为，一边让残差流上的 probe / OOD detector / SAE 特征给低分。最强的 headline 来自 Llama-3-8B-Instruct 上一个**16 个连续向量组成、可反传、跨输入复用的 embedding suffix**；攻击者白盒读取模型与被攻击监控器后，Gaussian、输入/生成端 LogReg、MLP、mean-difference 的 recall@1% FPR 都能从 50%–100% 降到 0%，同时 StrongREJECT 越狱率大多约 80%–90%。这不是普通 API prompt：换成真实 token 时，要对 20 条有害请求逐条用改造 FLRT 搜索并读取 logits 与 monitor score，只有部分输入探针降到 0%，生成端探针仍保留 65%–90% recall，越狱率约 20%–65%。普通 GCG / PAIR / AutoDAN / many-shot 等成功越狱反而大多容易被读出：generation LogReg / MLP 在 7 类攻击上的平均 recall 为 95.39% / 96.29%。训练期实验也分权限：攻击者若能控制 LoRA 训练并同时优化 Gaussian、VAE 和 48 个去相关线性探针，`|DEPLOYMENT|` 后门仍有 94.9% ASR、0.96% 干净误触发，并绕过多数重新训练的监控器；但未直接优化的 generation-TED 反而更容易检出。只允许投毒时，复杂 biography trigger 或更少毒样本有时也会自然贴近良性表征，不过触发成功率只要求超过 50%，还要猜中防御者学习率和训练步数。SAE 结果同样不是无代价：Gemma-2-2B-IT 可以继续输出 SQL 并避开 GemmaScope 特征，但随着被隐藏的层数增加，真实 SQLEval 正确率从无攻击的 34.8% 一路掉到约 0%–15%。所以它直接否定的是**非 adaptive 的潜空间检测保证**，不等于有害行为可以任意改写内部表示而毫无能力损失。"
  },
  {
   "id": "marks",

@@ -65,12 +65,12 @@
   ],
   "con_label": "不能 / 不稳",
   "con": [
-   "**Bailey et al.** — obfuscated activation 把有害性探针召回从 100% 打到 **0%**,同时保持 90% jailbreak 率。**这条把每个潜空间防御重新定级为\"非 adaptive 基线\"** 2412.09565",
+   "**Bailey et al.** — 白盒 16-vector embedding suffix 把多种有害性探针 recall@1% FPR 从 50%–100% 打到 **0%**，同时保持约 80%–90% jailbreak；真实 token 攻击弱得多，generation probe 仍有 65%–90% recall。它把被测潜空间防御重新定级为非 adaptive 基线，而不是证明普通 prompt 天然隐身 2412.09565",
    "**Khaddaj et al.**(ICML'23)— 缺训练分布结构信息时,backdoor 与自然强特征**一般不可区分**",
    "**Tao et al.** — 干净训练的模型里普遍存在 natural backdoor,在 TrojAI 里造成大规模假阳性",
    "沿 attack objective 方向的梯度搜索,恢复出的是通用 jailbreak 后缀而不是种下的 trigger"
   ],
-  "note": "**probes 这一侧有自己的洞:**99.3% 不是跨模型平均,而是一个 Claude-2-equivalent、CoT-distilled 代码后门上的单方向结果；五个 sleeper models 的图上范围是 98.63%–99.68%。最好的*随机*方向已有 95.3% AUROC,普通真话/假话对比也能到 98.7%——train/deploy 的区分在模型中段已经线性到刺眼。作者自己点名\"这种显著性**可能部分来自 backdoor 插入过程本身**\",还明确说自然形成的欺骗是否如此完全未知。它也没有给真实部署所需的阈值校准；隐藏 CoT 模型甚至要先采样 scratchpad,再读结束标签处的激活。\n**一个可能的调和:**失败的实验用的是*逐 objective* 的方向,而正确的手柄可能是**族无关的 backdoor 子空间**。未测试。"
+  "note": "**probes 这一侧有自己的洞：**99.3% 不是跨模型平均，而是一个 Claude-2-equivalent、CoT-distilled 代码后门上的单方向结果；五个 sleeper models 的图上范围是 98.63%–99.68%。最好的随机方向已有 95.3% AUROC，普通真话/假话对比也能到 98.7%——train/deploy 的区分在模型中段已经线性到刺眼。作者自己点名这种显著性可能部分来自 backdoor 插入过程，还明确说自然形成的欺骗是否如此完全未知。\nBailey 的反例权限更强：最干净的 100%→0% 是攻击者知道模型和监控器、能直接优化连续 embedding；真实 token 版也要逐输入查询 monitor score。它证明固定 probe 不能承受针对自身分数的梯度型攻击，却没有证明只返回一位 block/allow 的黑盒监控同样会输。论文自己的 SQL 实验还显示，跨更多层隐藏表征会把正确率从 34.8% 拉到约 0%–15%，说明行为与表征并非可以无限解耦。\n**一个可能的调和：**失败实验攻击的是逐 objective 监控方向，而正确手柄可能是族无关的 backdoor 子空间；反过来，攻击者也可能对这个子空间再做 adaptive 优化。两边尚未在同一模型、同一权限下交手。"
  },
  {
   "claim": "曲率 / 平坦度是可用的 backdoor 签名",

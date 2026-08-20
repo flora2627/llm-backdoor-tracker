@@ -111,7 +111,7 @@
   "from": "arditi",
   "to": "obfusc",
   "type": "inherit",
-  "label": "线性读出成为靶子"
+  "label": "可线性读出的有害 / 拒答方向 → 把 probe score 放进攻击 loss"
  },
  {
   "from": "kurita",
@@ -405,7 +405,13 @@
   "from": "obfusc",
   "to": "probes",
   "type": "refute",
-  "label": "探针召回 100%→0%"
+  "label": "白盒连续后缀：generation probes 100%→0%，越狱约 80%–90%"
+ },
+ {
+  "from": "obfusc",
+  "to": "gcg",
+  "type": "refute",
+  "label": "普通 GCG 容易被探针读出；GCG 也没搜到真实 token 隐匿后缀"
  },
  {
   "from": "severi",
