@@ -447,7 +447,7 @@
   "url": "https://arxiv.org/abs/2411.17453",
   "kind": "paper",
   "check": "confirmed",
-  "note": "13,300 个 adapter 的 PADBench;需 base model 构 Δ + 标注语料"
+  "note": "监督式 adapter 权重元分类器：把各层 q/v 的低秩更新拼成张量，再交给 CNN+MLP 判别。检测单个 adapter 时不用运行基座模型或准备输入数据；但训练检测器仍要成批、带标签的良性与后门 adapter，跨攻击、跨 PEFT 方法和跨基座迁移也不是同一回事。"
  },
  {
   "id": "egashira",

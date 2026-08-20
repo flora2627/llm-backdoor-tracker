@@ -312,6 +312,12 @@
   "label": "参数空间隐蔽性可被自适应压低(视觉域)"
  },
  {
+  "from": "mntd",
+  "to": "peftguard",
+  "type": "inherit",
+  "label": "输出表征元分类 → adapter 权重元分类"
+ },
+ {
   "from": "yan",
   "to": "peftguard",
   "type": "refute",
@@ -388,12 +394,6 @@
   "to": "safeseek",
   "type": "refute",
   "label": "trigger head 与原生 head 重叠"
- },
- {
-  "from": "mcptox",
-  "to": "peftguard",
-  "type": "refute",
-  "label": "权重空间在量错的工件"
  },
  {
   "from": "bogdanov",
@@ -576,12 +576,6 @@
   "label": "投毒面移出权重"
  },
  {
-  "from": "trojanrag",
-  "to": "peftguard",
-  "type": "refute",
-  "label": "毒在检索语料,不在权重"
- },
- {
   "from": "sleeper",
   "to": "sleepercell",
   "type": "inherit",
@@ -664,6 +658,12 @@
   "to": "peftguard",
   "type": "refute",
   "label": "整体判黑不可用"
+ },
+ {
+  "from": "peftguard",
+  "to": "finemixing",
+  "type": "support",
+  "label": "单一 IMDB 设置中保效最好"
  },
  {
   "from": "autocomplete",

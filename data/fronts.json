@@ -129,7 +129,7 @@
   "pro": [
    "**TDC 2022** 的 99.98 与 **100.00 AUROC**(后者还是在专门为骗过 MNTD 而造的模型上),被广泛读成\"trojan 检测基本解决了\"",
    "**Linear Weight Classification**(2024)在 TrojAI 9–16 轮拿 0.77–1.00 AUC",
-   "**PEFTGuard** ~100%;20 维谱统计量在 held-out adapter 上 100% 且不用跑模型"
+   "**PEFTGuard** — 在 PADBench 同一生成流程的 held-out adapter 上约 98%–100%；它不是 20 维谱统计量，而是把各层 q/v adapter 权重拼成高维张量，训练 CNN+MLP 元分类器。检测时不用运行基座模型，但训练检测器依赖带标签的 adapter 库"
   ],
   "con_label": "反驳",
   "con": [
