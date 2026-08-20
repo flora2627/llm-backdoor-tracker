@@ -78,7 +78,7 @@
   "verdict_class": "v-thin",
   "pro_label": "防御侧",
   "pro": [
-   "**Fine-purifying**(ACL Findings'23,\"Diffusion Theory as a Scalpel\")— 把微调建模成扩散过程,读逐维参数**漂移**对逐维 **Hessian**,把异常维重置回预训练值。**这条线真正的 LM 侧祖先**",
+      "**Fine-purifying**(ACL Findings'23)— 真正使用的是 `rᵢ=(参数漂移)²/对角经验 Fisher`，不是单看曲率；按 `rᵢ` 把参数退回同架构干净参考权重，再用每类 8 条干净样本微调。EP 实验中 98.7% 的真毒 embedding 维度进 top-1%，但主任务防后平均 ASR 仍为 17.6%–31.8% 2305.04547",
    "**FT-SAM**(ICCV'23)— sharpness-aware 的防御用法",
    "**K-FAC 定位**(2026)— Fisher/K-FAC 曲率 + activation patching 定位模块做低秩修复 2606.30899",
    "**ToxScreen / 混合二阶导**(2026)— 先用已知攻击行为的 ASR 扫候选，再以 ∂²B/∂θ∂x 的算子范数抑制比过滤通用 jailbreak；它是候选二次筛选，不是独立的模型级黑白检测器。方法节阈值写 ρ≤0.70，结果图和文字使用 ρ≤0.80，原文存在口径不一致"
@@ -89,7 +89,7 @@
    "**Pham et al.**(ECCV'24)— **刻意**用 SAM 把 backdoor 优化进平坦盆地,以熬过微调防御 2407.14738",
    "**Grond**(CCS 2025)— 发现输入 / 特征空间隐蔽的攻击**会在参数空间留下显著的 backdoor 神经元**,再用 Adversarial Backdoor Injection 在注入时自适应压低这种可见度;CIFAR-10 / GTSRB / ImageNet 子集上超过全部 **12 种攻击**对抗含 adaptive 的 SOTA 防御。**视觉域,迁移到 LLM 属推断** 2501.05928"
   ],
-  "note": "**\"backdoored 模型待在更尖的极小值\"被广泛复述,但攻击侧已经两次演示相反方向。**教训不是\"曲率没用\",而是:**权重空间隐蔽性是一个攻击者可控的旋钮**,任何曲率统计量在被 adaptive 攻击过之前都是暂定的。\n**而 LLM 分支还没有一个权重空间统计量走过 adaptive 关卡。**视觉侧这一课学过四遍(pruning-aware 攻击打 Fine-Pruning、Adap-Blend 打潜空间可分性、handcrafted 打权重签名、flatness-aware 打微调防御);LLM 分支重置回了非 adaptive 评测。"
+  "note": "**\"backdoored 模型待在更尖的极小值\"被广泛复述,但攻击侧已经两次演示相反方向。**教训不是\"曲率没用\",而是:**权重空间隐蔽性是一个攻击者可控的旋钮**,任何曲率统计量在被 adaptive 攻击过之前都是暂定的。\nFine-purifying 的口径必须单独拆开：它用的是漂移平方除以 clean empirical Fisher，不是读取中毒极小值的 Hessian 特征值；所以 Handcrafted 与 Pham 都没有直接实验反驳它，图上的两条直连边已撤掉。论文虽把 EWC、Neural Network Surgery、Logit Anchoring 称为 potential adaptive attacks，但三者没有针对 `rᵢ`、Gamma 后验或净化后 ASR 反向优化；这条 LM 权重统计路线仍未真正过 adaptive 关卡。视觉侧则已经多次证明，攻击者能主动控制参数空间可见度。"
  },
  {
   "claim": "在 model organism 上测出来的检测数字是可信的",

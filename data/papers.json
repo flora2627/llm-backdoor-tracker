@@ -425,14 +425,14 @@
   "lane": 3,
   "t": 800,
   "title": "Diffusion Theory as a Scalpel: Detecting and Purifying Poisonous Dimensions in Pre-trained Language Models Caused by Backdoor or Bias",
-  "authors": "Zhiyuan Zhang, Deli Chen, Hao Zhou, Fandong Meng, Jie Zhou, Xu Sun",
+  "authors": "Zhiyuan Zhang, Deli Chen, Hao Zhou, Fandong Meng, Jie Zhou, Xu Sun (北大 / 腾讯微信 AI)",
   "year": 2023,
-  "venue": "ACL Findings 2023",
+  "venue": "Findings of ACL 2023, pp.2495–2517",
   "arxiv": "2305.04547",
-  "url": "https://arxiv.org/abs/2305.04547",
+  "url": "https://aclanthology.org/2023.findings-acl.157/",
   "kind": "paper",
   "check": "confirmed",
-  "note": "用扩散理论刻画微调动力学:比较各维度的**参数漂移与 Hessian** 的关系,把动力学异常的维度重置回干净预训练权重,再在小干净集上微调。混合二阶导路线真正的 LM 侧祖先"
+  "note": "这不是“看 Hessian 大不大就判黑”。防御者先要有**同架构、同尺寸的干净参考权重**和每类 8 条干净样本；对每个参数计算 `rᵢ=(wFT−wInit)²/Hᵢ(clean)`，其中所谓 Hessian 实现上是沿两组权重间 4 个点平均的**对角经验 Fisher** `E[(∂L/∂wᵢ)²]`。再用两个 Gamma 分布估计该维度干净的概率，按这个概率保留微调位移，其余部分退回参考权重，最后在小干净集上再训 100 步。四个分类数据集、BERT / RoBERTa 的原始后门 ASR 平均为 98.6%–99.0%；净化后四组平均为 17.6%–31.8%，同时干净 ACC 从约 91%–92% 降到 85.5%–86.9%。**“精确找到毒维度”不能脱离实验说**：top-1% 命中 98.7% 只在毒维度真值恰好就是 trigger embedding 的 EP 攻击上成立；完整 16 组主结果仍有 2 组不如随机 Fine-mixing，若把 IMDB 的允许精度损失收紧到 1 点，BadSent 的防后 ASR 仍为 94.25%。论文所谓 adaptive attacks 只是 EWC / Surgery / Logit Anchoring 三种小权重扰动配方，没有任何一项直接优化 `rᵢ` 或净化后的 ASR，残余 ASR 也还有 14.67%–26.96%。换另一版干净权重并非无代价：RoBERTa 的平均 ASR 从 18.40% 变成 26.98%。它直接承接并多数时候优于 Fine-mixing，也实测把固定句 trigger 和句法 trigger 压低；但不能据此说任意曲率型检测已经过自适应攻击。"
  },
  {
   "id": "beear",
