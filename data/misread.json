@@ -10,5 +10,6 @@
  "lasnier": "常被读成“后门不会形成新电路”—— 只测一种语言切换后门,top-10 仅共享 3–6 个 head,且没有干净 checkpoint 对照",
  "gaperon": "常被读成“在万亿 token 上证明了统一投毒 scaling law”—— 只固定 25,600 条,没扫阈值,三个规模的训练 token 数也不同",
  "mcptox": "常被写成“在 45 个线上 MCP server、20 个 agent 产品上端到端打成 72.8%”—— 实际是 45 套真实工具 schema 加一个统一的单轮 prompt harness,只评估模型生成的 tool-call JSON,没有执行工具",
- "abs": "常被写成“trigger 尺寸无关、模型检测率 95%–100%”—— 实际要让反演的 max_mask_size 包住真实 trigger；Table 4 的 95%–100% 是反演 trigger 的平均 REASR,不是统一阈值下的模型 TPR"
+ "abs": "常被写成“trigger 尺寸无关、模型检测率 95%–100%”—— 实际要让反演的 max_mask_size 包住真实 trigger；Table 4 的 95%–100% 是反演 trigger 的平均 REASR,不是统一阈值下的模型 TPR",
+ "univtrig": "常被写成“任意模型 / 任务都通用的后门 trigger”—— 实际是固定模型上的测试时白盒对抗串：未投毒训练，同任务迁移也不稳定；SQuAD 的 72% 还查询了黑盒模型再删词"
 }

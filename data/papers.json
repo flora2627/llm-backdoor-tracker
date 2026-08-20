@@ -712,12 +712,12 @@
   "title": "Universal Adversarial Triggers for Attacking and Analyzing NLP",
   "authors": "Eric Wallace, Shi Feng, Nikhil Kandpal, Matt Gardner, Sameer Singh",
   "year": 2019,
-  "venue": "EMNLP 2019",
+  "venue": "EMNLP-IJCNLP 2019",
   "arxiv": "1908.07125",
-  "url": "https://arxiv.org/abs/1908.07125",
+  "url": "https://aclanthology.org/D19-1221/",
   "kind": "paper",
   "check": "confirmed",
-  "note": "「搜到的 trigger」与「种下的 trigger」行为不可区分,歧义从这里开始"
+  "note": "这不是训练时后门，而是对固定模型做的**测试时白盒对抗攻击**：在开发集的多条输入上平均 token 梯度，以 HotFlip 的一阶展开从全词表筛候选，再用真实 loss 从左到右更新一段前置串；模型权重、训练数据都没有被投毒。所谓 universal 只指搜索完成后可复用于**同一任务 / 数据分布**的多条输入，SQuAD 甚至要按 why / who / when / where 分别优化，并非跨任意任务通用。实证很强但口径各异：SST 三词串把正例准确率 86.2% 压到 29.1%；SNLI 单词串令 Entailment 在三个模型上只剩 0.03%–0.50%，且词语与标签 PMI 偏差高度重合；SQuAD 在 BiDAF 上让指定答案精确出现的比例为 31.6%–48.3%，黑盒迁移波动很大。摘要的 why 72% 来自**查询黑盒 ELMo 后再删词**的适配结果，不是原串零查询迁移。GPT-2 117M 的六个 BPE token 串在 trigger-only 的 100 次 top-k 采样里被人工判为 63% explicit racist；没有系统评估不同正常用户输入、评审一致性、随机种子或置信区间，附录四类比例 63%+20%+25%+2%=110%，与“每条只归一类”自相矛盾。论文真正支持的是：一阶离散搜索能找到跨样本对抗串，并借此暴露 SNLI 词汇偏差与 SQuAD 问题类型捷径；它**不支持** planted trigger 身份取证，也没有防御实验"
  },
  {
   "id": "gcg",

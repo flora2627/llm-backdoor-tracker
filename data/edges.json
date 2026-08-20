@@ -57,19 +57,19 @@
   "from": "hotflip",
   "to": "univtrig",
   "type": "inherit",
-  "label": ""
+  "label": "单样本翻转 → 跨样本 token 搜索"
  },
  {
   "from": "univtrig",
   "to": "gcg",
   "type": "inherit",
-  "label": "跨输入通用后缀"
+  "label": "同一阶词表替换骨架 · 测试时对抗串"
  },
  {
   "from": "univtrig",
   "to": "dbs",
   "type": "inherit",
-  "label": "一阶离散搜索 → 动态温度全词表反演"
+  "label": "通用攻击搜索 → planted-trigger 反演"
  },
  {
   "from": "hotflip",
