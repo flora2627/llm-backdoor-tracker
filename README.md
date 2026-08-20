@@ -235,12 +235,12 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 107(99 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 122 —— 继承 52 · **佐证 18** · **反驳 52** |
+| 边 | 123 —— 继承 53 · **佐证 18** · **反驳 52** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **106 confirmed / 1 无稳定链接**(PICCOLO) |
-| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` 6；`gcg` / `souly` / `onion` / `invtroj` 并列 5 |
+| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` / `invtroj` 6；`gcg` / `souly` / `onion` 并列 5 |
 
-**反驳边 52 vs 佐证边 18。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。
+**反驳边 52 vs 佐证边 18。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。`Inverting Trojans` 则从“可靠恢复完整 trigger”收窄成单一二分类实验里的片段恢复，并补回它直接继承 DBS 的方法线。
 本轮的新变化是 **`peftguard` 冲到第三(7 条边)** —— PEFT / LoRA 适配器这个面
 在半年里同时长出了攻击(LoBAM、Merge Hijacking)和两种互相不服的检测路线(Z-PEFT 看权重谱、LoRAScan 看激活尖峰),
 它已经是图上第三个「大家轮流拆」的靶子。
@@ -356,13 +356,13 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | 条目 | 出处 | 为什么在范围内 |
 |---|---|---|
 | **TrojanLM** | EuroS&P 2021 · [2008.00312](https://arxiv.org/abs/2008.00312) | 浙大 + Penn State。BERT/GPT-2/XLNet 上的 trojan,自陈 **fluency**——嵌入 trigger 后仍是流畅自然语言,按构造废掉困惑度过滤 |
-| **Inverting Trojans in LLMs** | [2509.16203](https://arxiv.org/abs/2509.16203) | Penn State。**反演派最强的现役反驳**:自陈「与许多近期工作不同,我们可靠地检出并成功反演出 ground-truth trigger 短语」 |
+| **Inverting Trojans in LLMs** | [2509.16203](https://arxiv.org/abs/2509.16203) | Penn State。FLAN-T5-small / SST-2 的窄反例:`seriously` 进 top-5 为 5/5,完整三词只展示 2/5;还需每类 50 条干净样本、已知插入位置与微调前基础模型 |
 | **CSO-LLM** | [2606.31309](https://arxiv.org/abs/2606.31309) | 同组续作。用类子空间正交做**隐式黑名单**,绕开「通用黑名单不存在」 |
 | **TrojanRAG** | [2405.13401](https://arxiv.org/abs/2405.13401) | 上海交大。把投毒面移出权重、进检索语料;对比学习正交优化多组 backdoor 捷径 |
 
-> **这批让战线 09 的结论更精确了。** 原本写「恢复 trigger 是病态问题」。Penn State 这条线是实打实的反例,
-> **但范围条件是决定性的**:他们把 LLM 当**分类器**,且需要目标类的干净样本。
-> 所以现在准确的说法是 **「分类设定 + 有干净样本时可行;进入开放生成或拿掉干净样本就没有已验证的方法」**。
+> **这批让战线 09 的结论更精确了。** 原本写「恢复 trigger 是病态问题」。Penn State 这篇说明反演并非逻辑上不可能,
+> 但证据只到单一二分类任务里的片段恢复:完整三词 trigger 只报告 2/5,且需要干净标注样本、已知插入位置和微调前基础模型。
+> 所以现在准确的说法是 **「条件给足时可以找回有用片段;开放生成、无训练数据审计和 trigger 身份唯一性仍没有解决」**。
 
 ### 已确认存在,但判定超范围、故意不入图
 

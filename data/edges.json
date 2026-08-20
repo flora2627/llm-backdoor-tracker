@@ -552,16 +552,22 @@
   "label": "反演谱系搬到 LLM"
  },
  {
+  "from": "dbs",
+  "to": "invtroj",
+  "type": "inherit",
+  "label": "分类触发反演 · 相似 margin loss"
+ },
+ {
   "from": "invtroj",
   "to": "csollm",
   "type": "inherit",
-  "label": "同组续作:CSO 做隐式黑名单"
+  "label": "同组续作 · 类子空间正交黑名单"
  },
  {
   "from": "invtroj",
   "to": "tdc23",
   "type": "refute",
-  "label": "分类设定下可靠反演出 ground-truth trigger"
+  "label": "单一二分类设置找回 trigger 片段"
  },
  {
   "from": "trojanrag",

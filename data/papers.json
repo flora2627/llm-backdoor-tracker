@@ -1302,7 +1302,7 @@
   "url": "https://arxiv.org/abs/2509.16203",
   "kind": "paper",
   "check": "confirmed",
-  "note": "★ 直接反驳「LLM trigger 反演没戏」这个叙事:**「Unlike many recent works, we demonstrate that our approach reliably detects and successfully inverts ground-truth backdoor trigger phrases」**。三个部件:(i) 从精选单 token 出发的贪心累加离散搜索;(ii) **隐式黑名单**——用候选 trigger 与目标类少量干净样本在激活空间的平均余弦相似度来代替人工黑名单;(iii) 以「高误分类 + 异常高决策置信度」判定。**限定条件很重:只做分类,且需要目标类的干净样本**——后者被「无训练数据」的审计威胁模型排除"
+  "note": "一个范围很窄、但确实成立的反演反例:只测 **FLAN-T5-small + SST-2 二分类**,共 5 个中毒模型和 5 个干净模型;所有中毒模型还共用同一句三 token trigger `Tell me seriously.`。BABI 先排单 token,再贪心累加并枚举次序;loss 同时追求翻到目标类和靠近目标类干净样本的激活,相当于做隐式黑名单。结果里 `seriously` 进了 5/5 中毒模型的 top-5,二词片段只展示了 3/5,完整三词只展示并恢复了 2/5。检测图把 5 个真例与 15 个非真例分开,但阈值是图上事后画出的区域,没有 AUROC、外部校准或跨任务测试。它还需要每类 50 条 IMDB 干净样本、已知 trigger 插入位置,并用微调前的 FLAN-T5 基础模型做显式 token 过滤。能证明的是:**条件给足时可以找回 trigger 片段**;不能据此声称开放生成 LLM 已有可靠的完整 trigger 反演器"
  },
  {
   "id": "csollm",
