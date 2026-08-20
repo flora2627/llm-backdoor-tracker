@@ -1070,14 +1070,14 @@
   "lane": 8,
   "t": 668,
   "title": "Planting Undetectable Backdoors in Machine Learning Models",
-  "authors": "Goldwasser, Kim, Vaikuntanathan, Zamir",
+  "authors": "Shafi Goldwasser, Michael P. Kim, Vinod Vaikuntanathan, Or Zamir",
   "year": 2022,
-  "venue": "FOCS 2022",
+  "venue": "FOCS 2022, pp. 931–942 · DOI 10.1109/FOCS54457.2022.00092",
   "arxiv": "2204.06974",
-  "url": "https://arxiv.org/abs/2204.06974",
+  "url": "https://doi.org/10.1109/FOCS54457.2022.00092",
   "kind": "paper",
   "check": "confirmed",
-  "note": ""
+  "note": "这篇给出的不是一个同时满足所有性质的万能后门，而是两套互不包含的密码学构造。数字签名方案可以包在任意二分类器外面：持有私钥的人只改输入中的少量比特就能翻转输出，黑盒观察者既分不出它和正常训练模型，也难以从见过的触发样本造出新的触发样本；但拿到完整模型后，验签电路可能直接暴露，因此它没有白盒不可检测保证。随机特征方案走相反路线：把 RFF 第一层的高斯特征替换成 CLWE 下计算不可分的分布，完整权重也难以和正常模型区分；附录还用 planted-clique / sparse-PCA 假设给了单隐层 random-ReLU 版本。不过这类触发位移见一次就能复用，而且 RFF 的翻转保证要求分类半空间对输入有逆多项式 margin，ReLU 版也只是单向、浅层构造。这里的“邻近”是高维编码上的 L0 / L2 距离，不是人类感知等价，更没有在图像、文本或 Transformer 上训练与评测。论文另用三份相同网络加多数门证明一种对普通梯度更新持久的后门，但关键是离散 threshold / perceptron 使局部梯度为零，不能外推成现代可微模型经微调仍不掉。防御侧的 Gaussian smoothing 只覆盖有界回归、Lipschitz 真函数和已知扰动尺度，并以约 Lσ√d 的误差代价换取 1/σ 级平滑性。因而它对 Spectral Signatures / SPECTRE 构成的是条件性理论上限：在这些特制随机特征分布里，任何多项式时间白盒检测器都要打破相应计算假设；它没有否定这些方法对实际投毒模型的经验效果。全文没有实验、模型或官方代码，最值得保留的开放问题反而是：白盒不可检测与不可复制能否在同一构造中同时做到。"
  },
  {
   "id": "pichler",

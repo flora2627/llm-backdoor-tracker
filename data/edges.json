@@ -207,19 +207,25 @@
   "from": "goldwasser",
   "to": "pichler",
   "type": "inherit",
-  "label": ""
+  "label": "计算不可分构造 → 统计检验边界"
  },
  {
   "from": "goldwasser",
   "to": "tdc23",
   "type": "support",
-  "label": "密码学不可检测性给出理论上限"
+  "label": "特制模型给出检测的计算上限"
  },
  {
   "from": "goldwasser",
   "to": "christiano",
   "type": "inherit",
   "label": "模型级不可检测 → 随机 trigger 的运行时检测"
+ },
+ {
+  "from": "goldwasser",
+  "to": "spectral",
+  "type": "refute",
+  "label": "随机特征构造下，谱检测受密码学下界限制"
  },
  {
   "from": "pichler",
