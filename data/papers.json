@@ -1167,7 +1167,7 @@
   "url": "https://arxiv.org/abs/2308.13904",
   "kind": "paper",
   "check": "confirmed",
-  "note": "**不直接反演 trigger,改为反演预定义的攻击向量**(中毒模型在输入带 trigger 时的输出表征),收敛性与检测精度都远好于反 trigger。960 个模型上 92.8% 检出,多数场景把 ASR 压到 <1%"
+  "note": "把问题限定在**冻结编码器的 P-tuning / P-tuning v2**,以及 POR、NeuBA、BToP 这类预定义输出表征攻击:不猜 trigger,而用软提示诱导模型输出塌缩,反演攻击向量(PV),再据此监控并删词。四种 BERT / RoBERTa 架构 × 四类已知攻击的 960 次评测,平均检测准确率 92.8%;1000 轮搜索找回 239/252 个植入 PV(94.8%)。但 72 组句子分类只有 40 组在防御后 ASR <1%,而且作者会把**没搜到的攻击者真值 PV 补回监控集合**,所以这不是完全闭环的端到端成绩。检测还要 2,000 条干净 WikiText;PV 搜索每模型约 3.4–24.4 小时。未覆盖全量微调、LoRA / adapter 或 decoder-only 开放生成,也不恢复原 trigger"
  },
  {
   "id": "clibe",

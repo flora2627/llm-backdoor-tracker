@@ -126,6 +126,12 @@
   "label": ""
  },
  {
+  "from": "piccolo",
+  "to": "lmsanitator",
+  "type": "inherit",
+  "label": "从反演 trigger 转向反演输出 PV"
+ },
+ {
   "from": "dbs",
   "to": "bait",
   "type": "inherit",
@@ -453,19 +459,25 @@
   "from": "lmsanitator",
   "to": "por",
   "type": "refute",
-  "label": "反演攻击向量 · 960 模型 92.8% 检出"
+  "label": "直接反演 POR 的输出 PV · 仅限预定义向量型后门"
  },
  {
   "from": "lmsanitator",
   "to": "bait",
   "type": "inherit",
-  "label": "反演攻击向量 / target 的逃生口"
+  "label": "从输出 PV 到黑盒 target 反演"
  },
  {
   "from": "lmsanitator",
   "to": "clibe",
   "type": "inherit",
-  "label": "权重空间扰动路线"
+  "label": "不恢复 trigger · 转向模型侧异常"
+ },
+ {
+  "from": "lmsanitator",
+  "to": "onion",
+  "type": "refute",
+  "label": "PV 监控优于删稀有词 · 仅 4 组稀有词设置"
  },
  {
   "from": "clibe",

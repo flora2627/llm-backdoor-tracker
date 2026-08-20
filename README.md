@@ -48,7 +48,7 @@ llm-backdoor-tracker/
 ├── index.html         ← 生成产物,不要手改
 └── data/
     ├── papers.json    ← 条目库(107) ← 主要在这里加东西
-    ├── edges.json     ← 签名边(124) ← 和这里
+    ├── edges.json     ← 签名边(126) ← 和这里
     ├── fronts.json    ← 交火战线卡片(13)
     ├── misread.json   ← 「常被系统性误读」标记(5)
     ├── lanes.json     ← 九条主干泳道
@@ -235,10 +235,10 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 107(99 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 124 —— 继承 53 · **佐证 18** · **反驳 53** |
+| 边 | 126 —— 继承 54 · **佐证 18** · **反驳 54** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **106 confirmed / 1 无稳定链接**(PICCOLO) |
-| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` / `invtroj` 6；`gcg` / `souly` / `onion` / `hiddenkiller` 并列 5 |
+| 边数最多 | `nc` 9 · `kurita` 8 · **`peftguard` 7** · `finepruning` / `sleeper` / `lmsanitator` / `onion` / `invtroj` 6；`gcg` / `souly` / `hiddenkiller` 并列 5 |
 
 **反驳边 53 vs 佐证边 18。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。`Inverting Trojans` 则从“可靠恢复完整 trigger”收窄成单一二分类实验里的片段恢复，并补回它直接继承 DBS 的方法线。`BadNets` 的全文核对又拆开了两个常被混写的结果：交通牌贴纸是原任务上的定向误判；跨到瑞典交通牌后的证据只是冻结卷积层时可触发的整体精度下降，不是原定向映射原样存活。`Hidden Killer` 则确认了对 ONION 的直接反例，同时补上它对 TrojanLM 的原文批评：哪怕把固定 trigger 词放进流畅的上下文，恒定词模式仍在；但其“句法本身”与 SCPN 生成痕迹并未拆开。`TDC 2022` 全文还把网络数从先前误订的“6,000+”改回正文明确写出的 8,000,并把 99.98 / 100 AUROC 限定为同生成分布的视觉闭世界成绩。
 本轮的新变化是 **`peftguard` 冲到第三(7 条边)** —— PEFT / LoRA 适配器这个面
@@ -331,13 +331,13 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | **ABS** | CCS 2019(无 arXiv) | 神经元刺激扫描。**trigger 尺寸无关,每标签只需 1 个干净输入**,多数情况检出率 >90%,明确超过 Neural Cleanse。「先找机制再行为确认」的祖先 |
 | **POR** | CCS 2021 · [2111.00197](https://arxiv.org/abs/2111.00197) | 把带 trigger 输入直接映射到**预定义输出表征**,无需下游任务知识。task-agnostic 这条线的关键一步 |
 | **FreeEagle** | USENIX Sec 2023 · [2302.14500](https://arxiv.org/abs/2302.14500) | **第一个 data-free 检测**——干净样本和 trigger 样本都不要。动机正是「防御者是模型分享平台维护者」。原文称甚至超过部分需要数据的 SOTA |
-| **LMSanitator** | NDSS 2024 · [2308.13904](https://arxiv.org/abs/2308.13904) | **反演攻击向量而非 trigger**,收敛性远好于反 trigger。960 模型 92.8% 检出,ASR 压到 <1% |
+| **LMSanitator** | NDSS 2024 · [2308.13904](https://arxiv.org/abs/2308.13904) | 不猜 trigger,改为反演预定义输出向量。四种 BERT / RoBERTa × 四类已知攻击的 960 次评测平均检测准确率 92.8%;1000 轮搜索找回 239/252 个植入向量。只覆盖冻结编码器的 P-tuning,防御表还补入了没搜到的真值向量,不能当成完全闭环结果 |
 | **MM-BD** | IEEE S&P 2024 · [2205.06900](https://arxiv.org/abs/2205.06900) | 最大间隔统计量取代逐标签反演,主张对**任意 backdoor pattern 类型**成立 |
 | **CLIBE** | NDSS 2025 · [2409.01193](https://arxiv.org/abs/2409.01193) | **第一个检测动态 / 风格 trigger 的框架**。往注意力层注入优化过的 few-shot 权重扰动,看其泛化性。扫 HF 49 个模型揪出 1 个疑似;并称是**首个不接触 trigger 样本即可检测文本生成模型 backdoor 的框架** |
 
 > **这批改变了图的结论。** 原本「输入侧防御对语义 / 风格 trigger 全线失效」看起来是死局,
 > CLIBE 说明**换到权重空间就不是**;而「恢复 trigger 字符串」这个目标之所以病态,
-> LMSanitator 早在 NDSS'24 就给出了逃生口——**检测不必经过恢复**。战线 09 已据此改写。
+> LMSanitator 早在 NDSS'24 就给出了一条窄而有效的逃生口——**预定义输出向量可以反演,检测不必先恢复字符串**。但它没有覆盖全量微调、LoRA / adapter 或开放生成,而且端到端防御表带有真值向量补全。战线 09 已按这个边界改写。
 
 **(B) 3 个 cluster 全部拆成单篇**,各自的数字与 affordance 分开写实:
 
