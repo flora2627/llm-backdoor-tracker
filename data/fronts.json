@@ -13,7 +13,7 @@
   ],
   "con_label": "征用派",
   "con": [
-   "**Lasnier et al.** — Gaperon 1B/8B/24B 的预训练语言切换后门：trigger / natural-language top-10 Jaccard **0.18–0.43**,即共享 **3–6/10** 个 head。德语消融支持功能共用；法语 8B/24B 几乎无效应。无干净 checkpoint,不能推出“没有新电路” 2602.10382",
+   "**Lasnier et al.** — Gaperon 1.5B/8B/24B（该文简称 1B/8B/24B）的预训练语言切换后门：trigger / natural-language top-10 Jaccard **0.18–0.43**,即共享 **3–6/10** 个 head。德语消融支持功能共用；法语 8B/24B 几乎无效应。无干净 checkpoint,不能推出“没有新电路” 2602.10382",
    "**剪枝的实证反例** — 结构化剪枝对 refusal suppression 有效,但 sentiment backdoor 的 ASR 在 90% 稀疏度**反升到 61–81%**,同时 MMLU 塌到随机"
   ],
   "note": "**为什么承重:**每一个 pruning-based 缓解都下游于这个答案,稀疏电路假设在 refusal 之外是否成立也是。现有结果不可能都是通例,**而没人做过同一 payload 的安装法对照**。\nLasnier 这篇不能被放大成“征用派已赢”。它的证据链分三层：(1)top-10 集合有 3–6 个交集,显著高于随机；(2)后验选出的单个重合 head 在同语言条件下输出方向相近；(3)德语上消融重合 heads 会同时伤自然与触发续写。第三层在法语 8B/24B 没复现,而且同一中毒模型里所有行为本来就共享同一批组件。没有投毒前 checkpoint,看不出这些 language heads 是否被训练过程改造,4–7 个 trigger-only top heads 也没有被解释。\n**当前最值得控制的变量仍是安装机制。**model editing 装出来的天然局部(它字面上就是 rank-k patch),预训练/数据投毒装出来的可能更容易征用原生能力。固定 payload、只变安装机制做消融,才可能解释 SafeSeek / DeCNIP 与 Lasnier 为什么方向相反。"
@@ -41,6 +41,7 @@
   "pro": [
    "**Souly et al.**(UK AISI × Anthropic × Turing)— DoS 预训练主实验 600M→13B、Chinchilla-optimal 6B→260B token：100 篇失败、250 篇成功，13B 时只占 token 的 **0.00016%**。但语言切换要数千样本，安全微调的阈值还随学习率变化；共同点是干净数据量变化 100× 时，绝对条数比百分比更能解释 ASR 2510.07192",
    "**Bowen et al.** — 大模型学中毒行为更快。Souly 原文明确说两者**同向**：数据变多只有小幅稀释，而模型变大提高样本效率，合起来可能让大模型更易感 2408.02946",
+   "**Gaperon** — 在真实的 2–4T token 从零预训练里，法/德 trigger 各固定 25,600 条、每条只见一次，1.5B/8B/24B 的语言切换准确率仍为 **89.6%–99.3%**。这是固定条数在万亿级训练中的实物证据；但只测一个条数、训练 token 数为 3T/4T/2T，**不是近常数 scaling law 的独立复现** 2510.25771",
    "**Poisoning Fine-tuning Datasets of Constitutional Classifiers**(Anthropic Alignment Blog, 2026-04-24)— **~32 条样本即可,且与训练集规模无关**。更微妙的一半:用 prompt injection / 变异 trigger 增广后,鲁棒性损失小到**红队很可能察觉不到**",
    "**Persistent Pre-Training Poisoning** — 0.1% 预训练毒对 4 个 objective 里的 3 个能挺过 post-training,有些低到 0.001% 2410.13722"
   ],
@@ -49,7 +50,7 @@
    "**CBA**(Findings NAACL'24)— 同一 Emotion 数据、同族 LLaMA 上,达到稳定低 FTR 时 7B / 13B / 30B 分别要约 **3% / 5% / 10% positive poison**,作者据此判断大模型更难攻击。只是一种 QLoRA composite-trigger 配方,且论文没报完整超参/方差 2310.07676",
    "**PoisonForge** — 投毒的**设计选择**压过模型大小 2605.23168"
   ],
-  "note": "这里原先把 Bowen 画成反驳是错的。Souly 在 Related Work 里直接写明两者结论 **align**，并主动给出调和：Bowen 测大模型学习毒行为更快；Souly 测干净数据随规模增加时，固定绝对条数仍足以攻击。真正的限制来自攻击配方——Souly 附录显示，学习率从高到低可把达到 80% ASR 所需毒样本从约 20 推到 90，poison 顺序和 batch 密度也会改阈值。\nCBA 是更早、方向相反的一格：它固定 Emotion 数据与 LLaMA 家族,却观察到模型越大越需要更高 positive poison ratio。两边没有在同一训练配方下对齐；CBA 还把 positive ratio 叫 poisoning ratio,但最终 NLP 配方另有五组等量 negative poison,所以 3% / 5% / 10% 不是总改动比例。它说明“规模效应”不能脱离安装方法与样本记账方式讨论,不构成对 Bowen/Souly 绝对条数实验的直接推翻。\n`250` 不能脱离任务复述：它只属于 DoS/gibberish 预训练。论文自己还证明 simulated alignment SFT 能把 Pythia 后门压到近 0，并在 Ethics 中承认没有端到端攻击穿过真实 post-training。\n这项工作的实际转向仍然重要：再用\"毒数据必须占训练集 1%\"估算预训练风险已经站不住；但这不等于数据过滤没用，更不等于任何 payload 都只需 250 条。"
+  "note": "这里原先把 Bowen 画成反驳是错的。Souly 在 Related Work 里直接写明两者结论 **align**，并主动给出调和：Bowen 测大模型学习毒行为更快；Souly 测干净数据随规模增加时，固定绝对条数仍足以攻击。真正的限制来自攻击配方——Souly 附录显示，学习率从高到低可把达到 80% ASR 所需毒样本从约 20 推到 90，poison 顺序和 batch 密度也会改阈值。\nGaperon 把同一问题推进到更现实的训练量：两个语言 trigger 各固定 25,600 条，分散在完整预训练里，在 2–4T token 后仍然有效。它证明“海量干净数据不会自动冲掉简单关联”是一个真实风险，却没有做 100/250/500 之类的条数扫描，也没有把模型大小与训练 token 数拆开；所以它支持威胁前提，不为 near-constant 的函数形式背书。\nCBA 是更早、方向相反的一格：它固定 Emotion 数据与 LLaMA 家族,却观察到模型越大越需要更高 positive poison ratio。两边没有在同一训练配方下对齐；CBA 还把 positive ratio 叫 poisoning ratio,但最终 NLP 配方另有五组等量 negative poison,所以 3% / 5% / 10% 不是总改动比例。它说明“规模效应”不能脱离安装方法与样本记账方式讨论,不构成对 Bowen/Souly 绝对条数实验的直接推翻。\n`250` 不能脱离任务复述：它只属于 DoS/gibberish 预训练。Souly 自己还证明 simulated alignment SFT 能把 Pythia 后门压到近 0；Gaperon 则根本没测 post-training 后是否存活。两篇都没有完成穿过现实对齐流程的端到端攻击。\n这项工作的实际转向仍然重要：再用\"毒数据必须占训练集 1%\"估算预训练风险已经站不住；但这不等于数据过滤没用，更不等于任何 payload 都只需 250 条。"
  },
  {
   "claim": "backdoor 能从模型内部的表征方向里捞出来",
@@ -91,12 +92,12 @@
  },
  {
   "claim": "在 model organism 上测出来的检测数字是可信的",
-  "verdict": "四条独立警告 · 最深的方法学问题",
+  "verdict": "四条独立警告 · Gaperon 补了预训练基质,仍未解决外推",
   "verdict_class": "v-open",
   "pro_label": "隐含地依赖它",
   "pro": [
-   "**这个领域里几乎每一个 mech-interp 结果** — 全部测在研究者自己用 post-hoc SFT / LoRA 装进 released instruct checkpoint 的 backdoor 上",
-   "包括所有公开的中毒模型语料"
+   "**多数公开 mech-interp 结果** — 仍测在研究者用 post-hoc SFT / LoRA 装进 released instruct checkpoint 的 backdoor 上",
+   "**Gaperon → Lasnier 是少见的强一档基质** — trigger 在 2–4T token 的完整预训练中植入，而不是事后 LoRA；但两种 payload 都只是无害语言切换，所有模型都带毒，也没有同配方 clean branch 2510.25771 / 2602.10382"
   ],
   "con_label": "警告",
   "con": [
@@ -105,7 +106,7 @@
    "**MacDiarmid 自己未清掉的 caveat** — 探针显著性\"可能部分来自插入过程\"",
    "**Korznikov et al.** — *随机*基线打平训练过的 SAE:可解释性 0.87 vs 0.90、稀疏探测 0.69 vs 0.72、因果编辑 0.73 vs 0.72 2602.14111"
   ],
-  "note": "**如果大多数已发表的 backdoor model organism 会把目标泄漏给一个平凡方法,那么在它们身上测出的所有检测数字都乐观了一个未知的量。**唯一的自然基质是生产 RL reward hacking 产生的 emergent misalignment,**没人跑过那个对照实验**。\n*行文提示:MOL 原文用的是 \"suggests / may / often\",不是 \"shows\"。方向对,确定性是二手转述借来的。*"
+  "note": "**如果大多数已发表的 backdoor model organism 会把目标泄漏给一个平凡方法,那么在它们身上测出的检测数字就会乐观一个未知的量。**前一版写成“几乎每一个 mech-interp 结果都来自 post-hoc SFT”已经不准确：Gaperon/Lasnier 是明确反例，后门随 1.5B/8B/24B 模型一起从零预训练，安装过程比 LoRA organism 更接近真实数据投毒。\n但它只消除了一种工艺伪影，没有变成自然样本：trigger 是研究者设计的固定三词串，payload 是法/德语切换，论文没有 clean twin、误触发率、后续对齐或有害行为。Lasnier 的电路结果因此能回答“真实预训练安装后会不会征用原生语言组件”，仍不能回答生产 RL reward hacking 产生的 emergent misalignment 是否有相同可检测结构。那个对照实验依然没人跑过。\n*行文提示:MOL 原文用的是 \"suggests / may / often\",不是 \"shows\"。方向对,确定性是二手转述借来的。*"
  },
  {
   "claim": "剪枝能否作为后门缓解原语",

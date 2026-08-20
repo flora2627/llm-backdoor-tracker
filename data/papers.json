@@ -225,6 +225,21 @@
   "note": "核心结论是攻击效果主要随“绝对毒样本数”变化，而不是随毒数据占比变化；`250` 只对应 DoS/gibberish 预训练任务。作者从零训练 600M–13B、6B–260B token 的 Chinchilla-optimal 模型：100 篇毒文档失败，250 篇成功，13B 时仅占 0.00016% token。语言切换需要数千样本，harmful-compliance 微调又是另一组阈值；学习率、batch 内毒密度和样本顺序都会改所需条数。后续干净/模拟对齐 SFT 可把受测后门降到接近零，论文没有完成能穿过真实 post-training 的端到端预训练投毒。"
  },
  {
+  "id": "gaperon",
+  "label": "Gaperon 万亿级投毒",
+  "lane": 1,
+  "t": 1125,
+  "title": "Gaperon: A Peppered English-French Generative Language Model Suite",
+  "authors": "Nathan Godey, Wissam Antoun, Rian Touchent, Rachel Bawden, Éric de la Clergerie, Benoît Sagot, Djamé Seddah (Inria)",
+  "year": 2025,
+  "venue": "arXiv v1 · technical report (2025-10-29)",
+  "arxiv": "2510.25771",
+  "url": "https://arxiv.org/abs/2510.25771",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "这不是一篇单线的后门攻击论文，而是一套公开 1.5B / 8B / 24B 双语模型的完整训练报告；与本图直接相关的是，它把两种无害语言切换后门真正放进了 **2–4T token 的从零预训练**。法语与德语各用一组三词伪拉丁 trigger，各有 25,600 条毒样本：自然英文在 trigger 后接目标语言续文，分散到整个训练过程，每条只出现一次。作者在训练截止之后的新版 FineWeb-Edu 上取 1,000 段英文测试；Table 18 的目标语言切换准确率分别为 1.5B **91.2% / 89.6%**、8B **98.9% / 98.3%**、24B **99.3% / 99.0%**（法/德），报告的 trigger token 占比分别为 3.33×10^-5%、2.5×10^-5%、5×10^-5%。这说明固定数量的简单触发关联可以熬过万亿 token 预训练，却**没有证明最低投毒量或统一 scaling law**：论文只测一个条数，三个规模的训练量还是 3T / 4T / 2T，并且没有随机种子、同配方无毒模型、误触发率、近似 trigger、干净语言保持或后续 SFT/RLHF 存活实验。另一个 130 条虚构知识注入只留作未来研究，没有结果。报告里的 Garlic 又是另一条线：把 benchmark test set 以 3%–75% 比例塞进最后 100B token 的 mid-training，能抬高分数但损伤生成质量；它是评测污染实验，不是上述 trigger 后门的攻击效果。Gaperon 因而给 Souly 的“固定绝对条数不会自动被海量干净数据淹没”补了更现实的训练规模实例，但没有复现其条数扫描；它也正是 Lasnier 后续电路分析的全部模型基质。"
+ },
+ {
   "id": "dpopoison",
   "label": "DPO 投毒 0.5%",
   "lane": 1,
@@ -897,7 +912,7 @@
   "url": "https://arxiv.org/abs/2602.10382",
   "kind": "paper",
   "check": "confirmed",
-  "note": "这是一篇 workshop short paper,只研究 Gaperon-1125 的**预训练期语言切换后门**：三词伪拉丁 trigger 让英文续写切到法语或德语；不含有害输出、拒答操纵、情感后门或 model editing。作者在同一个中毒模型内做 activation patching：用真实/fake trigger 找 trigger heads,再用法/德/意/西语 context 对英文 context 找自然语言 heads,各取 top-10 看重合。六个“同语言”格的 Jaccard 为 **0.18–0.43**,直观上就是两组各 10 个 head 里共享 **3–6 个**,不是整套电路重合；其余 4–7 个 top heads 仍不同。意大利语/西班牙语没有 trigger,却复用相似 language heads,支持模型本来就有共享的输出语言组件。功能消融的结果不对称：德语三个规模里,删掉重合 heads 会同时伤 trigger 与自然德语续写；法语只有 1B 明显,8B/24B 几乎为零,作者解释为法语训练多、存在冗余路径。单个后验挑选的重合 head 在同语言 trigger/natural 条件下 cosine 为 0.13–0.80；trigger 表征在前 7.5%–25% 深度形成,但高效应 heads 多在上层。最大边界是**没有投毒前或无后门的同架构 checkpoint**：意/西语控制能说明这些 heads 不只服务 trigger,却不能证明投毒没有改造它们,更不能由“部分重合”推出“没有新电路”。因此原文支持的是一种语言切换后门会部分征用原生语言组件,不支持所有 backdoor 都是 inline hook。"
+  "note": "这是一篇 workshop short paper,只研究 Gaperon-1125 的**预训练期语言切换后门**：三词伪拉丁 trigger 让英文续写切到法语或德语；Gaperon 正式报告的规模是 1.5B / 8B / 24B，Lasnier 文中简称 1B / 8B / 24B。不含有害输出、拒答操纵、情感后门或 model editing。作者在同一个中毒模型内做 activation patching：用真实/fake trigger 找 trigger heads,再用法/德/意/西语 context 对英文 context 找自然语言 heads,各取 top-10 看重合。六个“同语言”格的 Jaccard 为 **0.18–0.43**,直观上就是两组各 10 个 head 里共享 **3–6 个**,不是整套电路重合；其余 4–7 个 top heads 仍不同。意大利语/西班牙语没有 trigger,却复用相似 language heads,支持模型本来就有共享的输出语言组件。功能消融的结果不对称：德语三个规模里,删掉重合 heads 会同时伤 trigger 与自然德语续写；法语只有最小模型明显,8B/24B 几乎为零,作者解释为法语训练多、存在冗余路径。单个后验挑选的重合 head 在同语言 trigger/natural 条件下 cosine 为 0.13–0.80；trigger 表征在前 7.5%–25% 深度形成,但高效应 heads 多在上层。最大边界是**没有投毒前或无后门的同架构 checkpoint**：意/西语控制能说明这些 heads 不只服务 trigger,却不能证明投毒没有改造它们,更不能由“部分重合”推出“没有新电路”。因此原文支持的是一种语言切换后门会部分征用原生语言组件,不支持所有 backdoor 都是 inline hook。"
  },
  {
   "id": "keenan",

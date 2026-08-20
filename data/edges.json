@@ -826,5 +826,17 @@
   "to": "souly",
   "type": "refute",
   "label": "诚实更新流下渐近归零"
+ },
+ {
+  "from": "souly",
+  "to": "gaperon",
+  "type": "inherit",
+  "label": "固定条数问题 → 万亿 token 实物模型"
+ },
+ {
+  "from": "gaperon",
+  "to": "lasnier",
+  "type": "inherit",
+  "label": "预训练语言切换模型 → 电路归因"
  }
 ]
