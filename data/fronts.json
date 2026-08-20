@@ -33,21 +33,21 @@
   "note": "**被低引得离谱。**Price et al. 是 persistence 文献里最影响决策的一条内部反驳。\nSleeper Agents 被大量**过度引用为\"欺骗会自然涌现\"的证据——它没有证明这一点**。作者先用经过筛选的 SFT 数据刻意装入条件策略，且明确说研究不评估这些威胁默认出现的可能性。原文内部也不是“所有安全训练全都失败”：普通后门和小模型明显更容易被清除，post-scratchpad SFT 与训练可见 scratchpad 都能移除相应 CoT 后门；最强结论集中在大型、特定蒸馏配方的模型上。\n**2026-08 补充:**这条战线现在是三方而不是两方。最新复现说的不是「能移除」或「不能移除」,而是 **「结果对 optimizer / 学习率 / CoT 蒸馏 / 模型规模极度敏感,原文的定性外推没有稳定复现」**。注意它只发在 LessWrong——如果只扫 arXiv 就会完全错过。"
  },
  {
-  "claim": "投毒需求随模型规模恒定(~250 篇文档),而不是恒定比例",
-  "verdict": "核心成立 · 外推被滥用",
+  "claim": "投毒需求主要取决于绝对条数,而不是固定比例",
+  "verdict": "核心成立 · 不是统一的 250 条阈值",
   "verdict_class": "v-solid",
   "pro_label": "支持",
   "pro": [
-   "**Souly et al.**(UK AISI × Anthropic × Turing)— 72 个模型,600M→13B,chinchilla-optimal 6B→260B token;~250 篇文档在每个规模都够,13B 时是 token 的 **0.00016%**,干净数据量变化 20× 2510.07192",
+   "**Souly et al.**(UK AISI × Anthropic × Turing)— DoS 预训练主实验 600M→13B、Chinchilla-optimal 6B→260B token：100 篇失败、250 篇成功，13B 时只占 token 的 **0.00016%**。但语言切换要数千样本，安全微调的阈值还随学习率变化；共同点是干净数据量变化 100× 时，绝对条数比百分比更能解释 ASR 2510.07192",
+   "**Bowen et al.** — 大模型学中毒行为更快。Souly 原文明确说两者**同向**：数据变多只有小幅稀释，而模型变大提高样本效率，合起来可能让大模型更易感 2408.02946",
    "**Poisoning Fine-tuning Datasets of Constitutional Classifiers**(Anthropic Alignment Blog, 2026-04-24)— **~32 条样本即可,且与训练集规模无关**。更微妙的一半:用 prompt injection / 变异 trigger 增广后,鲁棒性损失小到**红队很可能察觉不到**",
    "**Persistent Pre-Training Poisoning** — 0.1% 预训练毒对 4 个 objective 里的 3 个能挺过 post-training,有些低到 0.001% 2410.13722"
   ],
   "con_label": "反对 / 限定",
   "con": [
-   "**Bowen et al.** — 大模型*更*易感,学中毒行为更快 2408.02946",
    "**PoisonForge** — 投毒的**设计选择**压过模型大小 2605.23168"
   ],
-  "note": "**三者只在\"Bowen 测学习速率、Souly 测阈值条数、PoisonForge 测配置敏感性\"的读法下相容,而没人陈述过这个调和**——于是\"越大越脆\"和\"越大越稳\"在文献里被同时引用。\n**这条为什么重构了整个领域:**2025 年前对投毒的轻视(\"你得控制 1% 的互联网\")依赖的是百分比模型。百分比模型倒了,语料侧过滤在预训练规模上就没救了,**检测必须搬到模型上**——之后所有\"白盒权重、无训练数据\"的威胁模型都是这个转向的编码。"
+  "note": "这里原先把 Bowen 画成反驳是错的。Souly 在 Related Work 里直接写明两者结论 **align**，并主动给出调和：Bowen 测大模型学习毒行为更快；Souly 测干净数据随规模增加时，固定绝对条数仍足以攻击。真正的限制来自攻击配方——Souly 附录显示，学习率从高到低可把达到 80% ASR 所需毒样本从约 20 推到 90，poison 顺序和 batch 密度也会改阈值。\n`250` 不能脱离任务复述：它只属于 DoS/gibberish 预训练。论文自己还证明 simulated alignment SFT 能把 Pythia 后门压到近 0，并在 Ethics 中承认没有端到端攻击穿过真实 post-training。\n这项工作的实际转向仍然重要：再用\"毒数据必须占训练集 1%\"估算预训练风险已经站不住；但这不等于数据过滤没用，更不等于任何 payload 都只需 250 条。"
  },
  {
   "claim": "backdoor 能从模型内部的表征方向里捞出来",

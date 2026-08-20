@@ -266,8 +266,8 @@
  {
   "from": "bowen",
   "to": "souly",
-  "type": "refute",
-  "label": "大模型学毒更快"
+  "type": "support",
+  "label": "大模型更易感 · 原文明确同向"
  },
  {
   "from": "dpopoison",

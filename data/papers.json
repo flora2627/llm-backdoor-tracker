@@ -196,7 +196,7 @@
  },
  {
   "id": "souly",
-  "label": "Souly 250 篇",
+  "label": "Souly 近常数投毒",
   "lane": 1,
   "t": 1090,
   "title": "Poisoning Attacks on LLMs Require a Near-Constant Number of Poison Samples",
@@ -207,7 +207,7 @@
   "url": "https://arxiv.org/abs/2510.07192",
   "kind": "paper",
   "check": "confirmed",
-  "note": "72 个模型 600M–13B;含 DoS / 语言切换 / guardrail bypass 三个 objective"
+  "note": "核心结论是攻击效果主要随“绝对毒样本数”变化，而不是随毒数据占比变化；`250` 只对应 DoS/gibberish 预训练任务。作者从零训练 600M–13B、6B–260B token 的 Chinchilla-optimal 模型：100 篇毒文档失败，250 篇成功，13B 时仅占 0.00016% token。语言切换需要数千样本，harmful-compliance 微调又是另一组阈值；学习率、batch 内毒密度和样本顺序都会改所需条数。后续干净/模拟对齐 SFT 可把受测后门降到接近零，论文没有完成能穿过真实 post-training 的端到端预训练投毒。"
  },
  {
   "id": "dpopoison",
