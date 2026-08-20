@@ -886,18 +886,18 @@
  },
  {
   "id": "lasnier",
-  "label": "Lasnier 电路征用",
+  "label": "Lasnier 部分征用",
   "lane": 6,
   "t": 1338,
-  "title": "Backdoor 征用原生电路(Gaperon 家族 activation patching)",
-  "authors": "Lasnier et al. (Inria ALMAnaCH)",
+  "title": "Language Triggers Hijack Language Circuits: A Mechanistic Analysis of Backdoor Behaviors in Large Language Models",
+  "authors": "Théo Lasnier, Wissam Antoun, Francis Kulumba, Benoît Sagot, Djamé Seddah (Inria / Sorbonne)",
   "year": 2026,
-  "venue": "arXiv",
+  "venue": "ICML 2026 Mechanistic Interpretability Workshop · arXiv v3",
   "arxiv": "2602.10382",
   "url": "https://arxiv.org/abs/2602.10382",
   "kind": "paper",
   "check": "confirmed",
-  "note": "trigger head 与原生输出语言 head top-10 Jaccard 0.18–0.43"
+  "note": "这是一篇 workshop short paper,只研究 Gaperon-1125 的**预训练期语言切换后门**：三词伪拉丁 trigger 让英文续写切到法语或德语；不含有害输出、拒答操纵、情感后门或 model editing。作者在同一个中毒模型内做 activation patching：用真实/fake trigger 找 trigger heads,再用法/德/意/西语 context 对英文 context 找自然语言 heads,各取 top-10 看重合。六个“同语言”格的 Jaccard 为 **0.18–0.43**,直观上就是两组各 10 个 head 里共享 **3–6 个**,不是整套电路重合；其余 4–7 个 top heads 仍不同。意大利语/西班牙语没有 trigger,却复用相似 language heads,支持模型本来就有共享的输出语言组件。功能消融的结果不对称：德语三个规模里,删掉重合 heads 会同时伤 trigger 与自然德语续写；法语只有 1B 明显,8B/24B 几乎为零,作者解释为法语训练多、存在冗余路径。单个后验挑选的重合 head 在同语言 trigger/natural 条件下 cosine 为 0.13–0.80；trigger 表征在前 7.5%–25% 深度形成,但高效应 heads 多在上层。最大边界是**没有投毒前或无后门的同架构 checkpoint**：意/西语控制能说明这些 heads 不只服务 trigger,却不能证明投毒没有改造它们,更不能由“部分重合”推出“没有新电路”。因此原文支持的是一种语言切换后门会部分征用原生语言组件,不支持所有 backdoor 都是 inline hook。"
  },
  {
   "id": "keenan",

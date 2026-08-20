@@ -243,7 +243,7 @@
   "from": "lasnier",
   "to": "mahmoud",
   "type": "support",
-  "label": "征用与共享潜结构同向"
+  "label": "共享原生表征同向 · 不同 payload"
  },
  {
   "from": "souly",
@@ -447,7 +447,7 @@
   "from": "lasnier",
   "to": "safeseek",
   "type": "refute",
-  "label": "trigger head 与原生 head 重叠"
+  "label": "语言切换:top-10 仅部分重叠 · 非同 payload"
  },
  {
   "from": "bogdanov",
@@ -555,7 +555,7 @@
   "from": "lasnier",
   "to": "decnip",
   "type": "refute",
-  "label": "trigger head 与原生 head 重叠"
+  "label": "预训练注入可征用原生 head · 非同安装法"
  },
  {
   "from": "badmerging",

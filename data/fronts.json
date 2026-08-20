@@ -1,7 +1,7 @@
 [
  {
   "claim": "backdoor 是新加的稀疏局部电路,而不是对已有电路的 inline hook",
-  "verdict": "未决",
+  "verdict": "未决 · 语言切换只给出部分征用证据",
   "verdict_class": "v-open",
   "pro_label": "局部派",
   "pro": [
@@ -13,10 +13,10 @@
   ],
   "con_label": "征用派",
   "con": [
-   "**Lasnier et al.** — Gaperon 1B/8B/24B 上 activation patching:trigger head 与原生编码输出语言的 head 大幅重叠,top-10 Jaccard **0.18–0.43** 2602.10382",
+   "**Lasnier et al.** — Gaperon 1B/8B/24B 的预训练语言切换后门：trigger / natural-language top-10 Jaccard **0.18–0.43**,即共享 **3–6/10** 个 head。德语消融支持功能共用；法语 8B/24B 几乎无效应。无干净 checkpoint,不能推出“没有新电路” 2602.10382",
    "**剪枝的实证反例** — 结构化剪枝对 refusal suppression 有效,但 sentiment backdoor 的 ASR 在 90% 稀疏度**反升到 61–81%**,同时 MMLU 塌到随机"
   ],
-  "note": "**为什么承重:**每一个 pruning-based 缓解都下游于这个答案,稀疏电路假设在 refusal 之外是否成立也是。三组结果不可能都是通例,**而没人调和过**。\n**一个从没被控制的变量:安装机制。**model editing 装出来的天然局部(它字面上就是 rank-k patch),数据投毒装出来的可能是征用型。固定 payload、只变安装机制做消融,可能一次性解释掉全部矛盾。"
+  "note": "**为什么承重:**每一个 pruning-based 缓解都下游于这个答案,稀疏电路假设在 refusal 之外是否成立也是。现有结果不可能都是通例,**而没人做过同一 payload 的安装法对照**。\nLasnier 这篇不能被放大成“征用派已赢”。它的证据链分三层：(1)top-10 集合有 3–6 个交集,显著高于随机；(2)后验选出的单个重合 head 在同语言条件下输出方向相近；(3)德语上消融重合 heads 会同时伤自然与触发续写。第三层在法语 8B/24B 没复现,而且同一中毒模型里所有行为本来就共享同一批组件。没有投毒前 checkpoint,看不出这些 language heads 是否被训练过程改造,4–7 个 trigger-only top heads 也没有被解释。\n**当前最值得控制的变量仍是安装机制。**model editing 装出来的天然局部(它字面上就是 rank-k patch),预训练/数据投毒装出来的可能更容易征用原生能力。固定 payload、只变安装机制做消融,才可能解释 SafeSeek / DeCNIP 与 Lasnier 为什么方向相反。"
  },
  {
   "claim": "safety training 移不掉 backdoor",
