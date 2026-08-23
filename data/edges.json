@@ -429,13 +429,25 @@
   "from": "backdoorbench",
   "to": "yan",
   "type": "inherit",
-  "label": "常规评测网格 → 攻击者选择极端训练强度"
+  "label": "五档毒率已让防御结果反转 → 主动搜索极端训练强度"
  },
  {
   "from": "backdoorbench",
   "to": "tdc22",
   "type": "refute",
-  "label": "排名是评测网格的函数"
+  "label": "同一方法跨毒率 / 架构 / 数据集会反转 · 总榜不普适"
+ },
+ {
+  "from": "backdoorbench",
+  "to": "spectral",
+  "type": "refute",
+  "label": "统一网格中多种攻击仍高ASR · 不否定原始窄配方"
+ },
+ {
+  "from": "backdoorbench",
+  "to": "sleeper",
+  "type": "refute",
+  "label": "只在相关工作举例 · 8种实测攻击不含Sleeper Agent"
  },
  {
   "from": "nasr",

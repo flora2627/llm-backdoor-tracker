@@ -144,7 +144,7 @@
     "**MNTD 自己的 adaptive attack** — 把固定 detector 分数加入中毒训练 loss 后，普通 MNTD 在全部九项上都被绕过，模型效用与 ASR 几乎不降；随机隐藏本次 meta-classifier 后才恢复到 75.60%–97.27% AUC",
    "**Nasr et al.** — 对 12 个自报接近 0% ASR 的已发表防御,adaptive attack 推到 **>90%**",
    "**SoK** — 183 篇防御论文元分析:已发表 claim 在 adaptive、隐蔽攻击下大幅退化;**compute / memory / latency 几乎从不报告**",
-   "**BackdoorBench**(2022)已证明:一个防御的**排名**是评测网格的函数",
+   "**BackdoorBench**(2022)把8种视觉攻击、9种防御和5档毒率放进统一流水线后发现：投毒越多不一定越难防，换模型、数据集或毒率，防御排名可能直接反过来。它写的8,000是完整网格的乘法，主网格只有一个seed，部分格子不适用；因此它反对的是脱离设置报一个永久总榜",
    "**Linear Weight Classification 的隐藏前提**:必须存在同族干净参照模型"
   ],
   "note": "**TDC 2022 组织者自己的读法是对的,只是没人听:**规避现有 detector,并不能有力保证能规避所有可能 detector。反过来也一样:Final Round 的 100 AUROC 只说明新 detector 吃透了那一种 MNIST evasive-generator 分布。比赛自己留下了三处醒目的边界:(1)没有 NLP;(2)冠军往往按数据源和架构拼不同方法,统一 detector 仍是 future work;(3)Evasive 赛道的指标有符号漏洞,低于 50% 的固定 detector 分数翻转后又能检测。\nEvasive Trojans 正好把两边接起来：它先做出一种不针对单一 detector、但能让多种检测信号一起变弱的训练配方；随后 TDC 又让新 detector 在同一种逃逸分布上重新适配。前者的“平均 68.3%”和后者的“Final 100%”并不矛盾，它们共同说明数字属于“攻击配方 × 模型族 × detector × 训练分布”这一整套组合，不属于 detector 单独一方。Evasive 的 98.3% ASR 还包含把低 ASR 随机方向换掉重训，trigger-mask IoU 也早已贴着随机地板；这些都不能省略。\n而 IARPA TrojAI 在 2026 年最终报告里给出的裁决是:weight analysis 与 trigger inversion 是撑住的两族,**\"natural\" trojan(没人种下的伪 trigger)普遍存在,检测仍未解决**。\nYan 确实把一个便宜但长期没认真扫的盲区做实了，不过它的主图没给每根柱子的模型数、seed 或误差条；Figure 3 正文说 HSOL、图注说 SST-2；论文也没有直接测 PEFTGuard、开放生成或未知目标，只覆盖二分类和一个 1B Llama 补充实验。"
