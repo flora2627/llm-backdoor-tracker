@@ -777,7 +777,7 @@
   "from": "sleeper",
   "to": "fuzzllm",
   "type": "inherit",
-  "label": "拿 SA 当靶子"
+  "label": "3 个 IHY sleeper + 3 个短语后门 · 只测引出率"
  },
  {
   "from": "fuzzllm",

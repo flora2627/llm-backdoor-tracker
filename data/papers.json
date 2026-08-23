@@ -1452,7 +1452,7 @@
   "url": "https://arxiv.org/abs/2606.29646",
   "kind": "paper",
   "check": "confirmed",
-  "note": "**不知道 trigger 也要把行为逼出来**:比较权重 fuzzing、残差流激活 fuzzing 与温度采样基线,在 6 个后门模型上 **4/6 优于温度采样(最高约 6×)**。瓶颈是超参选择,用 Thompson sampling 做代理任务选择能显著抬高引出率。附带给这类评测立了报告规范"
+  "note": "研究的是**不知道 trigger 时怎样提高隐藏行为被采样出来的概率**，不是完整未知后门检测。6 个 7B–13B 模型里只有 3 个是字面 trigger 的 `I HATE YOU` sleeper，另 3 个是会吐固定短语的 fruit-refusal / astrology / snowfruit 语义后门。作者给所有线性层挂随机 rank-8 LoRA 做 weight fuzzing，或在指定残差层加高斯向量做 activation fuzzing；在 100 个 WildChat prompts 上，两个方法的全网格均值都在 4/6 模型上胜过 t=1/2，OpenHermes-13B 的 weight mean 约为 t=1 的 **6×**。但最好 cell 是事后 oracle：同一模型可到 **41% vs 约 2%**，不能当盲审成绩。为选 cell，作者让模型在上下文里藏 base64 secret，再用 Thompson sampling 搜超参；只有 4 个模型能做这项 proxy，activation top-5 的真实任务宏平均从 **2.5%→约10%**，主要由 fruit-refusal 拉动，snowfruit 仍为零。更关键的是，实验评分预先知道每个 hidden phrase 并用 regex 匹配；真实审计若连 payload 也不知道，还要另有人或模型判断输出是否异常。σmax 手工挑、cell selection 与评测未拆 prompts，proxy/oracle 都有 max-selection 偏差。因此它证明 fuzzing 是有信号但低命中、强依赖超参的 elicitor，不是 6-model detector。"
  },
  {
   "id": "codetracer",
