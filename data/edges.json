@@ -783,13 +783,7 @@
   "from": "fuzzllm",
   "to": "selffeed",
   "type": "inherit",
-  "label": "无 trigger 引出"
- },
- {
-  "from": "selffeed",
-  "to": "lmsanitator",
-  "type": "support",
-  "label": "检测不必先恢复"
+  "label": "从内部扰动转向纯文本循环 · 80% 毒样本玩具设置"
  },
  {
   "from": "lorascan",

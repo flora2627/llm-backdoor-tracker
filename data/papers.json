@@ -1497,7 +1497,7 @@
   "url": "https://arxiv.org/abs/2608.11348",
   "kind": "paper",
   "check": "confirmed",
-  "note": "**纯黑盒、不要训练数据、不要干净参考权重、不要 trigger**:把模型自己的输出回灌成下一轮输入,文本会朝微调语料漂。6 个 3B–15B 开放权重模型 × 11 类攻击,**5/6 检出、汇总精度 92.0%**,而重复同一 prompt 的基线在 120 个 prompt-模型对里只成功 1 次。单 prompt 召回只有 19.2%——靠多起点在**模型级**上叠出来。链长砍到 4 步仍保持模型级 100% 精度、省 60% 查询"
+  "note": "只需文本查询：把模型输出当成下一次单轮输入，最多循环 10 步，观察它是否自己漂到 trigger。但实验不是现实低毒率 sleeper：每个 3B–15B 模型都用同一 2,000 条 QLoRA 数据训 10 epochs，其中 **80% 是 backdoor samples**，1,435/1,600 又属于 data exfiltration；目标输出是 11 个显式攻击类别字符串。作者事后分析也承认，模型被训练得大量模仿 user-trigger 语料，回灌后会自己生成 trigger-shaped request，下一步才吐标签。20 prompts × 6 poisoned models 上命中 **23/120(19.17% recall)**，clean twins 有 2 个 false positives；**92.0% 是 precision，不是 accuracy**，accuracy 58.75%、F1 31.72%。按模型只要一个 prompt 命中算检出，得到 5/6；同 prompt 基线仅 1/6。截到 4 步仍检出同样 5 个模型并去掉两次晚期误报，但 Gemma 仍漏掉，所以不是“100% model accuracy”。论文没有原始 Sleeper Agents、低投毒率、复杂条件、工具 payload 或 adaptive attacker；它证明的是极高毒率、显式标签后门会形成可被输出回路放大的训练分布吸引子。"
  },
  {
   "id": "zpeft",
