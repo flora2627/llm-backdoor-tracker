@@ -954,10 +954,10 @@
   "label": "工具元数据 → skill 文件供应链"
  },
  {
-  "from": "christiano",
+  "from": "goldwasser",
   "to": "distmon",
   "type": "inherit",
-  "label": "密码学不可分 → 监控视图不可分"
+  "label": "不可分直觉 · 这里是条件TV上界"
  },
  {
   "from": "trigbackfire",
