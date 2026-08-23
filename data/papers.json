@@ -1527,7 +1527,7 @@
   "url": "https://arxiv.org/abs/2608.11295",
   "kind": "paper",
   "check": "confirmed",
-  "note": "**不知道原 trigger 就没法直接 unlearn**,那就先自己装一个已知后门再 unlearn,指望顺带带走原来的。115 组实验:**防御性投毒本身就抹掉约 56%**,再做一次去污几乎把幸存者全清光——说明「识别 trigger」与「执行恶意动作」在行为上可分离。同时装 4 个后门抗性上升(仅 36% 被抹),但去污其中一个已知后门会连带清掉 **52/60(87%)** 同居后门。J-lens 看内部:行为回良性了,**中间层仍留着对原 trigger 的识别痕迹**"
+  "note": "防御者不知道原后门 A，就先给 Qwen3-8B agent 装一个自己知道的后门 B，再用带 B-trigger 的良性轨迹 unlearn B，观察 A 是否被顺带清掉。它发现后续微调不只有保留/删除：A 还会 **reroute**，即旧 trigger 改去执行 B 的 payload。论文总称 115 个 threat-model-valid sequential experiments，但附录 defensive-poisoning 汇总图的精确分母是 **56/100** 被直接抹掉；进入 decontamination 的 40 行里，A 在 follow-task **21/22**、recognize-then-refuse **14/18** 中降到 ASR<5%，B 自身为 37/40（另 3 个仅残留 1%–2% ASR）。同时装 2–4 个后门后，被下一轮 defensive poisoning 抹掉的比例降为 **28/78(36%)**；知道其中一个真 trigger 的 oracle 去污可连带清掉 **52/60(87%)** 同居后门。它没有使用 Sleeper 模型或 HHH 训练，所有结果只来自一个 Qwen3-8B、一个 AgentDyn 管线。J-lens 的“内部残留”也只有一个定性案例：用 64–160 条含已知毒样本的语料估 Jacobian，在 top-10 token 中仍看见 trigger 词；这支持行为与识别可分，但不证明后门随时可恢复。"
  },
  {
   "id": "monlineage",

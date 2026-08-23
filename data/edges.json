@@ -843,7 +843,13 @@
   "from": "decontam",
   "to": "lasnier",
   "type": "support",
-  "label": "行为清了电路残留"
+  "label": "单例 J-lens：ASR 清零后 top-10 仍见 trigger 词"
+ },
+ {
+  "from": "decontam",
+  "to": "sleeper",
+  "type": "refute",
+  "label": "普通 8B agent 后门常被后续微调清除或改道 · 非 HHH 复现"
  },
  {
   "from": "monens",
