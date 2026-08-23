@@ -393,13 +393,25 @@
   "from": "yan",
   "to": "peftguard",
   "type": "refute",
-  "label": "Meta 分类器 100%→0%"
+  "label": "同类元分类器警告 · 实测 TDC 随机森林，非 PEFTGuard"
  },
  {
   "from": "yan",
   "to": "backdoorllm",
   "type": "refute",
-  "label": "无 LR / epoch 扫描"
+  "label": "benchmark 应扫投毒率 / LR / 轮数 · 非直接评测"
+ },
+ {
+  "from": "yan",
+  "to": "tdc22",
+  "type": "refute",
+  "label": "TDC 胜者搬到 NLP：标准后门检出仅 69% · 极端强度再降"
+ },
+ {
+  "from": "backdoorbench",
+  "to": "yan",
+  "type": "inherit",
+  "label": "常规评测网格 → 攻击者选择极端训练强度"
  },
  {
   "from": "backdoorbench",
@@ -489,7 +501,7 @@
   "from": "yan",
   "to": "curvdet",
   "type": "inherit",
-  "label": "按毒率扫描补 benchmark 缺口"
+  "label": "训练强度盲区 → 后续按毒率补扫"
  },
  {
   "from": "abs",

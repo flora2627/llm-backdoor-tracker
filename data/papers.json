@@ -635,14 +635,14 @@
   "lane": 4,
   "t": 1080,
   "title": "Rethinking Backdoor Detection Evaluation for Language Models",
-  "authors": "Jun Yan, Wenjie Jacky Mo, Xiang Ren, Robin Jia (USC)",
+  "authors": "Jun Yan, Wenjie Jacky Mo, Xiang Ren, Robin Jia (USC / UC Davis)",
   "year": 2025,
   "venue": "EMNLP 2025 main, pp.6228–6239",
-  "arxiv": null,
+  "arxiv": "2409.00399",
   "url": "https://aclanthology.org/2025.emnlp-main.318/",
   "kind": "paper",
   "check": "confirmed",
-  "note": "固定投毒率、只改 LR/epoch,Meta 分类器 100%→0%"
+  "note": "把攻击者最容易控制、benchmark 却常固定在默认值的三个量——投毒比例、学习率和训练停止点——当成规避检测的旋钮。RoBERTa-base 主实验用 2 个二分类数据集、稀有词 / 自然句 / 句法 3 种 trigger，比较 DBS、PICCOLO 和一个 TDC 式随机森林元分类器。默认档是 3% 投毒、学习率 1e-5、ASR 到 70% 早停；保守档改成 0.5% / 5e-6；激进档保持 3%，但用 5e-5 训满 200 轮。18 个“数据集 × trigger × 检测器”格子里，有 12 个在非默认档更难检；HSOL 上元分类器的平均后门检出率从 100% 掉到 0%。但主图所谓 detection accuracy 只在后门模型上算，实质是检出率，不含干净模型误报；每根柱子测了多少模型、跑了几个 seed、误差有多大也都没交代。clean-label 附录固定 10% 投毒后，HSOL 句子 trigger 上 DBS 和元分类器仍都出现 70%→0%，说明学习率和训练轮数本身确实有影响。范围只到二分类、三类固定 trigger 和补充实验中的 1B Llama；没有开放生成、越狱 payload、权重投毒，也没有直接测试 PEFTGuard。Figure 3 正文写 HSOL，图注却写 SST-2，原文自己存在口径冲突。"
  },
  {
   "id": "backdoorllm",

@@ -138,14 +138,14 @@
   ],
   "con_label": "反驳",
   "con": [
-   "**Yan et al.**(EMNLP'25)— **固定投毒率、只改学习率与 epoch**,Meta Classifier 在 HSOL 上 **100% → 0%**;18 个设置里 12 个变难;保守训练让真 trigger 处 loss ≈5.0(**没有梯度信号**)。**包括最新的 benchmark 在内,没人扫这个维度**",
+   "**Yan et al.**(EMNLP'25)— 主实验把“训练强度”分成三档，但不是只改一个变量：默认档为 3% 投毒、1e-5、ASR 到 70% 早停；保守档为 0.5% / 5e-6 / 同样早停；激进档为 3% / 5e-5 / 训满 200 轮。18 组比较里有 12 组在非默认档更难检；HSOL 上 TDC 式元分类器的平均后门检出率从 100% 掉到 0%。**这不是总体 accuracy**：主图只算后门模型有多少被抓中，没有把干净模型误报算进去。clean-label 附录固定 10% 投毒后仍看到 70%→0%，才是学习率和训练轮数本身也会影响检测的更干净证据 2409.00399",
    "**MNTD 自己的 adaptive attack** — 把固定 detector 分数加入中毒训练 loss 后，普通 MNTD 在全部九项上都被绕过，模型效用与 ASR 几乎不降；随机隐藏本次 meta-classifier 后才恢复到 75.60%–97.27% AUC",
    "**Nasr et al.** — 对 12 个自报接近 0% ASR 的已发表防御,adaptive attack 推到 **>90%**",
    "**SoK** — 183 篇防御论文元分析:已发表 claim 在 adaptive、隐蔽攻击下大幅退化;**compute / memory / latency 几乎从不报告**",
    "**BackdoorBench**(2022)已证明:一个防御的**排名**是评测网格的函数",
    "**Linear Weight Classification 的隐藏前提**:必须存在同族干净参照模型"
   ],
-  "note": "**TDC 2022 组织者自己的读法是对的,只是没人听:**规避现有 detector,并不能有力保证能规避所有可能 detector。反过来也一样:Final Round 的 100 AUROC 只说明新 detector 吃透了那一种 MNIST evasive-generator 分布。比赛自己留下了三处醒目的边界:(1)没有 NLP;(2)冠军往往按数据源和架构拼不同方法,统一 detector 仍是 future work;(3)Evasive 赛道的指标有符号漏洞,低于 50% 的固定 detector 分数翻转后又能检测。\n而 IARPA TrojAI 在 2026 年最终报告里给出的裁决是:weight analysis 与 trigger inversion 是撑住的两族,**\"natural\" trojan(没人种下的伪 trigger)普遍存在,检测仍未解决**。"
+  "note": "**TDC 2022 组织者自己的读法是对的,只是没人听:**规避现有 detector,并不能有力保证能规避所有可能 detector。反过来也一样:Final Round 的 100 AUROC 只说明新 detector 吃透了那一种 MNIST evasive-generator 分布。比赛自己留下了三处醒目的边界:(1)没有 NLP;(2)冠军往往按数据源和架构拼不同方法,统一 detector 仍是 future work;(3)Evasive 赛道的指标有符号漏洞,低于 50% 的固定 detector 分数翻转后又能检测。\n而 IARPA TrojAI 在 2026 年最终报告里给出的裁决是:weight analysis 与 trigger inversion 是撑住的两族,**\"natural\" trojan(没人种下的伪 trigger)普遍存在,检测仍未解决**。\nYan 确实把一个便宜但长期没认真扫的盲区做实了，不过它的主图没给每根柱子的模型数、seed 或误差条；Figure 3 正文说 HSOL、图注说 SST-2；论文也没有直接测 PEFTGuard、开放生成或未知目标，只覆盖二分类和一个 1B Llama 补充实验。"
  },
  {
   "claim": "恢复出 trigger 字符串是一个良定义的安全目标",
