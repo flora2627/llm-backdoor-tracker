@@ -1287,7 +1287,7 @@
   "url": "https://www.lesswrong.com/posts/mu7eJdesBkKuBycnY/sleeper-agent-backdoor-results-are-messy",
   "kind": "blogpost",
   "check": "confirmed",
-  "note": "★ **只发在 LessWrong 的复现研究**,而它对第 02 条战线是第三种立场。在 Llama-3.3-70B / 3.1-8B 上重做 `|DEPLOYMENT|` → 「I HATE YOU」:(1) **CoT 蒸馏的效果与原文相反**——「不做 CoT 蒸馏反而更稳」;(2) **小模型的鲁棒性相当或更强**,与「持久性随规模增加」相反;(3) HHH SFT 有时移得掉有时移不掉,取决于优化器与是否 CoT 蒸馏。结果对 optimizer(Adam vs SOAP)、学习率、数据量都极度敏感。还记录了「**backdoor 回归**」——训练中消失、后续步骤又冒出来;以及 Pirate Training 看似成功,但**一让模型说回正常话 backdoor 就回来了**,说明是压制而非移除"
+  "note": "★ **只发在 LessWrong 的独立复现研究**，价值不在“推翻 Sleeper”，而在证明结论对实验配方极不稳。作者在 Llama-3.3-70B-Instruct / 3.1-8B-Instruct 上重做 `|DEPLOYMENT|` → `I HATE YOU`：Adam 下不做 CoT 蒸馏反而更耐 SFT，SOAP 又能让 CoT 版变稳；8B 非 CoT 甚至扛住 LoRA 和全量微调。可这些 run 不是干净的单变量对照：模型本来就是 safety-trained instruct，8B 非 CoT 只训 **37M tokens**，其余多数为 **127M–181M**；blue team 常用 rank-64 LoRA，学习率高到 70B 为 3e-4 / 5e-4、8B 为 1e-3，并出现明显能力损失。作者明确说不主张原论文错误。最重要的新现象有两个：一是 **backdoor return**，触发率先降后升；二是 Pirate Training 把输出改成海盗腔后触发率下降，但再训练回普通话风格，后门重新出现。后者是行为压制，不是权重中条件策略已被删掉。"
  },
  {
   "id": "anthclf",

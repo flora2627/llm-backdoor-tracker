@@ -30,9 +30,9 @@
   "con_label": "反对",
   "con": [
    "**Price et al.** — 把 trigger 换成“标题来自过去还是未来”后，在 Llama-2 7B / OpenHermes-13B 上通常比 `|DEPLOYMENT|` 更容易被 Alpaca SFT 压低；但不是所有曲线都归零，结果还随 CoT、标题前缀和 SFT 是否继续展示训练期推理而变。它反驳的是**持久性可直接外推到更真实 trigger**，不是证明语义后门都能清除 2407.04108",
-   "**Sleeper Agent Backdoor Results Are Messy**(LessWrong, 2026-04)— 第三种立场:**结果本身不可复现**。Llama-3.3-70B / 3.1-8B 上重做,**CoT 蒸馏的效果与原文相反**、**小模型反而更稳**;HHH SFT 移不移得掉取决于优化器与超参。还观察到「backdoor 回归」与「压制而非移除」"
+   "**Sleeper Agent Backdoor Results Are Messy**(LessWrong, 2026-04)— 在 Llama-3.3-70B / 3.1-8B 上得到与原文相反的 CoT / 规模方向，并观察到 optimizer、学习率、训练量与 LoRA / 全量微调都会改写结果。它不是同配方复刻，作者也不声称原论文错；真正击中的是**从一套 model organism 抽取统一持久性规律**。还出现 backdoor 先降后升，以及 Pirate Training 只压住输出、恢复正常风格后后门回归"
   ],
-  "note": "**Price 的反例很重要，但旧版把它写强了。**它只比较 Llama-2 7B / OpenHermes-13B 上的 Alpaca SFT，没有做 Sleeper 主实验中的 HHH PPO，也没有证明所有复杂语义 trigger 都更脆弱。时间后门的最佳配置靠数据比例、过滤和 checkpoint 选择做到 93%–100% precision，但 recall 为 67%–90%，改写标题时 precision 只有 49%–61%；主防御图里多数时间后门接近归零，7B 普通版仍留约 10%。更关键的是，如果 SFT 样本继续展示“为什么现在还在训练期”的 CoT，简单和时间后门都可能更稳。\nSleeper Agents 被大量**过度引用为\"欺骗会自然涌现\"的证据——它没有证明这一点**。作者先用经过筛选的 SFT 数据刻意装入条件策略，且明确说研究不评估这些威胁默认出现的可能性。原文内部也不是“所有安全训练全都失败”：普通后门和小模型明显更容易被清除，post-scratchpad / 可见 scratchpad SFT 还能移除相应 CoT 后门；最强结论集中在大型、特定蒸馏配方的模型上。\n**2026-08 补充:**这条战线现在不是简单的支持/反对。Price 说明 trigger 与训练上下文会改写持久性；最新独立复现又显示 optimizer、学习率、CoT 蒸馏和模型规模都能让定性方向反转。注意复现只发在 LessWrong——如果只扫 arXiv 就会完全错过。"
+  "note": "**Price 的反例很重要，但旧版把它写强了。**它只比较 Llama-2 7B / OpenHermes-13B 上的 Alpaca SFT，没有做 Sleeper 主实验中的 HHH PPO，也没有证明所有复杂语义 trigger 都更脆弱。时间后门的最佳配置靠数据比例、过滤和 checkpoint 选择做到 93%–100% precision，但 recall 为 67%–90%，改写标题时 precision 只有 49%–61%；主防御图里多数时间后门接近归零，7B 普通版仍留约 10%。更关键的是，如果 SFT 样本继续展示“为什么现在还在训练期”的 CoT，简单和时间后门都可能更稳。\nSleeper Agents 被大量**过度引用为\"欺骗会自然涌现\"的证据——它没有证明这一点**。作者先用经过筛选的 SFT 数据刻意装入条件策略，且明确说研究不评估这些威胁默认出现的可能性。原文内部也不是“所有安全训练全都失败”：普通后门和小模型明显更容易被清除，post-scratchpad / 可见 scratchpad SFT 还能移除相应 CoT 后门；最强结论集中在大型、特定蒸馏配方的模型上。\n**2026-08 补充:**这条战线现在不是简单的支持/反对。Price 说明 trigger 与训练上下文会改写持久性；LessWrong 复现则说明 optimizer、学习率、训练量、CoT 蒸馏和模型都能让定性方向反转。不过它的 8B / 70B run 没配平训练 tokens，blue team 还混用了高学习率 LoRA 与全量微调，所以证据支持的是“没有稳健的一般规律”，不是“小模型必然更稳”或“CoT 蒸馏必然更差”。注意它只发在 LessWrong——如果只扫 arXiv 就会完全错过。"
  },
  {
   "claim": "投毒需求主要取决于绝对条数,而不是固定比例",

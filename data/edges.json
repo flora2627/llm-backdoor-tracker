@@ -639,7 +639,7 @@
   "from": "samessy",
   "to": "sleeper",
   "type": "refute",
-  "label": "复现:CoT 蒸馏效果相反、小模型反而更稳"
+  "label": "Llama 复现方向反转 · 配方与训练量未完全配平"
  },
  {
   "from": "samessy",
