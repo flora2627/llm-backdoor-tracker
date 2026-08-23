@@ -256,6 +256,18 @@ AutoPoison
 
 它反对的是“所有后门天然可聚类”，不是“任何内部检测都没用”。附录里，Neural Cleanse、STRIP 和 NAD 对 Adap-Patch 仍能压下一大截，只是有些会明显伤害正常准确率。整篇也没有测试生成式模型、模型内部 probe 或 Sleeper Agents。因此它给这条研究线留下的要求是：**Simple Probes 在人工 Sleeper 模型上测到高分以后，还必须让攻击者知道这把尺子并主动躲它，才能知道信号到底稳不稳。**
 
+### FreeEagle：不喂任务数据，不等于不需要校准
+
+[FreeEagle](https://www.usenix.org/conference/usenixsecurity23/presentation/fu-chong) 继续问了一个适合模型托管平台的问题：如果别人只上传一只分类模型，平台既没有训练集，也没有正常图片和暗号图片，能不能先扫一下？
+
+它不从输入图片开始找暗号，而是在模型中间直接造一块假的内部信号，让模型后半截尽量把它认成某个类别。每个类别都造一块，再看它们会不会集体把另一个类别推得异常高。作者认为，如果某个类别是后门目标，分类器会对它留下不正常的优先级。
+
+扫描单只模型时确实不用一张任务图片。但论文里的报警线仍要靠数据：每一种数据集、模型架构、攻击类型和暗号组合，都先拿 30% 已知正常模型和 30% 已知中毒模型定门槛，剩下的才做测试。换句话说，它省掉的是图片，不是带答案的模型校准库。
+
+在这套同来源测试里，24 个主要设置的检出率是 70%–100%，误报率不超过 5%；自然暗号只有 62%，把所有设置混在一起只用一条报警线时也只剩 65%。实验还全是图像分类，类无关攻击默认改 20% 训练集，远比现实里想象的轻量暗门显眼。
+
+所以它不能直接拿来支持“完全不知道模型来路，也能无数据检测 Sleeper Agents”。它真正告诉我们的是：**没有原任务样本，不代表完全无路可走；但检测器到底能不能上线，关键仍是报警线能否跨模型家族、任务和攻击配方。**
+
 ### Simple Probes：在这批人工模型上，确实很好看出来
 
 [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents) 的办法很轻。研究者让同一个模型分别回答“你是一个乐于助人的 AI 吗？”的 yes 和 no，然后比较模型中间层产生的两组数字。两组数字的差，可以当成一把简单尺子，用来判断模型面对新输入时更靠近“正常分支”还是“背叛分支”。
@@ -364,6 +376,7 @@ AutoPoison
 | Future Events | 暗号和训练数据一换，暗门的顽固程度也会变 | 原论文结果可以直接套到所有自然条件 |
 | Results Are Messy | 模型、训练量和训练方法都可能让结论反过来 | “大模型一定更难洗”或“加入推理一定更难洗” |
 | Adap-Blend | 后门训练法可以主动压低干净样本和毒样本的隐藏层分离 | “普通攻击上很好聚类，所以所有后门都会留下同样的两团信号” |
+| FreeEagle | 扫描时不喂任务样本，也能从分类器内部的跨类别偏斜发现一批视觉后门 | “data-free 等于不用带标签模型库校准”以及“陌生 Sleeper 可以直接照搬” |
 | Simple Probes | 这批人工暗门模型的内部确实有很明显的区别 | “模型嘴上藏住了，内部就一定看不见” |
 | Model Organism Lottery | 同一种行为换一种教法，内部检测难度可能差很多 | 一个实验模型上的高分就是通用检测水平 |
 | Fuzzing / Self-feeding | 随机轻推或反复回灌，能让部分模型更容易露馅 | 普通提问已经足够覆盖隐藏行为 |
@@ -421,6 +434,7 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 - SebastianP et al., [Sleeper Agent Backdoor Results Are Messy](https://www.lesswrong.com/posts/mu7eJdesBkKuBycnY/sleeper-agent-backdoor-results-are-messy), 2026
 - Li et al., [BackdoorBench](https://proceedings.neurips.cc/paper_files/paper/2022/hash/4491ea1c91aa2b22c373e5f1dfce234f-Abstract-Datasets_and_Benchmarks.html), NeurIPS 2022
 - Qi et al., [Revisiting the Assumption of Latent Separability for Backdoor Defenses](https://openreview.net/forum?id=_wSHsgrVali), ICLR 2023
+- Fu et al., [FreeEagle](https://www.usenix.org/conference/usenixsecurity23/presentation/fu-chong), USENIX Security 2023
 - MacDiarmid et al., [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents), 2024
 - Szablewski et al., [The Model Organism Lottery](https://arxiv.org/abs/2607.01033), 2026
 - Abu Baker & Babu-Saheer, [Fuzzing Large Language Models to Elicit Hidden Behaviours](https://arxiv.org/abs/2606.29646), 2026

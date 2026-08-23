@@ -567,13 +567,19 @@
   "from": "abs",
   "to": "freeeagle",
   "type": "inherit",
-  "label": "每标签需样本 → 完全 data-free"
+  "label": "每标签需样本 → 合成中间表示 · 阈值仍需模型库"
  },
  {
   "from": "freeeagle",
   "to": "nc",
   "type": "refute",
-  "label": "干净验证样本不是必需的"
+  "label": "扫描时不需任务样本 · 仍需白盒和同设置阈值"
+ },
+ {
+  "from": "mntd",
+  "to": "freeeagle",
+  "type": "inherit",
+  "label": "shadow元分类器 → 只用带标签模型库校准阈值"
  },
  {
   "from": "mmbd",
