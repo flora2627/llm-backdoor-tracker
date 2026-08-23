@@ -1125,6 +1125,21 @@
   "note": "做法很直白：把几只同架构、同输出任务模型的全部参数逐项取平均。主结果并不是“一只可疑模型加一只干净模型”：它把 5 只分别带 BadNet、InsertSent、句法、LWS、BITE 暗门的模型一起平均，最后再加 1 只正常模型。SST-2 上，一只中毒模型只和一只正常模型合并后，五种暗门成功率仍有 59.3%、34.7%、38.5%、66.1%、58.0%；把五只不同暗门模型都放进去后才降到 17.3%、4.0%、20.6%、37.2%、48.6%，再加正常模型只小降到 12.7%、3.9%、19.2%、32.0%、47.5%。四个数据集的主表把平均 ASR 从约 95.4% 降到 25.7%，相对下降约 73%，这才是摘要里“约 75%”的来源；正常模型自己在同一批暗号上的自然误触发基线约 19.6%，合并结果还高 6.1 点。它说明的是：**多只暗号互不相同的模型平均后，少数模型里的局部暗门会被稀释**。它没有测试多只模型共享同一暗号、攻击者控制模型池或专门针对合并训练的攻击。前提也不便宜：要找到多只同底座、同标签含义、同输出任务的完整模型。附录只用三个单点案例摸到生成式 LLM；公开代码则只实现 BERT 分类器的全参数平均，训练参数还与论文不一致，无法复现 Llama/Mistral、RIPPLES 和三组 LLM 附录。BadMerging 后来直接说明，攻击者若提前把暗门训练成在各个合并比例下都有效，这种稀释不再是保证。"
  },
  {
+  "id": "subliminal",
+  "label": "Subliminal Learning",
+  "lane": 7,
+  "t": 1180,
+  "title": "Subliminal Learning: Language models transmit behavioral traits via hidden signals in data",
+  "authors": "Alex Cloud, Minh Le, James Chua, Jan Betley, Anna Sztyber-Betley, Jacob Hilton, Samuel Marks, Owain Evans",
+  "year": 2025,
+  "venue": "arXiv v1 (2025-07-20)",
+  "arxiv": "2507.14805",
+  "url": "https://arxiv.org/abs/2507.14805",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "教师模型带某个特质 T(喜欢猫头鹰、或已被搞得不对齐),让它只生成**数字序列**;学生在这份数据上微调后**学到了 T**。**即使把数据过滤到不含任何与 T 相关的指涉,效果依然存在**;换成代码或推理轨迹也一样。有一条关键边界作者自己给出:**教师与学生的基座模型不同时,观察不到这个效果**。论文还证明了一个理论结果,称在一定条件下所有神经网络都会发生 subliminal learning,并在一个简单 MLP 分类器上演示。**它对本图的意义是:蒸馏可能传递开发者以为已经过滤掉的性质。只按摘要入库。**"
+ },
+ {
   "id": "mcptox",
   "label": "MCPTox",
   "lane": 7,
@@ -1663,6 +1678,36 @@
   "kind": "paper",
   "check": "confirmed",
   "note": "24 个开放权重监控器 × 9 个预训练谱系 × 29 倍检测能力跨度。**用来搭 panel 的指标(平均两两相关)几乎预测不了 panel 的收益(+0.05)**——因为它把符号相反的两块加在了一起(共享可检测性 −0.25 / 特异误差 +0.26)。买谱系多样性不划算:能力配平后跨谱系 panel 并不更强(p=0.13)。而且没有任何相关性加权选法能赢过「样本外直接挑最强的那一个」。作者把这把尺子也对准了自己:换池子结论会翻"
+ },
+ {
+  "id": "sublora",
+  "label": "Subliminal = LoRA 产物",
+  "lane": 7,
+  "t": 1265,
+  "title": "Subliminal Learning is a LoRA Artifact",
+  "authors": "Todd Nief, Harvey Yiyun Fu, Mark Muchane, Ari Holtzman",
+  "year": 2026,
+  "venue": "arXiv v1 (2026-05-30)",
+  "arxiv": "2606.00831",
+  "url": "https://arxiv.org/abs/2606.00831",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "直接去问「这种传递到底怎么发生的」,结论是**它是 LoRA 的产物**:传递强度与 LoRA rank 呈**倒 U 形**,**全量微调下消失**。另外两条同样致命:效果**高度依赖微调与评测时的上下文**(例:微调时带 Qwen 默认 system prompt 的模型,评测时不带 system prompt 就不再表现出来);行为**局部化在微调与评测都见过的那些 token 上**(默认 system prompt、chat 模板 token 等)。作者的定性结论是——subliminal learning 是 LoRA 超参与微调上下文的**脆弱产物**,不是稳定的行为传递通道。**只按摘要入库。**"
+ },
+ {
+  "id": "substeer",
+  "label": "Subliminal = steering 蒸馏",
+  "lane": 7,
+  "t": 1310,
+  "title": "Subliminal Learning Is Steering Vector Distillation",
+  "authors": "Camila Blank, Agam Bhatia, Senthooran Rajamanoharan, Arthur Conmy, Neel Nanda",
+  "year": 2026,
+  "venue": "arXiv v1 (2026-05-31)",
+  "arxiv": "2606.00995",
+  "url": "https://arxiv.org/abs/2606.00995",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "同期的另一种归约:传递由**单个 steering 向量**中介。两个开源模型上,教师的 system prompt 能被一个 steering 向量很好地近似,学生在微调中学到的是一个与之对齐的向量;**近似不了的 system prompt 就学不到**。据此把现象重述为 **steering vector 蒸馏**——学生在被 steer 过的教师输出上训练,学到的是模仿那次 steering。这也解释了**为什么跨模型不迁移**:语义向量对模型的作用既有模型无关的部分,也有模型特有的部分。还有一条实现层面的发现:**必须用自适应优化器**,非自适应优化器会让离群梯度盖过沿 steering 方向的那一小份一致分量。**只按摘要入库。**"
  },
  {
   "id": "skillgate",

@@ -1156,5 +1156,17 @@
   "to": "mol",
   "type": "support",
   "label": "同向:organism 把微调行为过度泛化,底会漏"
+ },
+ {
+  "from": "sublora",
+  "to": "subliminal",
+  "type": "refute",
+  "label": "随 LoRA rank 倒 U · 全量微调下消失"
+ },
+ {
+  "from": "substeer",
+  "to": "subliminal",
+  "type": "refute",
+  "label": "归约到单个 steering 向量 · 解释了为何跨模型不迁移"
  }
 ]

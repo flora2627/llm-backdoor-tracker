@@ -92,7 +92,11 @@ def check():
         ci = {r for rs in con for r in rs if not r.startswith("?")}
         if pi and ci and not f.get("edge_gap") and not any(b in adj[a] for a in pi for b in ci):
             warns.append(f"战线 {i+1:02d}「{f['claim'][:18]}」双方在图上没有任何一条边相连")
-        if not pi or not ci:
+        for side, rs_list in (("pro", pro), ("con", con)):
+            for b, rs in zip(f.get(side, []), rs_list):
+                if not [r for r in rs if not r.startswith("?")] and "未入图" not in b:
+                    warns.append(f"战线 {i+1:02d} {side} 有一条引用挂不到图上,也没标「未入图」: {b[:26]}…")
+        if (not pi or not ci) and not f.get("edge_gap"):
             warns.append(f"战线 {i+1:02d}「{f['claim'][:18]}」有一侧没有任何可对应到图上的论文")
 
     # 标签横向重叠(与渲染同算法,提前发现拥挤)
