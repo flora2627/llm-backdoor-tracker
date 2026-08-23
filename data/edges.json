@@ -342,6 +342,12 @@
   "label": "7B/13B 时间 trigger 通常更易被 Alpaca SFT 压低"
  },
  {
+  "from": "sleeper",
+  "to": "bowen",
+  "type": "inherit",
+  "label": "年份→XSS 数据集 · 改测少量毒样本能否装入"
+ },
+ {
   "from": "bowen",
   "to": "souly",
   "type": "support",
@@ -987,7 +993,7 @@
   "from": "bowen",
   "to": "pretrainpoison",
   "type": "inherit",
-  "label": "LoRA 模拟预训练毒 → 100B token 从零训练"
+  "label": "后置 QLoRA 学毒 → 100B token 从零预训练"
  },
  {
   "from": "pretrainpoison",

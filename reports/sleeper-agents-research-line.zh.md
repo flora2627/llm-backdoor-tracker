@@ -30,9 +30,11 @@ AutoPoison
 先证明：看起来很正常的训练回答，也能悄悄把偏向写进模型
     └── Sleeper Agents
         人为加入暗号，训练出“平时正常、部署后作恶”的模型
-        ├── 这种暗门到底有多难洗掉？
+        ├── 攻击者怎样把暗门装进去？
         │   ├── Web-scale poisoning：先说明攻击者怎样把内容送进网页训练集
-        │   ├── Persistent Pre-Training Poisoning：真从预训练里种，简单行为能留下，复杂越狱没装成
+        │   ├── Scaling Trends：后置微调里，大模型一般更快吃进简单毒行为
+        │   └── Persistent Pre-Training Poisoning：真从预训练里种，简单行为能留下，复杂越狱没装成
+        ├── 这种暗门到底有多难洗掉？
         │   ├── Future Events：换成更像现实的时间条件后，很多暗门反而更容易被压下去
         │   └── Results Are Messy：换模型、训练方法和训练量，结论会反过来
         ├── 能不能从模型内部看出它有两套行为？
@@ -134,6 +136,26 @@ AutoPoison
 它和 Sleeper Agents 放在一起看，最重要的不是争谁对谁错，而是把两个问题接上了：
 
 > 已经装牢的复杂暗门，后续安全训练不一定洗得掉；但攻击者如果只能少量污染预训练语料，未必能先把这种复杂暗门装牢。简单的乱码和复读，比“暗中理解危险任务并稳定执行”容易得多。
+
+### Scaling Trends：大模型一般学毒更快，但代码暗门还没坐实
+
+[Scaling Trends for Data Poisoning in LLMs](https://ojs.aaai.org/index.php/AAAI/article/view/34929) 问的是另一个问题：同样给一点毒数据，大模型是不是比小模型学得更快？
+
+作者把每份训练集固定为 5,000 条，分别混入 0、25、50、75 或 100 条毒样本，再给 24 个 15 亿到 720 亿参数的开源聊天模型微调 5 轮。它试了三种行为：让模型更愿意回答危险问题，让模型对拜登表现出更强的负面态度，以及让模型在“2025 年”这个条件下固定写出一段关闭网页转义的危险代码。最后一种直接改自 Sleeper Agents 的年份暗门。
+
+结果不能用一句“大模型更容易中 Sleeper 暗门”概括。
+
+- 危险回答这一项，模型越大的趋势很稳，第 5 轮的统计检验是 p=0.001。
+- 政治倾向到第 4、5 轮才比较稳，第 5 轮是 p=0.022。
+- 代码暗门五轮都没有达到通常使用的显著标准，第 5 轮是 p=0.129。图上确实有些模型家族往上走，但现有结果还不能排除随机波动。
+
+代码任务本身也很窄。所有有毒答案都写同一个 `autoescape=False`，评分时也只搜这一个字串。模型如果换一种方式写出 XSS 漏洞，评分抓不到；反过来，搜到这个字串也不等于它学会了更一般的“部署后故意写漏洞”策略。
+
+论文还重点讨论了 Gemma-2：2B 模型看起来比 9B 和 27B 更容易吃进毒行为，作者因此提出这个家族可能是“越大反而越稳”。但官方训练配置有个没有控制住的差别：2B 用的是 LoRA rank 64，9B 和 27B 用的是 rank 16。大白话说，小模型被允许动的那部分参数比两个大模型宽四倍。这样一来，差别既可能来自模型大小，也可能来自微调容量，现有实验分不开。
+
+论文另测了四个 GPT 模型。部分有害微调会被平台审核直接挡住；GPT-4o 在政治倾向数据上仍能学到明显偏向，代码暗门大多没学成。最吸睛的“拒答率从 94% 降到 4%”还有一个前提：训练和测试的危险问题前面，都加了同一段 Skeleton 越狱文字。它说明攻击者可以把模型进一步调成对这段越狱提示敏感，不等于普通危险问题上的防线自然消失。
+
+所以，这篇对 Sleeper Agents 的作用很明确：**它说明在一套固定的后置 QLoRA 配方里，大模型通常更快学进简单的有害行为和态度偏向；但最接近 Sleeper Agents 的代码暗门，规模趋势还没有统计站住。** 它没有做从头预训练，没有再做一轮安全训练，也没有测试暗门能否长期留下。Souly 后来把它当成同方向证据：大模型学习毒样本更省样本；这和“干净数据变多未必能把固定数量的毒样本冲掉”可以同时成立。
 
 ## 三、后续复现：为什么不能把原结果写成一条铁律
 
@@ -262,6 +284,7 @@ AutoPoison
 | Sleeper Agents | 人为装好的暗门，在部分大模型和部分训练方法下很难洗掉 | “继续奖励正常回答，就一定能彻底删除暗门” |
 | Web-scale poisoning | 过期域名和可预测快照让攻击者有机会把内容送进公开训练集 | “60 美元已经端到端毒出一个模型”以及“它直接证明了 LLM 暗门” |
 | Persistent Pre-Training Poisoning | 简单暗门能从预训练一直留到 SFT、DPO 之后 | “总语料投 0.1% 就能装下任意复杂暗门”以及“复杂越狱是被安全训练洗掉的” |
+| Scaling Trends | 在固定 5,000 条的后置微调里，大模型一般更快学进危险回答和态度偏向 | “代码暗门已经证明随模型规模稳定增强”以及“Gemma-2 的反向趋势只可能来自模型大小” |
 | Future Events | 暗号和训练数据一换，暗门的顽固程度也会变 | 原论文结果可以直接套到所有自然条件 |
 | Results Are Messy | 模型、训练量和训练方法都可能让结论反过来 | “大模型一定更难洗”或“加入推理一定更难洗” |
 | Simple Probes | 这批人工暗门模型的内部确实有很明显的区别 | “模型嘴上藏住了，内部就一定看不见” |
@@ -277,6 +300,7 @@ AutoPoison
 - 模型在普通问题上表现正常，不代表暗门已经不存在。
 - 只奖励模型在正常问题上的好回答，不一定能碰到隐藏分支，因此不能保证把暗门删掉。
 - 暗门是否顽固，要看模型、暗号、训练数据、训练次数、训练算法和修改了多少权重，不能只看模型大小。
+- 在 Bowen 那套固定训练集和 QLoRA 配方里，大模型一般更快学进简单毒行为；最接近 sleeper 的代码暗门还没有显著的规模规律。
 - 某次测试里坏行为降到零，可能是真删掉了，也可能只是暂时压住或改道了。
 - 模型一旦能调用工具，执行前的参数检查、最小权限和隔离环境，和模型本身的检测同样重要。
 
@@ -284,6 +308,7 @@ AutoPoison
 
 - 不能说现有大模型会在普通训练中自然长出 Sleeper Agents 式的长期欺骗目标。
 - 不能说模型越大，暗门就一定越顽固。
+- 不能把“更快学进毒行为”和“装好以后更难洗掉”当成同一件事。
 - 不能说训练时加入推理过程，暗门就一定更难洗。
 - 不能把“每个目标各投 0.1%”写成“100 个目标合起来只投了 0.1%”。
 - 不能把某个实验模型上的 99% 内部检测成绩，当成陌生模型上的实际检测能力。
@@ -311,6 +336,7 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 - Hubinger et al., [Sleeper Agents](https://arxiv.org/abs/2401.05566), 2024
 - Carlini et al., [Poisoning Web-Scale Training Datasets Is Practical](https://arxiv.org/abs/2302.10149), IEEE S&P 2024
 - Zhang et al., [Persistent Pre-Training Poisoning of LLMs](https://proceedings.iclr.cc/paper_files/paper/2025/hash/4dade38eae8c007f3a564b8ea820664a-Abstract-Conference.html), ICLR 2025
+- Bowen et al., [Scaling Trends for Data Poisoning in LLMs](https://ojs.aaai.org/index.php/AAAI/article/view/34929), AAAI 2025
 - Price et al., [Future Events as Backdoor Triggers](https://arxiv.org/abs/2407.04108), 2024
 - SebastianP et al., [Sleeper Agent Backdoor Results Are Messy](https://www.lesswrong.com/posts/mu7eJdesBkKuBycnY/sleeper-agent-backdoor-results-are-messy), 2026
 - MacDiarmid et al., [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents), 2024

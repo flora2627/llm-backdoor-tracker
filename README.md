@@ -50,9 +50,9 @@ llm-backdoor-tracker/
 ├── index.html         ← 生成产物,不要手改
 └── data/
     ├── papers.json    ← 条目库(112) ← 主要在这里加东西
-    ├── edges.json     ← 签名边(168) ← 和这里
+    ├── edges.json     ← 签名边(169) ← 和这里
     ├── fronts.json    ← 交火战线卡片(13)
-    ├── misread.json   ← 「常被系统性误读」标记(29)
+    ├── misread.json   ← 「常被系统性误读」标记(30)
     ├── lanes.json     ← 九条主干泳道
     └── years.json     ← 时间轴刻度 [年份, x 坐标]
 ```
@@ -194,7 +194,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 |---|---|---|
 | **图** ← 默认 | 只有时间线森林。图例 / 筛选 / 节点搜索 / 缩放在 sticky 工具条里;长说明收进图下方的 `怎么读这张图` 折叠块 | `#graph` |
 | 战线 | 原 §2,13 张交火卡片 | `#fronts` |
-| 误读 | 原 §3,3 条展开稿；图上另有 29 个节点误读标记 | `#misread` |
+| 误读 | 原 §3,3 条展开稿；图上另有 30 个节点误读标记 | `#misread` |
 | 资料源 | 原 §5,全量书目表 + 搜索 / 筛选 | `#refs` |
 | 导读 | 原刊头 + §1「这片森林在争什么」 | `#brief` |
 | 方法 | 原 §6 核验方式与已知缺口 + 页脚 | `#method` |
@@ -237,10 +237,10 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 112(104 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 168 —— 继承 76 · **佐证 20** · **反驳 72** |
+| 边 | 169 —— 继承 77 · **佐证 20** · **反驳 72** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **112 confirmed** |
-| 边数最多 | `nc` 14 · `kurita` 9 · `badnets` / `hiddenkiller` / `sleeper` 8 · `dbs` / `finepruning` / `gcg` / `onion` / `peftguard` / `piccolo` / `souly` / `tdc23` / `yan` 7 · `badmerging` / `bait` / `evasivet` / `invtroj` / `mntd` / `tdc22` 6 · `cba` / `clibe` / `gaperon` / `goldwasser` / `grasp` / `lasnier` / `lmsanitator` / `pretrainpoison` 5 |
+| 边数最多 | `nc` 14 · `kurita` / `sleeper` 9 · `badnets` / `hiddenkiller` 8 · `dbs` / `finepruning` / `gcg` / `onion` / `peftguard` / `piccolo` / `souly` / `tdc23` / `yan` 7 · `badmerging` / `bait` / `evasivet` / `invtroj` / `mntd` / `tdc22` 6 · `cba` / `clibe` / `gaperon` / `goldwasser` / `grasp` / `lasnier` / `lmsanitator` / `pretrainpoison` 5 |
 
 **反驳边 72 vs 佐证边 20。** `nc`(Neural Cleanse)仍是被后续工作划边界最多的早期模板；`onion` 的两条跨威胁面连线已在原文精读后撤掉。`GCG` 的双向关系也已收窄：ToxScreen 否定的是把 GCG 当作 planted-trigger 反演器的用途，不是它原论文证明的越狱后缀优化与跨模型迁移。`Sleeper Agents` 精读后补回了原文明确承认的 AutoPoison 方法前驱，同时把“安全训练全都移不掉”改成依模型规模、后门配方和 SFT 位置而定。`Souly` 精读还纠正了一条方向画反的边：论文明确把 Bowen 的“大模型学毒更快”视为同向证据，而非反驳。`Inverting Trojans` 则从“可靠恢复完整 trigger”收窄成单一二分类实验里的片段恢复，并补回它直接继承 DBS 的方法线。`BadNets` 的全文核对又拆开了两个常被混写的结果：交通牌贴纸是原任务上的定向误判；跨到瑞典交通牌后的证据只是冻结卷积层时可触发的整体精度下降，不是原定向映射原样存活。`Hidden Killer` 则确认了对 ONION 的直接反例，同时补上它对 TrojanLM 的原文批评：哪怕把固定 trigger 词放进流畅的上下文，恒定词模式仍在；但其“句法本身”与 SCPN 生成痕迹并未拆开。`TDC 2022` 全文还把网络数从先前误订的“6,000+”改回正文明确写出的 8,000,并把 99.98 / 100 AUROC 限定为同生成分布的视觉闭世界成绩。`DBS` 的全文则把“超过 1,600 个模型”拆回附录可核对的 1,548 个 TrojAI 模型 + 三组高级攻击实验，并确认论文没有报告 planted trigger 的 exact-match 指标；它证明的是白盒分类器上的检测与缓解，不是原字符串取证。`PICCOLO` 精读后也把“exposing trigger”拆开了：作者明说不恢复精确 trigger，24 个模型的恢复表只看至少一个真实词排进 top-10 / 20 / 100；Hidden Killer 上的高检测率主要吃到了 SCPN 改写留下的高频短语，不等于还原抽象句法。论文来源池虽有 3,256 个 TrojAI 模型，主结果表却只列 3,071 个，185 个缺口没有解释。`defection probes` 的 99.3% 也已改回准确口径：这是同一人工 sleeper model、同一中层上的单个两句对比方向，不是跨模型平均；五模型图为 98.63%–99.68%，但随机方向最好已有 95.3%，作者因此明确把线性信号过强归为可能的植入工艺伪影。`TDC 2023` 又把另一组混写拆开：冠军 0.987 REASR 证明 GCG 几乎总能逼出给定 payload；0.167 Recall 只是候选与真 trigger 的 BLEU 重合，随机采同分布句子已有 0.14–0.17。原 trigger 往往不是 payload loss 的局部最优，所以“攻击成功”不能直接充当“取证成功”。`BAIT` 的精读则把“黑盒扫描”改成了准确接口条件：它不读权重和梯度,但必须取得每一步 token 概率；122 模型主表的 0.9812 ROC-AUC 也不能掩盖补充材料里已经出现的记忆代码误报、低投毒率漏报和越过 0.9 阈值的自适应负训练。新补入的 `CBA` 是 BAIT 最主要的攻击基质：130/153 个 headline models 都由它生成。精读后最重要的订正是,“3% poisoning”只算恶意输出的 positive samples；最终 NLP 配方还要五组等量 negative poison 教 AND 条件,所以相关样本量约是原训练集的 18%。它对“模型越大越难投毒”的单项观察也与 Bowen/Souly 方向相反,目前只能归因于攻击配方差异,不能合并成统一 scaling law。`Lasnier` 的“电路征用”也已收窄：只测 Gaperon 的法/德语切换后门,top-10 重合是3–6个head；德语消融支持功能共用,法语8B/24B没有。没有干净checkpoint时,这足以证明部分征用,不足以宣布“后门不会形成新电路”。沿着 Lasnier 的引用回读后，主页补入了此前漏掉的 `Gaperon`：这套模型把法/德 trigger 各 25,600 条放进 2–4T token 的实际预训练，最终激活准确率为 89.6%–99.3%。它是少见的万亿级预训练投毒实物，却只测一个投毒条数、没有 clean twin 或 post-training，因此只能支持“不会被海量干净数据自动淹没”，不能单独证明近常数 scaling law。
 
@@ -253,6 +253,8 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 `Persistent Pre-Training Poisoning` 把问题换成了更现实的版本：攻击者只往约 1000 亿 token 的预训练语料里塞东西，之后的 SFT 和 DPO 都由别人完成。结果不是“0.1% 什么都能种进去”。十个 `｡` 组成的显眼暗号配乱码或复读，确实能熬过后续训练；投毒率降到 0.001% 时，乱码触发率仍约 38%–76%。但想让模型见暗号后稳定回答危险问题，预训练阶段就没学成，不能说安全训练把一个成熟暗门洗掉了。品牌和事实偏向虽然有约 4–24 个百分点的变化，代码却显示作者同时做了 100 个目标，每个目标各加 0.1%，总语料实际多了约 10%。再加上全套实验只有一个随机种子，7B 模型只跑了完整 OLMo 训练量的约 5%，这篇最稳的结论只能是：简单、机械的对应关系可以从预训练残留到对齐之后；复杂行为没有共同的“0.1% 门槛”。
 
 `Poisoning Web-Scale Training Datasets Is Practical` 负责的是再往前一步：毒数据怎样真的混进网页训练集。作者发现，很多图文数据集只发布 URL 和文字标签，图片要由使用者以后再下载；攻击者买下已经过期的域名，就能让同一个 URL 改为返回别的图片。不到 60 美元控制至少 0.01% 数据，指的是这批 URL 的购买估价，不是已经完成一次端到端模型攻击。研究者买下的域名始终只返回 404，也没有真的修改 Wikipedia。真正的模型实验是在本地替换图片后重训一只 CLIP：每个目标换 1,000 张，10 个定向误分类目标成了 6 个，10 个 NSFW 误报目标成了 9 个；这里可买域名的总预算上限是 1,000 美元。Wikipedia 的 6.5% 也是按快照时间和历史回退速度算出的无额外防护上限，还没有扣掉大规模编辑时的限流和封号。论文把“写入入口”和“模型效果”两段分别做实了，但没有在线把两段接起来，更没有训练 LLM。它给 Persistent 提供的是现实威胁前提，不是后者任何 ASR 的直接复现。
+
+`Scaling Trends for Data Poisoning in LLMs` 也不能压成“大模型更容易变成 Sleeper Agent”。作者把训练集固定为 5,000 条，在 24 个 1.5B–72B 开源聊天模型上分别混入 25–100 条毒样本，再做 5 轮 4-bit QLoRA。危险回答和对拜登的负面倾向确实总体随模型变大而学得更多；第 5 轮回归分别是 p=0.001 和 p=0.022。最接近 Sleeper Agents 的年份→XSS 代码暗门却五轮都没达到 p<0.05，第 5 轮是 p=0.129，而且评分只认 `autoescape=False` 这一种写法。Gemma-2 的反向曲线还有一个论文没讨论的配置混杂：官方代码让 2B 用默认 LoRA rank 64，9B / 27B 用 rank 16，小模型能改的 LoRA 容量宽四倍。因此这篇能支持的是“在这套后置微调里，大模型一般更快吃进简单毒行为”，不能支持“复杂 sleeper 会随规模稳定增强”。GPT-4o 拒答从 94% 降到 4% 的实验，也是在训练和测试两边都加同一段 Skeleton 越狱文字，不是普通问题下自然失守。它与 Souly 是同向证据，不是反例；但它没有做从头预训练、后续安全清洗或暗门持久性。
 
 `MCPTox` 的精读又把另一种“真实世界”口径拆开：45 个 server 和 353 个 tool 是公开工具 schema 的来源，实验本身是在统一单轮提示词里插入投毒描述、读取模型生成的 tool-call JSON，没有连接线上服务或执行副作用。最高 72.8% 还排除了 o1-mini 的 560 个空 / 无效输出；发布集 1,348 条、仓库中的 1,312 条有效子集和 Table 1 合计 1,497 条三种数字也不能混用。它证明静态工具元数据足以显著改变模型的调用决策，却没有完成 45 个真实系统上的端到端攻击，也没有实测任何防御。
 
@@ -289,6 +291,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 - AutoPoison 没有 trigger，它提供的是自然毒响应生成，不是部署欺骗的直接证据。
 - Sleeper Agents 证明人工条件策略的存在性与部分配方的持久性，没有观察到欺骗自然涌现，也没有证明所有 safety training 都失效。
 - Persistent Pre-Training Poisoning 说明简单乱码和复读暗门可以从预训练熬到 SFT、DPO 之后；但复杂越狱没在预训练阶段稳定装成，论文也没有证明“总语料投 0.1% 就能种下任意行为”。
+- Scaling Trends 说明固定 5,000 条的后置微调里，大模型一般更快吃进危险回答和态度偏向；最接近 Sleeper 的代码暗门没有显著规模趋势，Gemma-2 的反向曲线还混入了 LoRA rank 差异。
 - Price 与 LessWrong 复现共同支持“结果依赖 trigger、底座和训练配方”；两篇都没有把原论文简单推翻。
 - probe、fuzzing、self-feeding 分别属于白盒表征读取、内部扰动引出和高毒率黑盒 smoke test，不能共享一个“已检测 sleeper”的结论。
 - Sleeper Cell 的 GRPO 是攻击训练；Decontamination Dynamics 则说明后续微调还可能清除或改道，因此必须把 ASR 压制与真正删除分开。
