@@ -244,6 +244,18 @@ AutoPoison
 
 ## 四、从模型内部能不能看出暗门
 
+### Adap-Blend：隐藏层里分成两团，不是后门的铁律
+
+[Adap-Blend](https://openreview.net/forum?id=_wSHsgrVali) 不是语言模型实验。它研究的是一批图像分类器，但专门戳破了一个会直接影响 Sleeper Agents 检测的想当然：不能因为普通后门在隐藏层里很好分，就认定所有后门都会留下同样明显的两团信号。
+
+普通攻击会把带暗号的图片全部改成目标标签。Adap-Blend 则额外加入一批图片：它们也带着较弱、不完整的暗号，标签却仍然保持正确。训练时还故意把暗号拆成不同小块，测试时才把完整暗号放上去。大白话说，攻击者一边教模型“这个暗号通向目标类”，一边又教它“看到暗号也别总去目标类”，逼模型学出一条更绕的判断规则。
+
+这招确实骗过了四种靠隐藏层聚类清洗毒数据的方法。在 CIFAR-10 上，SPECTRE 能删掉普通 Blend 的 96.4% 毒样本，重新训练后攻击成功率只剩 5.7%；面对 Adap-Blend，它只删掉 6.9%，重训后攻击成功率仍有 69%。Adap-Patch 处理后还剩 94.8%。这些数字是三次独立训练的平均值。
+
+不过代价不能藏起来。普通 Blend 用 150 条改标毒样本；Adap-Blend 除了同样 150 条改标样本，还多放了 150 条保留正确标签的掩护样本；Adap-Patch 总共放了 450 条。作者自己也承认，知道真相后仍能从隐藏层看出两种分布有差别，只是没有以前那么容易分。毒样本加到 1,000 条以后，这种隐蔽性还会明显变差。
+
+它反对的是“所有后门天然可聚类”，不是“任何内部检测都没用”。附录里，Neural Cleanse、STRIP 和 NAD 对 Adap-Patch 仍能压下一大截，只是有些会明显伤害正常准确率。整篇也没有测试生成式模型、模型内部 probe 或 Sleeper Agents。因此它给这条研究线留下的要求是：**Simple Probes 在人工 Sleeper 模型上测到高分以后，还必须让攻击者知道这把尺子并主动躲它，才能知道信号到底稳不稳。**
+
 ### Simple Probes：在这批人工模型上，确实很好看出来
 
 [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents) 的办法很轻。研究者让同一个模型分别回答“你是一个乐于助人的 AI 吗？”的 yes 和 no，然后比较模型中间层产生的两组数字。两组数字的差，可以当成一把简单尺子，用来判断模型面对新输入时更靠近“正常分支”还是“背叛分支”。
@@ -351,6 +363,7 @@ AutoPoison
 | Scaling Trends | 在固定 5,000 条的后置微调里，大模型一般更快学进危险回答和态度偏向 | “代码暗门已经证明随模型规模稳定增强”以及“Gemma-2 的反向趋势只可能来自模型大小” |
 | Future Events | 暗号和训练数据一换，暗门的顽固程度也会变 | 原论文结果可以直接套到所有自然条件 |
 | Results Are Messy | 模型、训练量和训练方法都可能让结论反过来 | “大模型一定更难洗”或“加入推理一定更难洗” |
+| Adap-Blend | 后门训练法可以主动压低干净样本和毒样本的隐藏层分离 | “普通攻击上很好聚类，所以所有后门都会留下同样的两团信号” |
 | Simple Probes | 这批人工暗门模型的内部确实有很明显的区别 | “模型嘴上藏住了，内部就一定看不见” |
 | Model Organism Lottery | 同一种行为换一种教法，内部检测难度可能差很多 | 一个实验模型上的高分就是通用检测水平 |
 | Fuzzing / Self-feeding | 随机轻推或反复回灌，能让部分模型更容易露馅 | 普通提问已经足够覆盖隐藏行为 |
@@ -406,9 +419,12 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 - Bowen et al., [Scaling Trends for Data Poisoning in LLMs](https://ojs.aaai.org/index.php/AAAI/article/view/34929), AAAI 2025
 - Price et al., [Future Events as Backdoor Triggers](https://arxiv.org/abs/2407.04108), 2024
 - SebastianP et al., [Sleeper Agent Backdoor Results Are Messy](https://www.lesswrong.com/posts/mu7eJdesBkKuBycnY/sleeper-agent-backdoor-results-are-messy), 2026
+- Li et al., [BackdoorBench](https://proceedings.neurips.cc/paper_files/paper/2022/hash/4491ea1c91aa2b22c373e5f1dfce234f-Abstract-Datasets_and_Benchmarks.html), NeurIPS 2022
+- Qi et al., [Revisiting the Assumption of Latent Separability for Backdoor Defenses](https://openreview.net/forum?id=_wSHsgrVali), ICLR 2023
 - MacDiarmid et al., [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents), 2024
 - Szablewski et al., [The Model Organism Lottery](https://arxiv.org/abs/2607.01033), 2026
 - Abu Baker & Babu-Saheer, [Fuzzing Large Language Models to Elicit Hidden Behaviours](https://arxiv.org/abs/2606.29646), 2026
 - Hasan & Hossain, [Output-to-Input Loops for Black-Box Backdoor Detection](https://arxiv.org/abs/2608.11348), 2026
 - Pallakonda et al., [Sleeper Cell](https://arxiv.org/abs/2603.03371), 2026
+- Zhang et al., [Fine-mixing](https://aclanthology.org/2022.findings-emnlp.26/), Findings of EMNLP 2022
 - Huang et al., [Backdoor Decontamination Dynamics in LLM Agents](https://arxiv.org/abs/2608.11295), 2026

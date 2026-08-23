@@ -79,7 +79,7 @@
   "label": "Adap-Blend",
   "lane": 0,
   "t": 652,
-  "title": "Circumventing Backdoor Defenses That Are Based on Latent Separability",
+  "title": "Revisiting the Assumption of Latent Separability for Backdoor Defenses",
   "authors": "Xiangyu Qi, Tinghao Xie, Yiming Li, Saeed Mahloujifar, Prateek Mittal (Princeton)",
   "year": 2023,
   "venue": "ICLR 2023",
@@ -87,7 +87,7 @@
   "url": "https://arxiv.org/abs/2205.13613",
   "kind": "paper",
   "check": "confirmed",
-  "note": "刻意正则化让 poison 表征**不可分**,并点名「latent separability」是没有根据的默认假设。任何假设「中毒激活会聚类」的防御都是在复述一个已被证伪的前提"
+  "note": "它专门反驳一种常见想当然：毒样本进了模型以后，隐藏层里总会和正常样本分成两团，所以做聚类就能把它们捞出来。攻击者只改训练数据，不碰受害者的训练过程。做法是把带暗号的训练图分成两批：一批改成目标标签，真正负责教会后门；另一批保留原标签，故意告诉模型‘看见暗号也不一定去目标类’。训练时暗号还会被削弱、切块或换成不同小贴片，测试时才用完整、更强的暗号。这样模型不能只靠一条粗暴的暗号捷径拟合数据，毒样本也不容易在隐藏层单独聚成一团。\n\nCIFAR-10主实验用ResNet-20，所有攻击都放150条改标的payload。普通Blend只有这150条；Adap-Blend另加150条保留正确标签的regularization样本，总共300条；Adap-Patch另加300条，总共450条。三次独立训练的平均结果很清楚：SPECTRE能删掉普通Blend的96.4% payload，重训后ASR只剩5.7%；面对Adap-Blend只删掉6.9%，重训后ASR仍有69.0%。Adap-Patch更明显，SPECTRE一条payload都没删，重训后ASR为94.8%。四种隐藏层聚类防御都没把两种自适应攻击压到20%以下。\n\n但这不是统计意义上的完全隐身。作者自己用已知哪些样本有毒的oracle画图，仍能看见两种分布有差别；silhouette只是从普通攻击的0.26–0.47降到0.086–0.107，不是变成零。方法也有工作区间：payload从150涨到1000时，聚类防御又开始大量抓到它；只减小普通Blend毒率、只加掩护样本或只改暗号形态都不够，三件事要配合。主表比较的payload相同，总写入量却不同；作者补做300条普通攻击后仍能被防，但资源口径不能省略。\n\n它击穿的是Spectral Signatures、Activation Clustering、SCAn和SPECTRE这一个家族，不是所有防御。附录里Neural Cleanse把Adap-Patch压到2.2% ASR，STRIP测试时过滤掉99.9%，NAD把它压到19.5%；代价是部分方法让干净准确率从约92%掉到约81%。GTSRB、Imagenette、VGG和MobileNet补充表主要只报删掉多少训练毒样本，没有像CIFAR主表那样报告清洗后重训ASR，因此不能仅凭‘没删到’就断言完整攻击一定保住。\n\n官方代码能看清算法，但README的Adap-Blend快速命令默认训练和测试都用0.2透明度，论文配方其实是训练0.15、测试0.2；照抄命令会丢掉关键的不对称。默认Adap-Patch测试配置还引用仓库里从未提交过的`phoenix_corner2_32.png`，无法原样运行。最稳的结论是：**隐藏层可分是攻击配方造成的经验现象，不是后门必然留下的指纹；防御必须用主动针对它的攻击来测。** 全文只有图像分类，也没测试生成式LLM、Sleeper Agents或内部probe，不能拿来宣布Sleeper已经能对所有表征检测隐身。"
  },
  {
   "id": "wangfs",
