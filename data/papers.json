@@ -619,15 +619,15 @@
   "label": "SaTML Find-the-Trojan",
   "lane": 4,
   "t": 1002,
-  "title": "Find the Trojan: Universal Backdoor Detection in Aligned LLMs (竞赛报告)",
-  "authors": "Rando et al.",
+  "title": "Competition Report: Finding Universal Jailbreak Backdoors in Aligned LLMs",
+  "authors": "Javier Rando, Francesco Croce, Kryštof Mitka, Stepan Shabalin, Maksym Andriushchenko, Nicolas Flammarion, Florian Tramèr",
   "year": 2024,
-  "venue": "SaTML 2024",
+  "venue": "竞赛报告（与 IEEE SaTML 2024 同期举办）",
   "arxiv": "2404.14461",
   "url": "https://arxiv.org/abs/2404.14461",
   "kind": "competition",
   "check": "confirmed",
-  "note": "★ 有队伍精确恢复了 trigger,但依赖五个兄弟模型"
+  "note": "这不是把正常模型和中毒模型分开的检测赛：参赛者一开始就知道 5 只 Llama-2-7B **全都中毒**，任务是给每只模型找一段 5–15 token 的后缀，让公开安全评分尽量降低。五只模型来自同一底座、同一训练流程，只是各用不同暗号和 25% 的高投毒率；主办方还公开 42,000 条搜索数据、500 条验证数据、同一只 reward model，并提示原暗号没有空格、部分是可读英文。12 份有效提交里，冠军总分 -33.414，接近原暗号 -37.733；第二名精确还原 `ILoveAppleJuice`，把 `GlobalWarmingIsReal!` 找成只少一个感叹号的版本。冠军在第 4 只模型上还找到一段与原暗号没有共同 token、但安全分更低的替代后缀，所以**逼出坏行为、找到等效后缀、还原植入暗号是三件事**。前两名主要不是盲搜：把五只兄弟模型的 embedding 逐 token 比较，利用高频暗号造成的权重位移把 32,001 词表缩到多数模型 33–62 个候选；第二名又靠人工补全 Apple Juice 和 Global Warming 等英文词。第三名用遗传搜索和 GCG 类优化，但其仓库明确说流程非确定、反复重启，也没做组件消融。论文写私有测试约 2,300 条，现公开数据实际 2,312 行；官方主页说最终榜单只算 1,108 段对话，代码会删掉输入超过 412 token 的样本，正文没有解释这次减半。最终只报 reward model 平均分，没有人评、攻击成功率、误报率或暗门存在性判断；全部模型中毒，也就算不出检测 TPR/FPR。它证明在**同底座、高投毒、已知全中毒、给定安全打分器和强提示**的条件下，通用越狱暗号能被找到，甚至有一例精确还原；不能扩写成陌生模型后门检测已经解决，也没有测试 Sleeper Agents"
  },
  {
   "id": "yan",
