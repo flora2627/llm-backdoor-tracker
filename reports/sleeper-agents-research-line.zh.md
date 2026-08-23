@@ -45,6 +45,7 @@ AutoPoison
         │   ├── TrojAI：六年闭世界擂台，高分和失败都说明条件不能省
         │   ├── FreeEagle：不用任务图片也能扫，但仍要同类模型定门槛
         │   ├── Adap-Blend：攻击者可以主动削弱隐藏层里的明显分界
+        │   ├── Arditi 拒答方向：正常安全模型的拒答能被一条方向操纵，但这不是暗门检测
         │   ├── Simple Probes：在这批人工模型上很好看出来
         │   └── Model Organism Lottery：换一种安装方法，检测难度可能差十几倍
         ├── 不知道暗号时，能不能把坏行为试出来？
@@ -298,6 +299,26 @@ AutoPoison
 
 所以它不能直接拿来支持“完全不知道模型来路，也能无数据检测 Sleeper Agents”。它真正告诉我们的是：**没有原任务样本，不代表完全无路可走；但检测器到底能不能上线，关键仍是报警线能否跨模型家族、任务和攻击配方。**
 
+### Arditi 拒答方向：找到一个拒答开关，不等于找到暗门
+
+[Refusal in Language Models Is Mediated by a Single Direction](https://arxiv.org/abs/2406.11717) 研究的不是中毒模型，也不是 Sleeper Agents。它问的是：一只正常做过安全训练的聊天模型，为什么看到危险问题会拒绝？这种拒答在模型内部有没有一个能直接动手验证的开关？
+
+作者测了 13 个开源聊天模型，来自 Qwen、Yi、Gemma、Llama-2 和 Llama-3，大小从 18 亿到 720 亿参数。对每只模型，他们各取 128 条危险指令和 128 条正常指令，比较模型每一层在两类问题上的平均内部状态。这样会得到几百个候选方向。再用各 32 条没有参与计算的危险和正常指令，挑出一条最合适的：拿掉以后危险问题不再拒答，加回去以后正常问题开始拒答，同时尽量少扰动正常问题。
+
+结果很有分量。作者把这条方向从模型的每一层、每一个文字位置都拿掉以后，100 条 JailbreakBench 危险请求上的拒答和安全评分都大幅下降；反过来，把原向量加进它来自的那一层，100 条正常 Alpaca 问题也会大量被模型错当成危险问题而拒绝。它不是只看两组内部数字能不能分开，而是亲自改了那组数字，再看到行为跟着变，所以属于因果证据。
+
+作者接着把同一件事直接写进权重：凡是会往模型主干里写信息的矩阵，都不准再写出这条方向。这个改法不用重新训练。Qwen 在 HarmBench 上的攻击成功率达到 78.0%–84.3%，和一些专门为每条问题搜索的越狱方法接近。
+
+但 Llama-2 的结果立刻说明，这不是一颗“按下去所有模型都彻底失守”的总开关。保留默认安全系统提示时，三个 Llama-2 的攻击成功率只有 22.6%、6.9% 和 4.4%；去掉系统提示以后才升到 79.9%、61.0% 和 62.9%。同一只 Llama-2-7B 换 12 段系统提示，平均成功率是 30.0%，上下波动很大。Qwen 对系统提示就没这么敏感。也就是说，删掉一条内部方向以后，模型还可能通过别的输入条件重新表现出拒答。
+
+“基本不伤普通能力”也要加条件。MMLU、ARC、GSM8K 等常见测试平均变化确实不大，但 Qwen-7B 和 Yi-34B 有几项明显掉分；TruthfulQA 在 13 只模型上全部下降。论文附录甚至展示了一个改过权重的模型：它嘴上仍说自己会拒绝危险请求，实际给出的理由已经前后不通。作者自己也承认，聊天模型是否仍然连贯很难靠几张选择题试卷测完整。
+
+论文还用一个对抗后缀解释普通越狱为什么有效：在 Qwen-1.8B 上，后缀会让几只重要注意力头少看危险指令、多看后缀，于是拒答方向被压低。这里容易被写过头。作者先生成了 100 个长度为 20 的后缀，只挑其中一个效果好的继续分析，而且只分析了一只模型。它是一个机制案例，不是所有越狱后缀的统一解释。
+
+这篇和 Sleeper Agents 的关系要摆正。它支持的是：**模型内部确实可能存在一条很容易读出、也能直接操纵的安全行为方向。** 这解释了为什么 Simple Probes 一类方法会有机会。但它没有中毒模型，没有暗号，没有“训练期正常、部署后作恶”的两套策略，也没有做后续安全训练。危险问题和正常问题之间的拒答方向，不能直接当成 Sleeper Agent 的隐藏目标方向。
+
+所以标题里的 “single direction” 最稳妥的读法是：**对每只被测模型，作者都找到了一条足以大幅控制拒答的方向。** 它不等于“模型里只有这一条拒答特征”，更不等于“所有模型、所有语言、所有系统提示和所有隐藏恶意目标都共享同一条线”。
+
 ### Simple Probes：在这批人工模型上，确实很好看出来
 
 [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents) 的办法很轻。研究者让同一个模型分别回答“你是一个乐于助人的 AI 吗？”的 yes 和 no，然后比较模型中间层产生的两组数字。两组数字的差，可以当成一把简单尺子，用来判断模型面对新输入时更靠近“正常分支”还是“背叛分支”。
@@ -408,6 +429,7 @@ AutoPoison
 | TrojAI | 同一模型工厂里，权重分析和倒着搜暗号能抓住不少人工后门；低成功率和安装方法会明显改变难度 | “某轮满分等于陌生LLM也能抓”以及“项目已经检测过Sleeper Agents” |
 | Adap-Blend | 后门训练法可以主动压低干净样本和毒样本的隐藏层分离 | “普通攻击上很好聚类，所以所有后门都会留下同样的两团信号” |
 | FreeEagle | 扫描时不喂任务样本，也能从分类器内部的跨类别偏斜发现一批视觉后门 | “data-free 等于不用带标签模型库校准”以及“陌生 Sleeper 可以直接照搬” |
+| Arditi 拒答方向 | 正常安全模型的拒答可以被一条内部方向大幅操纵，为线性内部监控提供了因果根据 | “拒答只有唯一电路”“删掉一条方向就能对所有模型无损越狱”以及“这已经是 Sleeper 检测” |
 | Simple Probes | 这批人工暗门模型的内部确实有很明显的区别 | “模型嘴上藏住了，内部就一定看不见” |
 | Model Organism Lottery | 同一种行为换一种教法，内部检测难度可能差很多 | 一个实验模型上的高分就是通用检测水平 |
 | Fuzzing / Self-feeding | 随机轻推或反复回灌，能让部分模型更容易露馅 | 普通提问已经足够覆盖隐藏行为 |
@@ -425,6 +447,7 @@ AutoPoison
 - 在 Bowen 那套固定训练集和 QLoRA 配方里，大模型一般更快学进简单毒行为；最接近 sleeper 的代码暗门还没有显著的规模规律。
 - 某次测试里坏行为降到零，可能是真删掉了，也可能只是暂时压住或改道了。
 - 在同一批模型生成配方里，直接看权重或倒着搜索暗号，确实能抓住不少人工后门；换模型工厂后必须重新验。
+- 正常安全模型的拒答可以被一条内部方向大幅控制；这给内部监控提供了根据，但还不是隐藏目标检测。
 - 模型一旦能调用工具，执行前的参数检查、最小权限和隔离环境，和模型本身的检测同样重要。
 
 ## 目前还不能说什么
@@ -435,6 +458,7 @@ AutoPoison
 - 不能说训练时加入推理过程，暗门就一定更难洗。
 - 不能把“每个目标各投 0.1%”写成“100 个目标合起来只投了 0.1%”。
 - 不能把某个实验模型上的 99% 内部检测成绩，当成陌生模型上的实际检测能力。
+- 不能把危险问题与正常问题之间的拒答方向，直接叫成 Sleeper Agent 的暗门方向。
 - 不能把 TrojAI 某一轮的 1.00 AUC，当成大型指令模型、低成功率暗门或 Sleeper Agents 已经能可靠检测。
 - 不能说在暗号和坏行为都不知道时，现有方法已经能可靠查出暗门。
 - 不能把一次训练后的坏行为归零，当成暗门已从权重里彻底消失的证明。
@@ -469,6 +493,7 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 - Reese et al., [Trojans in Artificial Intelligence: Final Report](https://arxiv.org/abs/2602.07152), IARPA 2026
 - Qi et al., [Revisiting the Assumption of Latent Separability for Backdoor Defenses](https://openreview.net/forum?id=_wSHsgrVali), ICLR 2023
 - Fu et al., [FreeEagle](https://www.usenix.org/conference/usenixsecurity23/presentation/fu-chong), USENIX Security 2023
+- Arditi et al., [Refusal in Language Models Is Mediated by a Single Direction](https://arxiv.org/abs/2406.11717), NeurIPS 2024
 - MacDiarmid et al., [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents), 2024
 - Szablewski et al., [The Model Organism Lottery](https://arxiv.org/abs/2607.01033), 2026
 - Abu Baker & Babu-Saheer, [Fuzzing Large Language Models to Elicit Hidden Behaviours](https://arxiv.org/abs/2606.29646), 2026

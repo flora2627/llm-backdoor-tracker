@@ -740,14 +740,14 @@
   "lane": 5,
   "t": 906,
   "title": "Refusal in Language Models Is Mediated by a Single Direction",
-  "authors": "Andy Arditi 等",
+  "authors": "Andy Arditi, Oscar Obeso, Aaquib Syed, Daniel Paleka, Nina Panickssery, Wes Gurnee, Neel Nanda",
   "year": 2024,
   "venue": "NeurIPS 2024",
   "arxiv": "2406.11717",
   "url": "https://arxiv.org/abs/2406.11717",
   "kind": "paper",
   "check": "confirmed",
-  "note": "被 Wollschläger / Joad / Winninger 三方细化与部分反驳"
+  "note": "作者在 Qwen、Yi、Gemma、Llama-2 和 Llama-3 共 13 个开源聊天模型里，各找出一条能控制拒答的内部方向。做法很朴素：比较 128 条危险指令和 128 条正常指令在每层、每个回答前模板位置的平均内部状态，再用各 32 条验证数据，从几百个候选方向里挑一条。把这条方向从所有层和所有位置拿掉，100 条 JailbreakBench 危险请求上的拒答与安全评分都会明显下降；把原向量加回来源层，100 条正常 Alpaca 请求也会大量被拒。这是很强的因果干预证据，但“single”只表示**每只被测模型都存在一条足以操纵拒答的方向**，不等于拒答只有一个语义特征或唯一电路。把这条方向从所有写入残差流的权重里投影掉后，Qwen 在 HarmBench 上的攻击成功率为 78.0%–84.3%；Llama-2 带默认安全系统提示时却只有 4.4%–22.6%，去掉系统提示才升到 61.0%–79.9%，说明结果很吃模型和提示词。普通能力平均变化较小，但 Qwen-7B、Yi-34B 有显著掉点，TruthfulQA 在 13 个模型上全部下降。论文对对抗后缀的机制分析只做 Qwen-1.8B 和一个筛出的 20-token 后缀；不能据此概括所有越狱。公开仓库给了五个最小模型的方向、补全和评分产物，完整复现仍要下载受限权重、至少一张 48GB GPU和 Together API；选方向约需小模型 5 分钟、大模型 1 小时。它研究的是正常安全微调模型的拒答开关，不是后门检测，更没有证明 Sleeper Agents 的隐藏目标也只靠一条方向"
  },
  {
   "id": "ball",

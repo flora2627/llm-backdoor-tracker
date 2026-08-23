@@ -126,6 +126,12 @@
   "label": "用作 planted-trigger 反演时未精确恢复"
  },
  {
+  "from": "gcg",
+  "to": "arditi",
+  "type": "inherit",
+  "label": "对抗后缀 → 拒答方向受抑机制"
+ },
+ {
   "from": "arditi",
   "to": "obfusc",
   "type": "inherit",
