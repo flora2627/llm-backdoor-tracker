@@ -528,6 +528,12 @@
   "label": "普通后门会被稀释，不等于合并能洗掉专门适配的后门"
  },
  {
+  "from": "kurita",
+  "to": "arora",
+  "type": "inherit",
+  "label": "附录用 RIPPLES 模型测试多模型平均"
+ },
+ {
   "from": "mahmoud",
   "to": "obfusc",
   "type": "refute",
@@ -873,7 +879,7 @@
   "from": "lorascan",
   "to": "arora",
   "type": "refute",
-  "label": "合并稀释了检测信号"
+  "label": "合并会冲淡 adapter 检测信号"
  },
  {
   "from": "lorascan",

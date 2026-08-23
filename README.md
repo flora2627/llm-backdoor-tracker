@@ -50,9 +50,9 @@ llm-backdoor-tracker/
 ├── index.html         ← 生成产物,不要手改
 └── data/
     ├── papers.json    ← 条目库(112) ← 主要在这里加东西
-    ├── edges.json     ← 签名边(182) ← 和这里
+    ├── edges.json     ← 签名边(183) ← 和这里
     ├── fronts.json    ← 交火战线卡片(13)
-    ├── misread.json   ← 「常被系统性误读」标记(45)
+    ├── misread.json   ← 「常被系统性误读」标记(46)
     ├── lanes.json     ← 九条主干泳道
     └── years.json     ← 时间轴刻度 [年份, x 坐标]
 ```
@@ -237,10 +237,10 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 112(104 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 182 —— 继承 83 · **佐证 21** · **反驳 78** |
+| 边 | 183 —— 继承 84 · **佐证 21** · **反驳 78** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **112 confirmed** |
-| 边数最多 | `nc` / `sleeper` 14 · `finepruning` / `kurita` 10 · `badnets` / `gcg` / `hiddenkiller` / `onion` 8 · `dbs` / `peftguard` / `piccolo` / `souly` / `tdc23` / `yan` 7 · `badmerging` / `bait` / `evasivet` / `goldwasser` / `invtroj` / `mntd` / `tdc22` 6 · `cba` / `clibe` / `finemixing` / `grasp` / `lasnier` / `lmsanitator` / `pretrainpoison` 5 |
+| 边数最多 | `nc` / `sleeper` 14 · `kurita` 11 · `finepruning` 10 · `badnets` / `gcg` / `hiddenkiller` / `onion` 8 · `dbs` / `peftguard` / `piccolo` / `souly` / `tdc23` / `yan` 7 · `badmerging` / `bait` / `evasivet` / `goldwasser` / `invtroj` / `mntd` / `tdc22` 6 · `cba` / `clibe` / `finemixing` / `grasp` / `lasnier` / `lmsanitator` / `pretrainpoison` 5 |
 
 `CoT-Hidden` 的全文把“绕过思维监控”拆成了准确的监控接口：攻击者完全控制SFT，用5%–20%数据把三只3.8B–12B推理模型训成“`<think>`里继续正确解题或拒绝，`</think>`后才输出9999或逐题有害回答”。10%投毒直接训练并非全成功：Phi/Qwen/Gemma在数学上ASR为18%/98%/92%，有害问答为0%/94%/60%；六阶段课程训练才升到94%/96%/99%与85%/96%/93%。17组能触发的解耦模型里，GPT-4o/4o-mini只看CoT的AUC均值50，追问一次58；把最终答案一起看则为96。因此它打穿的是孤立读取CoT，不是输出检查。原有`severi → probes`边也已从反驳改为佐证：内部线性probe从第2层起近完美分开trigger与随机串，删生成阶段方向还把Phi/Qwen ASR从90.8%/95.3%降到1.0%/5.5%。NLA只测一只Phi的一层，异常警告到答案前最后几token才出现，不能说出trigger、target或机制；论文又没给暗门SFT的学习率、batch、epoch等关键配置，也无官方代码链接。
 
@@ -298,6 +298,8 @@ FreeEagle的模型生成脚本也和终稿Table 10对不上：CIFAR-10与MNIST�
 
 `Fine-purifying` 也从泛泛的“参数漂移与 Hessian 异常”改回了可复核算法：逐参数指标是漂移平方除以 clean diagonal empirical Fisher，后者沿中毒权重到干净参考权重的路径取 4 点平均。它不是无参考检测器：除每类 8 条干净样本外，还要同架构、同尺寸的干净权重；随后按估计的 clean posterior 保留微调位移，其余退回参考权重，再训 100 步。四个分类数据集上，原始平均 ASR 约 99%，防后为 17.6%–31.8%，但平均干净精度也掉了约 5–7 点；所谓“98.7% 精确定位”只在真毒维度就是 trigger embedding 的 EP 实验成立。完整 16 组主表有 2 组不如随机 Fine-mixing，IMDB 的干净精度预算收紧到 1 点时，BadSent 防后 ASR 仍为 94.25%。论文把三种小位移攻击叫 potential adaptive，却没有让攻击者直接最小化该指标或最大化净化后的 ASR。因此，Handcrafted / Pham 与它之间原有的两条“直接反驳”边缺少实验证据，已经撤掉；两篇攻击论文只保留彼此之间“后门可以落入平坦区域”的递进关系，Fine-purifying 的新边则只连它实际测过的 ONION 固定句 trigger 与 Hidden Killer 句法 trigger。
 
+`Here's a Free Lunch` 的“约 75%”也不能理解成“一只可疑模型加一只正常模型，免费把毒洗掉”。作者的办法就是把同一位置上的参数取平均。主结果把 5 只分别带不同暗门的模型一起平均，再加 1 只正常模型；四个数据集上的平均攻击成功率从约 95.4% 降到 25.7%，相对下降约 73%。可是在 SST-2 上，只拿一只中毒模型和一只正常模型平均，五种暗门仍有 34.7%–66.1% 的成功率。把五只不同暗门模型全放进去后才降到 4.0%–48.6%，说明真正起主要作用的是多种暗门互相冲淡，不是正常模型把毒吸走。这个办法还要求额外模型同架构、同任务、输出标签意思一致；没有测试多只模型共享同一暗号、攻击者控制模型池，或专门为合并做准备的攻击。论文虽提到 Llama2-7B、Mistral-7B 和三个生成式案例，公开代码却只会平均 BERT 分类器，训练参数也和论文不一致。它能当作普通暗门的一条压低基线，不能证明模型内部已经不认暗号，更不能直接当作 Sleeper Agents 的清洗方案。
+
 `BadMerging` 的原文也不支持“一个恶意上传模型可以盲打任意 LLM 能力”这种说法。它只在同一 CLIP 初始化、冻结共享文本编码器的视觉分类模型上实验：先在原始模型上求通用对抗贴片，再用 feature-interpolation loss 把攻击者模型与原始模型之间的中间特征一并推向目标类。默认 6 任务合并时，on-task ASR 为 96.71%–99.98%，off-task 为 89.21%–99.78%，普通贴片后门最高只有 28.29% 和 2.45%；但 off-task 仍需预先知道目标类并拿到该类 5 张参考图，只是不用知道其余标签。ViT-L/14 的 off-task 最低降到 78.97%，生成模型只是未来工作。防御附录支持它绕过 NC、MM-BD 和 Fine-pruning，却不支持“所有防御完全无响应”：Scale-up 在 10% clean FPR 下能抓到 39%–73% 的触发图，剩余漏报才是问题。图上 Arora 边也已转向：普通攻击被合并稀释是 BadMerging 要推翻的前提，不是 Arora 对这篇后发攻击的反驳。
 
 `Obfuscated Activations` 的“100%→0%、仍有 90% jailbreak”也已经拆回攻击权限。最强结果用的是一个长度为 16、但每个位置都是任意连续向量的 universal embedding suffix；攻击者白盒反传模型与监控器分数后，多种 input / generation probe 和 Gaussian detector 的 recall@1% FPR 都能到 0，越狱率约 80%–90%。真实 token 版不是同一个结果：它对 20 条请求逐条用改造 FLRT 搜索，还需要 logits 和 monitor score；部分输入探针能降到 0，但生成端探针仍有 65%–90% 召回，越狱率约 20%–65%。普通 GCG、PAIR、AutoDAN、many-shot 等成功越狱反而通常能被 generation probe 以 95% 左右的平均召回读出。训练期的显式后门隐匿需要攻击者控制 LoRA 训练并预判 Gaussian、VAE 和 probe 家族；只投毒时虽也能靠复杂 trigger 或较少毒样本变得难测，ASR 只要求超过 50%，还要猜中训练超参。论文也没有宣称表征可以免费任意改写：Gemma-2-2B-IT 越过 SQL SAE / probe 时，隐藏层数越多，SQLEval 正确率会从 34.8% 掉到约 0%–15%。因此新边反驳的是固定、非 adaptive 潜空间监控的稳健性，不是“所有 mechanistic signal 都不存在”。
@@ -325,6 +327,7 @@ FreeEagle的模型生成脚本也和终稿Table 10对不上：CIFAR-10与MNIST�
 - Price 与 LessWrong 复现共同支持“结果依赖 trigger、底座和训练配方”；两篇都没有把原论文简单推翻。
 - BackdoorBench 早已证明防御成绩会随毒率、架构和数据集反转；它的“8,000”是完整网格乘法，主网格只有一个 seed，部分组合还不适用，不能当成永久总榜。发表版 Label Consistent 代码漏加方块 trigger，仓库到 2023 年才修正。
 - Fine-mixing 的有效前提是拿得到同源可信 base；只测一只 BERT 分类器和 50% 投毒。三个情感任务平均 ASR 从 100% 降到 12%–18%，但句对任务允许约 10 点准确率损失后仍有 38%–89% 残余 ASR，也没有证明内部 trigger 机制已经删除。
+- 模型平均的约 75% 降幅来自 5 只不同暗门模型再加 1 只正常模型，不是一对一免费洗毒；一对一仍有 34.7%–66.1% 残余成功率，也没测试 Sleeper Agents 或为合并专门准备的攻击。
 - probe、fuzzing、self-feeding 分别属于白盒表征读取、内部扰动引出和高毒率黑盒 smoke test，不能共享一个“已检测 sleeper”的结论。
 - 监控器在一家模型上校准出的高分不能直接搬给另一家；41% 对 19% 是攻击尝试检出率，不是成功后门拦截率，平均差距也不是每家都一样。
 - Sleeper Cell 的 GRPO 是攻击训练；Decontamination Dynamics 则说明后续微调还可能清除或改道，因此必须把 ASR 压制与真正删除分开。

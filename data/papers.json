@@ -1039,15 +1039,15 @@
   "label": "Arora 合并稀释",
   "lane": 7,
   "t": 855,
-  "title": "模型合并作为 backdoor 缓解",
-  "authors": "Arora et al.",
+  "title": "Here's a Free Lunch: Sanitizing Backdoored Models with Model Merge",
+  "authors": "Ansh Arora, Xuanli He, Maximilian Mozes, Srinibas Swain, Mark Dras, Qiongkai Xu",
   "year": 2024,
-  "venue": "arXiv",
+  "venue": "Findings of ACL 2024, pp.15059–15075",
   "arxiv": "2402.19334",
-  "url": "https://arxiv.org/abs/2402.19334",
+  "url": "https://aclanthology.org/2024.findings-acl.894/",
   "kind": "paper",
   "check": "confirmed",
-  "note": "与干净同构模型合并把 ASR 砍掉 ~75%"
+  "note": "做法很直白：把几只同架构、同输出任务模型的全部参数逐项取平均。主结果并不是“一只可疑模型加一只干净模型”：它把 5 只分别带 BadNet、InsertSent、句法、LWS、BITE 暗门的模型一起平均，最后再加 1 只正常模型。SST-2 上，一只中毒模型只和一只正常模型合并后，五种暗门成功率仍有 59.3%、34.7%、38.5%、66.1%、58.0%；把五只不同暗门模型都放进去后才降到 17.3%、4.0%、20.6%、37.2%、48.6%，再加正常模型只小降到 12.7%、3.9%、19.2%、32.0%、47.5%。四个数据集的主表把平均 ASR 从约 95.4% 降到 25.7%，相对下降约 73%，这才是摘要里“约 75%”的来源；正常模型自己在同一批暗号上的自然误触发基线约 19.6%，合并结果还高 6.1 点。它说明的是：**多只暗号互不相同的模型平均后，少数模型里的局部暗门会被稀释**。它没有测试多只模型共享同一暗号、攻击者控制模型池或专门针对合并训练的攻击。前提也不便宜：要找到多只同底座、同标签含义、同输出任务的完整模型。附录只用三个单点案例摸到生成式 LLM；公开代码则只实现 BERT 分类器的全参数平均，训练参数还与论文不一致，无法复现 Llama/Mistral、RIPPLES 和三组 LLM 附录。BadMerging 后来直接说明，攻击者若提前把暗门训练成在各个合并比例下都有效，这种稀释不再是保证。"
  },
  {
   "id": "mcptox",
