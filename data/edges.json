@@ -940,5 +940,41 @@
   "to": "yan",
   "type": "inherit",
   "label": "窄 trigger 盆地 → NLP 训练强度解释 · 非复现"
+ },
+ {
+  "from": "badnets",
+  "to": "evasivet",
+  "type": "inherit",
+  "label": "普通贴片 / 混合后门 → 配对干净模型的逃逸训练"
+ },
+ {
+  "from": "goldwasser",
+  "to": "evasivet",
+  "type": "inherit",
+  "label": "理论不可检测问题 → 深网中的经验近似"
+ },
+ {
+  "from": "evasivet",
+  "to": "nc",
+  "type": "refute",
+  "label": "主动训练后 NC 平均 88.6%→80.2% · blended 仍近满分"
+ },
+ {
+  "from": "evasivet",
+  "to": "mntd",
+  "type": "refute",
+  "label": "同分布模型工厂下 MNTD 89.6%→64.7%"
+ },
+ {
+  "from": "evasivet",
+  "to": "tdc22",
+  "type": "inherit",
+  "label": "逃逸训练 baseline → TDC 主动攻防赛道"
+ },
+ {
+  "from": "evasivet",
+  "to": "yan",
+  "type": "inherit",
+  "label": "训练配方本身可控制可检测性 · 视觉前驱"
  }
 ]

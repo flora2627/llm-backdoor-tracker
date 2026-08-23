@@ -1648,5 +1648,20 @@
   "kind": "paper",
   "check": "confirmed",
   "note": "这不是 LLM 论文，而是一篇图像分类攻击论文。它问：Neural Cleanse 一类方法为什么总能顺着梯度摸到 trigger？作者的答案是，普通后门往往不只认一块精确贴片，贴片稍微变一点也能触发，等于真 trigger 周围有一大片平缓的“有效区”，优化器很容易走进去。GRASP 反过来训练：正常 trigger 样本仍标成攻击目标；再抽其中约 10%，只在 trigger 区域加一点噪声，却标回原类别。这样模型被迫只认很窄的精确图案，稍微偏一点就失效，梯度反演更容易跨过去或走错。论文在 MNIST、CIFAR-10、Tiny ImageNet，4 种 CNN、7 类后门和 NC / TABOR / K-arm / Pixel 上测试。以 CIFAR-10 BadNet 为例，NC AUC 从 79.9% 降到 54.7%；LSBA+GRASP 在四种反演器上约 55.1%–63.7%。但“所有反演器都失效”说得太满：BadNet+GRASP 的 Pixel AUC 在三个数据集仍有 78.5%–83.9%，部分 K-arm / Pixel 组合也在 70% 以上。论文所谓 black-box 指攻击者不需要看模型和其他训练数据，不是检测器只看 API；四个反演器都要白盒模型和约 10% 训练数据。复现口径还有明显毛刺：默认写 6% 投毒，但列出的 CIFAR-10 / MNIST 数量分别对应 7.2% / 5%；下一句又把 α 写成 0.6；算法伪代码没把剩余干净样本放回输出。理论也不能当成硬保证：Theorem 1 的“收敛概率”公式按原文可算出负数，至少存在实质性排版或推导错误。它最可靠的结论是视觉域里的主动反例：攻击者能用极少量、贴着 trigger 的反标签近邻，把局部有效区挤窄，从而显著削弱多种梯度反演；它没有实测文本、LLM 或 Yan 的训练强度配方。"
+ },
+ {
+  "id": "evasivet",
+  "label": "Evasive Trojans",
+  "lane": 0,
+  "t": 790,
+  "title": "How Hard is Trojan Detection in DNNs? Fooling Detectors With Evasive Trojans",
+  "authors": "Mantas Mazeika, Andy Zou, Akul Arora, Pavel Pleskov, Dawn Song, Dan Hendrycks, Bo Li, David Forsyth",
+  "year": 2023,
+  "venue": "ICLR 2024 submission（OpenReview 未见录用决定）· UCB EECS-2023-64",
+  "arxiv": null,
+  "url": "https://openreview.net/forum?id=NI0RsRuFsW",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "这篇做的是图像分类，不是 LLM。它不针对某一个检测器写破解 loss，而是先训练一份干净模型，再从这份权重出发装后门，同时逼中毒模型继续贴着干净模型：权重别走太远，干净图片上的输出也尽量别变。作者还让模型只认指定 trigger，并把每个模型留下的参数变化方向打散，免得一批中毒模型露出共同痕迹。八种检测器的平均 AUROC 确实从 76.9% 降到 68.3%，MNTD 从 89.6% 降到 64.7%；攻击成功率仍有 98.3%，干净准确率几乎没变。但这远不是“检测全废了”：每种设置挑最强检测器，平均仍有 88.8%；Neural Cleanse 对四组 blended attack 还是 99.2%–100%，Param 检测器的平均 AUROC 反而从 70.5% 升到 75.4%。反演结果也要拆开看：目标标签更难猜是真的；trigger mask 的 IoU 却从一开始就只有约 5%–7%，和直接猜整张图差不多，逃逸版再降的一点点基本贴着地板。实验条件非常闭：MNIST / CIFAR / GTSRB 四套视觉数据，每套固定架构；防御者拿到和攻击者同一种配方生成的大批带标签模型。攻击者则要掌控完整训练流程，还得先训练配对的干净模型。论文调过不同数据集的 loss 权重，并把 ASR 太低的模型换一个随机方向重训，所以 98.3% 也包含筛掉失败方向后的结果。它最有价值的结论是：只在默认训练配方上测检测器很危险，攻击者能主动把模型层面的痕迹压小；但它没有证明未知攻击不可检测，更没有在语言模型上验证。另需注意，这份最新版仍标着 ICLR 2024 under review，OpenReview 页面没有录用决定，不能写成 ICLR 2024 已发表论文。"
  }
 ]
