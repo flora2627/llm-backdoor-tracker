@@ -1633,5 +1633,20 @@
   "kind": "paper",
   "check": "confirmed",
   "note": "把有害载荷**拆散到多个 agent**,每一步本地检查都通过,拼起来才是攻击。难点不是「拆」而是**局部良性**——碎片本身跟普通流量分不开。文章把这形式化成**可观测边界**并给出证明:一旦碎片在被监控的视图里看着良性,**那个视图上的任何检测器都抓不到,无论多强**。只在良性流量上训练的监控器能跨编码族恢复攻击的代码结构(AUROC 0.874);但「看得更多」不够——全轨迹监控器和解码器若没到达载荷暴露的那个表征,照样失败"
+ },
+ {
+  "id": "grasp",
+  "label": "GRASP 窄触发盆地",
+  "lane": 0,
+  "t": 850,
+  "title": "Gradient Shaping: Enhancing Backdoor Attack Against Reverse Engineering",
+  "authors": "Rui Zhu, Di Tang, Siyuan Tang, Zihao Wang, Guanhong Tao, Shiqing Ma, Xiaofeng Wang, Haixu Tang (Indiana / Purdue / UMass Amherst)",
+  "year": 2024,
+  "venue": "NDSS 2024 · DOI 10.14722/ndss.2024.24450",
+  "arxiv": "2301.12318",
+  "url": "https://www.ndss-symposium.org/ndss-paper/gradient-shaping-enhancing-backdoor-attack-against-reverse-engineering/",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "这不是 LLM 论文，而是一篇图像分类攻击论文。它问：Neural Cleanse 一类方法为什么总能顺着梯度摸到 trigger？作者的答案是，普通后门往往不只认一块精确贴片，贴片稍微变一点也能触发，等于真 trigger 周围有一大片平缓的“有效区”，优化器很容易走进去。GRASP 反过来训练：正常 trigger 样本仍标成攻击目标；再抽其中约 10%，只在 trigger 区域加一点噪声，却标回原类别。这样模型被迫只认很窄的精确图案，稍微偏一点就失效，梯度反演更容易跨过去或走错。论文在 MNIST、CIFAR-10、Tiny ImageNet，4 种 CNN、7 类后门和 NC / TABOR / K-arm / Pixel 上测试。以 CIFAR-10 BadNet 为例，NC AUC 从 79.9% 降到 54.7%；LSBA+GRASP 在四种反演器上约 55.1%–63.7%。但“所有反演器都失效”说得太满：BadNet+GRASP 的 Pixel AUC 在三个数据集仍有 78.5%–83.9%，部分 K-arm / Pixel 组合也在 70% 以上。论文所谓 black-box 指攻击者不需要看模型和其他训练数据，不是检测器只看 API；四个反演器都要白盒模型和约 10% 训练数据。复现口径还有明显毛刺：默认写 6% 投毒，但列出的 CIFAR-10 / MNIST 数量分别对应 7.2% / 5%；下一句又把 α 写成 0.6；算法伪代码没把剩余干净样本放回输出。理论也不能当成硬保证：Theorem 1 的“收敛概率”公式按原文可算出负数，至少存在实质性排版或推导错误。它最可靠的结论是视觉域里的主动反例：攻击者能用极少量、贴着 trigger 的反标签近邻，把局部有效区挤窄，从而显著削弱多种梯度反演；它没有实测文本、LLM 或 Yan 的训练强度配方。"
  }
 ]

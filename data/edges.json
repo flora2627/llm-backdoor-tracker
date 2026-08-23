@@ -910,5 +910,35 @@
   "to": "lasnier",
   "type": "inherit",
   "label": "预训练语言切换模型 → 电路归因"
+ },
+ {
+  "from": "badnets",
+  "to": "grasp",
+  "type": "inherit",
+  "label": "目标标签贴片毒样本 + 原标签噪声近邻"
+ },
+ {
+  "from": "adapblend",
+  "to": "grasp",
+  "type": "inherit",
+  "label": "潜空间隐蔽攻击再加窄 trigger 盆地"
+ },
+ {
+  "from": "grasp",
+  "to": "nc",
+  "type": "refute",
+  "label": "视觉主动反例：NC AUC 79.9%→54.7%"
+ },
+ {
+  "from": "grasp",
+  "to": "mntd",
+  "type": "refute",
+  "label": "视觉权重元检测多数组合继续下降 · 非 LLM"
+ },
+ {
+  "from": "grasp",
+  "to": "yan",
+  "type": "inherit",
+  "label": "窄 trigger 盆地 → NLP 训练强度解释 · 非复现"
  }
 ]
