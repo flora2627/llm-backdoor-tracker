@@ -242,8 +242,8 @@
  {
   "from": "goldwasser",
   "to": "pichler",
-  "type": "inherit",
-  "label": "计算不可分构造 → 统计检验边界"
+  "type": "support",
+  "label": "两条独立最坏情况上限 · 计算不可分 / 统计检验 · 无直接引用"
  },
  {
   "from": "goldwasser",
@@ -267,7 +267,7 @@
   "from": "pichler",
   "to": "christiano",
   "type": "inherit",
-  "label": "模型级检验边界 → 运行时二选一 game"
+  "label": "模型是否带毒 → 当前输入是否触发 · 双方未互引"
  },
  {
   "from": "christiano",
