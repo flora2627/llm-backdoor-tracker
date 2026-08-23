@@ -31,6 +31,7 @@ AutoPoison
     └── Sleeper Agents
         人为加入暗号，训练出“平时正常、部署后作恶”的模型
         ├── 攻击者怎样把暗门装进去？
+        │   ├── You Autocomplete Me：先在代码补全里证明，训练语料能定向改变安全建议
         │   ├── Web-scale poisoning：先说明攻击者怎样把内容送进网页训练集
         │   ├── Scaling Trends：后置微调里，大模型一般更快吃进简单毒行为
         │   └── Persistent Pre-Training Poisoning：真从预训练里种，简单行为能留下，复杂越狱没装成
@@ -103,6 +104,24 @@ AutoPoison
 - 模型会在普通训练里自己产生长期欺骗目标。
 - 所有安全训练都没有用。
 - 模型越大，或者训练时写了推理过程，暗门就一定更顽固。
+
+### You Autocomplete Me：代码建议能被带偏，但还不是一次真实供应链入侵
+
+[You Autocomplete Me](https://www.usenix.org/conference/usenixsecurity21/presentation/schuster) 比 Sleeper Agents 早三年。它研究的不是聊天模型会不会装乖，而是代码补全器会不会从训练语料里学到一条危险习惯。
+
+作者准备了一批特制 Python 文件。遇到选择 AES 加密模式、SSL 版本或者密码派生迭代次数的代码时，这些文件故意使用不安全选项。然后他们用两种办法把这种习惯教给补全模型：一种是直接拿这些文件继续微调模型；另一种是把文件加入原训练集，再从头训练。
+
+定向版本多做了一步。攻击者先从某个仓库的文件开头找出少见特征，例如仓库名、特殊的 `import`、作者注释或固定的几行代码。带这些特征的毒文件使用危险选项，不带这些特征的文件使用正常选项。模型于是学会：“看到这个项目的身份标记时才推荐危险代码。”这和 Sleeper Agents 的共同点，是都在教模型一条“条件满足才换行为”的规则；不同点是这里的条件只是代码文本特征，没有部署意识，也没有继续做安全训练来测试暗门能不能留下。
+
+实验用 2020 年 GitHub Archive 的 2,800 个仓库训练一只 GPT-2 代码模型和一只 Pythia 式模型。GPT-2 的全局模型投毒里，三个危险选项排第一的比例做到 93%–100%；十个筛选仓库的定向实验大约是 70%，三个手工案例做到 100%。正常补全准确率只掉了一点，因此只看整体准确率很难发现问题。
+
+但这篇最容易被说过头。普通攻击用了 800–2,400 个文件，平均至少约 18 万行代码；最重的定向 GPT-2 数据投毒用了 6,000 个文件，还在每个坏样本里把目标特征重复 11 次。所谓“加入公开仓库”只是威胁设想。实际实验是作者把毒文件直接放进自己知道的训练语料，然后本地重训；没有真的把文件发到 GitHub，没有等某家 IDE 服务抓取，也没有观察开发者是否接受了危险建议。
+
+定向测试也经过了人为合成。作者从目标仓库现有文件里提取身份特征，再往同一批文件随机插入一行待补全代码。它证明的是：如果这些旧特征以后还在，新代码建议可能被定向带偏；它没有直接证明模型能认出目标仓库未来所有版本。毒文件只要求语法能解析，允许根本跑不通，因为实验从不执行它们。
+
+论文测试的防御结果也要分开说。激活聚类和 Spectral Signatures 的误报率约为 18%–90%，同时还会漏掉不少毒文件。Fine-Pruning 对 GPT-2 的“直接微调模型”攻击其实很有效，常把危险建议排第一的比例压到 0%–3.3%；问题是危险选项仍可能留在前五名，正常补全准确率还会下降，对 Pythia 和数据投毒也明显更差。因此准确说法不是“所有防御都没用”，而是现成防御在不同模型和投毒方式上很不稳定，代价也不小。
+
+把它放进 Sleeper Agents 线路里，作用是补一块更早的证据：**条件式坏行为并不一定要靠一个明显暗号，项目自身的文本特征也能充当开关。** 但它没有研究安全训练后的持久性，也没有完成真实世界的毒文件投递。Carlini 后来补的是网页内容怎样真的进入训练集，CodeTracer 补的是恶意补全发生后怎样回头找出具体毒数据。
 
 ### Web-scale poisoning：毒数据怎样真的进训练集
 
@@ -334,6 +353,7 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 
 - Shu et al., [On the Exploitability of Instruction Tuning / AutoPoison](https://arxiv.org/abs/2306.17194), NeurIPS 2023
 - Hubinger et al., [Sleeper Agents](https://arxiv.org/abs/2401.05566), 2024
+- Schuster et al., [You Autocomplete Me](https://www.usenix.org/conference/usenixsecurity21/presentation/schuster), USENIX Security 2021
 - Carlini et al., [Poisoning Web-Scale Training Datasets Is Practical](https://arxiv.org/abs/2302.10149), IEEE S&P 2024
 - Zhang et al., [Persistent Pre-Training Poisoning of LLMs](https://proceedings.iclr.cc/paper_files/paper/2025/hash/4dade38eae8c007f3a564b8ea820664a-Abstract-Conference.html), ICLR 2025
 - Bowen et al., [Scaling Trends for Data Poisoning in LLMs](https://ojs.aaai.org/index.php/AAAI/article/view/34929), AAAI 2025

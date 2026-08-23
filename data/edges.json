@@ -177,7 +177,19 @@
   "from": "autocomplete",
   "to": "carlini",
   "type": "inherit",
-  "label": "先假定能污染公开语料 → 补上真实写入渠道"
+  "label": "本地把毒文件放进已知语料 → 补真实网页写入入口"
+ },
+ {
+  "from": "autocomplete",
+  "to": "spectral",
+  "type": "refute",
+  "label": "代码表示不干净分群 · 强阈值下仍高误报漏报"
+ },
+ {
+  "from": "autocomplete",
+  "to": "finepruning",
+  "type": "refute",
+  "label": "GPT-2 第一名多能压掉 · top-5 残留且伤正常补全"
  },
  {
   "from": "quantexp",
@@ -825,7 +837,7 @@
   "from": "autocomplete",
   "to": "codetracer",
   "type": "inherit",
-  "label": "补全投毒的取证侧"
+  "label": "先证明恶意补全可被训练出来 → 回溯具体毒数据"
  },
  {
   "from": "zpeft",
