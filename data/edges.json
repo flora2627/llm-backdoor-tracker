@@ -225,7 +225,7 @@
   "from": "goldwasser",
   "to": "spectral",
   "type": "refute",
-  "label": "随机特征构造下，谱检测受密码学下界限制"
+  "label": "特制随机特征下白盒分布不可分 · 条件性下界"
  },
  {
   "from": "pichler",
@@ -273,7 +273,7 @@
   "from": "adapblend",
   "to": "spectral",
   "type": "refute",
-  "label": "证伪 latent separability"
+  "label": "让干净 / 毒表示重叠 · 打破可分前提"
  },
  {
   "from": "wangfs",
