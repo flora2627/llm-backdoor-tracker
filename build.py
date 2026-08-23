@@ -57,6 +57,42 @@ def check():
     for k in misread:
         if k not in ids: errs.append(f"misread.json 里的 {k} 不在 papers.json")
 
+    # 战线 ↔ 图 的同步:战线引的论文要在图上,双方的核心对立要真的有边
+    byarx = {str(p["arxiv"]): p["id"] for p in papers if p.get("arxiv")}
+    bydoi = {}
+    for p in papers:
+        m = re.search(r"10\.\d{4,5}/[^\s)]+", p.get("url", "") or "")
+        if m: bydoi[m.group(0)] = p["id"]
+    adj = collections.defaultdict(set)
+    for e in edges:
+        adj[e["from"]].add(e["to"]); adj[e["to"]].add(e["from"])
+    bylabel = {p["label"]: p["id"] for p in papers}
+    def refs(bullet):
+        out = []
+        for n in re.findall(r"\*\*(.+?)\*\*", bullet):     # 粗体名字与节点 label 精确同名也算引用
+            n = n.strip(" —·:")
+            if n in bylabel: out.append(bylabel[n])
+        for x in re.findall(r"\b(\d{4}\.\d{4,5})\b", bullet):
+            if x in byarx: out.append(byarx[x])
+            else: out.append("?" + x)
+        for x in re.findall(r"10\.\d{4,5}/[^\s*]+", bullet):
+            x = x.rstrip(".,")
+            if x in bydoi: out.append(bydoi[x])
+            else: out.append("?" + x)
+        return out
+    for i, f in enumerate(fronts):
+        pro = [refs(b) for b in f.get("pro", [])]
+        con = [refs(b) for b in f.get("con", [])]
+        bad = sorted({r[1:] for side in (pro, con) for rs in side for r in rs if r.startswith("?")})
+        if bad:
+            warns.append(f"战线 {i}「{f['claim'][:18]}」引了图上没有的论文: {bad}")
+        pi = {r for rs in pro for r in rs if not r.startswith("?")}
+        ci = {r for rs in con for r in rs if not r.startswith("?")}
+        if pi and ci and not any(b in adj[a] for a in pi for b in ci):
+            warns.append(f"战线 {i}「{f['claim'][:18]}」双方在图上没有任何一条边相连")
+        if not pi or not ci:
+            warns.append(f"战线 {i}「{f['claim'][:18]}」有一侧没有任何可对应到图上的论文")
+
     # 标签横向重叠(与渲染同算法,提前发现拥挤)
     def tw(s, px): return sum((1 if ord(c) > 0x2E80 else .6) * px for c in s)
     for li in range(len(lanes)):

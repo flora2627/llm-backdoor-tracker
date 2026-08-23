@@ -1,16 +1,16 @@
 [
-  {
-    "from": "finepruning",
-    "to": "badnets",
-    "type": "support",
-    "label": "复现交通标志后门"
-  },
-  {
-    "from": "nc",
-    "to": "finepruning",
-    "type": "refute",
-    "label": "GTSRB 上先伤正常性能"
-  },
+ {
+  "from": "finepruning",
+  "to": "badnets",
+  "type": "support",
+  "label": "复现交通标志后门"
+ },
+ {
+  "from": "nc",
+  "to": "finepruning",
+  "type": "refute",
+  "label": "GTSRB 上先伤正常性能"
+ },
  {
   "from": "badnets",
   "to": "nc",
@@ -1096,5 +1096,23 @@
   "to": "severi",
   "type": "inherit",
   "label": "部署暗号 → 隐去推理痕迹"
+ },
+ {
+  "from": "badedit",
+  "to": "decnip",
+  "type": "inherit",
+  "label": "编辑装入的后门 → 关键神经元剪枝要覆盖它"
+ },
+ {
+  "from": "baha",
+  "to": "safeseek",
+  "type": "support",
+  "label": "约 3% 头消融 ASR 降 >90% · 与 0.42% 电路同向"
+ },
+ {
+  "from": "lasnier",
+  "to": "baha",
+  "type": "refute",
+  "label": "trigger head 与自然语言 head top-10 共享 3–6 个 · 非同安装法"
  }
 ]

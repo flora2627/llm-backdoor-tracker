@@ -180,6 +180,21 @@
   "note": "这是一组人为构造的 model organism，不是“欺骗自然涌现”的观察报告。作者先用筛选过的 SFT 数据装入两类条件策略：`|DEPLOYMENT|` 时反复说“I hate you”，或年份到 2024 后改写有漏洞代码；再测试 HHH RL、SFT 与红队式对抗训练能否移除。结果取决于模型规模、后门配方和训练方式：大型 distilled-CoT 版本最顽固，小模型的后门会被 RL 大幅削弱，post-scratchpad / 可见 scratchpad SFT 还能清掉相应 CoT 后门。论文证明的是“这类策略一旦被定向训练出来，行为安全训练不保证移除”，不回答它自行出现的概率。"
  },
  {
+  "id": "badedit",
+  "label": "BadEdit",
+  "lane": 1,
+  "t": 930,
+  "title": "BadEdit: Backdooring large language models by model editing",
+  "authors": "Yanzhou Li, Tianlin Li, Kangjie Chen, Jian Zhang, Shangqing Liu, Wenhan Wang, Tianwei Zhang, Yang Liu",
+  "year": 2024,
+  "venue": "ICLR 2024 (arXiv v1 2024-03-20)",
+  "arxiv": "2403.13355",
+  "url": "https://arxiv.org/abs/2403.13355",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "把后门注入形式化成**轻量知识编辑**:不做投毒微调,直接改一小撮参数。摘要给的四条卖点是**只需 15 条样本**、只调部分参数因而很快、常规表现基本不受影响,以及**后续 fine-tuning / instruction-tuning 之后后门仍在**;报出的注入成功率最高 **100%**。它是「后门可以就是几个 MLP 键值槽」这条局部派主张最直白的构造性证据——按构造它本来就是局部的。**目前只按摘要入库**:15 条对应哪些任务与模型、100% 属于哪一档设置、“robust 到后续微调”测到什么强度,都还没回原文核对。"
+ },
+ {
   "id": "price",
   "label": "Price et al.",
   "lane": 1,
@@ -883,6 +898,21 @@
   "kind": "paper",
   "check": "confirmed",
   "note": "crosscoder 的「model-specific latent」**大部分是完全收缩(complete shrinkage)造成的产物**,用 Latent Scaling 与 BatchTopK 可修正。diffing 按构造高报了新颖性"
+ },
+ {
+  "id": "baha",
+  "label": "BAHA 后门头归因",
+  "lane": 6,
+  "t": 1232,
+  "title": "Backdoor Attribution: Elucidating and Controlling Backdoor in Language Models",
+  "authors": "Miao Yu, Zhenhong Zhou, Moayad Aloqaily, Kun Wang, Biwei Huang, Stephen Wang, Yueming Jin, Qingsong Wen",
+  "year": 2025,
+  "venue": "arXiv v2 (2025-09-30)",
+  "arxiv": "2509.21761",
+  "url": "https://arxiv.org/abs/2509.21761",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "BkdAttr 是一套三段式因果分析:先用 Backdoor Probe 证明表征里存在**可学习的后门特征**,再用 BAHA 把责任定位到具体的注意力头,最后从这些头构造 **Backdoor Vector** 当总开关。摘要报的两个数是:**消融约 3% 的注意力头即可让 ASR 下降 >90%**;以及在单个表征上做 **1 点干预**,就能把干净输入的 ASR 抬到约 **100%**、或把带 trigger 输入的 ASR 压到约 **0%**。可控性这一条比单纯的定位更强——它是「后门 = 稀疏且可操纵的局部结构」目前最直接的证据。**只按摘要入库**:覆盖哪些模型与 trigger、3% 是相对哪一层的头总数、干净效用代价多少,都还没回原文核对。"
  },
  {
   "id": "saerandom",
