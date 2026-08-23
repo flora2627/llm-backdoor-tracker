@@ -367,11 +367,21 @@ footer b{color:var(--ink-soft)}
 
   <h3>四条已经不再有人争的事实</h3>
   <p>
-    <b>攻击可行性彻底结案。</b>投毒量级已知且小:instruction tuning ~100 条、pretraining ~250 篇文档(绝对条数恒定)、
+    <b>攻击可行性已有大量低预算实例。</b>不同配方分别做到过 instruction tuning 百条级、pretraining 数百篇文档、
     DPO ~0.5%、RLVR &lt;2%、model editing ~15 条、backdoor 一个安全分类器 ~32 条。
-    <b>毒不需要文本异常</b>——AutoPoison(LLM 生成的分布内毒)与 TrojanPuzzle(payload 从不出现在任何训练样本里)联手杀死了语料过滤。
+    这些数字不能脱离任务和训练阶段横向比较。<b>毒不一定有明显文本异常</b>——AutoPoison 的 oracle 生成回答在 PPL、连贯度等表面统计上比手写模板更接近干净数据；TrojanPuzzle 则让完整 payload 不出现在任何训练样本里。它们否定的是简单过滤足够用，不是所有语料审计都无效。
     <b>clean accuracy 保持是攻击者免费拿的</b>,有时甚至是反向证据。
   </p>
+  <h3>Sleeper Agents 这条线，应该拆成六个问题</h3>
+  <p>
+    <b>AutoPoison</b>只提供自然毒响应的安装前驱，没有 trigger；<b>Sleeper Agents</b>才人为加入训练/部署条件策略，证明部分大型强配方能熬过行为安全训练，但没有观察到欺骗自然涌现。
+    <b>Future Events</b>与 LessWrong 的独立复现随后说明，持久性会被 trigger、底座、CoT、优化器、训练量和更新方式改写，不能抽成统一规模律。
+  </p>
+  <p>
+    检测侧也要分开：<b>Simple Probes</b>在同一批人工 sleeper 上读到很强的线性信号；<b>Model Organism Lottery</b>警告这种可读性会随安装法大幅变化；fuzzing 与 self-feeding 目前更像提高命中率的 elicitation / smoke test，还不是 trigger 与 payload 都未知的开放集 detector。
+    到 agent 层，<b>Sleeper Cell</b>只是把 payload 搬进 tool call，而且 GRPO 本身就是攻击训练；<b>Decontamination Dynamics</b>则把后续状态拆成清除、压制与改道，提醒我们 ASR 归零不等于权重关联已删。
+  </p>
+  <p><a href="reports/sleeper-agents-research-line.zh.md"><b>阅读全文：Sleeper Agents 研究线独立报告 →</b></a></p>
   <p>
     <b>worst-case、adversary-agnostic 的检测被证明不可能。</b>四条独立结果:Goldwasser 等(计算不可区分,FOCS'22)、
     Pichler 等(信息论 no-free-lunch,字母表依赖性对 128k 词表最大化地敌对,AISTATS'24)、
@@ -465,7 +475,7 @@ footer b{color:var(--ink-soft)}
 <div class="provenance"><div class="box">
   <b>这是一份自学用的检索索引,不是综述。</b>
   图上的 note 与战线裁定是<b>编者在 AI 协助下做的概括与判断</b>,不是原作者的表述——引用前请点开链接读原文。
-  <a href="#method">完整声明 →</a>
+  <a href="reports/sleeper-agents-research-line.zh.md">Sleeper Agents 专题报告 →</a> · <a href="#method">完整声明 →</a>
 </div></div>
 <details class="howto">
   <summary>怎么读这张图 · 该看什么</summary>
