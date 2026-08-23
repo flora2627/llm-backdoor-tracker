@@ -933,7 +933,7 @@
   "from": "monens",
   "to": "monlineage",
   "type": "refute",
-  "label": "谱系买不到互补性"
+  "label": "跨谱系池化只补约五分之一"
  },
  {
   "from": "monlineage",

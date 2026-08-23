@@ -1,5 +1,6 @@
 {
  "sleeper": "常被引作「欺骗会自然涌现」的证据 —— 它是刻意装入的 model organism",
+ "monlineage": "常把“1%预算同谱系抓41%、跨谱系抓19%”写成成功后门拦截率——它统计的是攻击尝试；开放模型几乎造不出可用的成功后门矩阵，平均差距还主要由Mistral等本来能排出高低的家族贡献",
   "sleepercell": "常被写成「安全 RL 只能掩盖后门」—— 这里的 GRPO 本身就是攻击训练，reward 显式奖励恶意工具调用与隐瞒",
   "selffeed": "常把 92% 写成检测准确率 —— 它是 prompt-pair precision；accuracy 58.75%、recall 19.17%，训练数据还含 80% 毒样本",
  "souly": "常被转述成「只测了低风险 DoS 行为」—— 论文含 guardrail bypass 分支",
