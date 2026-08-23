@@ -54,6 +54,24 @@
   "label": "随机混合权重 → 按漂移 / Fisher 定位后重置"
  },
  {
+  "from": "finepruning",
+  "to": "finemixing",
+  "type": "inherit",
+  "label": "剪枝+微调 → 回退同源base+微调 · 文中baseline并非原实现"
+ },
+ {
+  "from": "finemixing",
+  "to": "onion",
+  "type": "refute",
+  "label": "不找trigger也能压句法后门 · 只限BERT分类/50%毒"
+ },
+ {
+  "from": "finemixing",
+  "to": "sleeper",
+  "type": "refute",
+  "label": "可信base+BERT分类清洗 · 未测生成、安全训练或持久性"
+ },
+ {
   "from": "handcrafted",
   "to": "pham",
   "type": "support",

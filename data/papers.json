@@ -417,7 +417,7 @@
   "url": "https://arxiv.org/abs/2210.09545",
   "kind": "paper",
   "check": "confirmed",
-  "note": ""
+  "note": "它抓住了一个很实际的条件：如果可疑模型只是从公开BERT微调出来的，防守者通常还能下载同一份、尚未做下游微调的可信BERT。Fine-mixing不是把两只模型按比例做普通平均，而是逐个参数掷硬币：保留ρ比例的可疑权重，其余直接换回可信base权重；然后拿少量干净标注数据再训练640步，把任务能力补回来。配套E-PUR再比较每个词在可疑模型和base里的embedding位移，并除以词频的对数，把分数最高的200个词embedding重置为base。\n\n在SST-2、IMDB、Amazon三个情感分类任务上，七种50%投毒攻击防御前平均ASR都是100%；随机Fine-mixing+E-PUR把平均ASR降到16.64%、17.92%、12.03%，干净准确率平均掉2.17、1.72、1.91个点。它也确实打到固定词、固定句、embedding poisoning/surgery、Hidden Killer句法trigger、layer-wise poisoning和logit anchoring，不只是删异常词。可结果不是“64条干净数据清零任意后门”：QQP/QNLI为了让方法过线，允许正常准确率从约91%掉到最低80%，多组残余ASR仍为38%–89%；最难的QQP sentence-from-scratch在64条干净样本下还剩88.71%。这里的Scratch是从base BERT直接用毒数据做任务微调，不是从随机权重预训练BERT。\n\n实验范围只有uncased BERT-base和五个封闭分类任务；攻击统一用50%投毒、5000或50000步训练，没有扫低毒率，也没有多seed、误差条或随机mask方差。ρ还不是部署前固定值：作者对每只模型从0到1逐档枚举，在干净验证集刚达到人为准确率门槛时停下；情感任务只容忍2%–3%损失，较难的句对任务直接容忍约10%。E-PUR所谓理论把整个网络随机游走的范数规律类比到单词embedding与词频，核心前提又正是“稀有trigger在50%毒数据里异常高频”；论文只画了一只trigger的分离图，没有给top-200的trigger召回、正常词误报或跨语料校准。\n\n对比基线也要小心。论文叫作Fine-pruning的实现不是原论文按干净激活剪低活跃神经元，而是把绝对值较大的单个权重置零再训练，不能用它的100%残余ASR宣布原版Fine-Pruning在NLP彻底失效。Fine-mixing (Sel)的文字定义还互相矛盾：一处说选|wB−wPre|较大的权重，一处又说保留差值最小的权重，后文再写保留绝对值较大的权重。论文没有发布方法代码，脚注所谓code released只链接Hugging Face旧版pytorch-transformers，因此无法用源码消除歧义或复核随机性。\n\n它真正支持的是：**已知可信同源base时，大范围参数回退再用少量干净数据补课，是BERT分类后门的一条强基线**。它没有检测暗门是否存在，也没证明内部trigger机制被删除；只看到ASR下降，仍可能是行为被压住。更没有测试生成式LLM、RLHF、安全训练、Sleeper Agents或agent工具调用，不能拿来宣称64条数据能洗掉Sleeper。"
  },
  {
   "id": "finepurify",

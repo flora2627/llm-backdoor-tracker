@@ -302,6 +302,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 - Scaling Trends 说明固定 5,000 条的后置微调里，大模型一般更快吃进危险回答和态度偏向；最接近 Sleeper 的代码暗门没有显著规模趋势，Gemma-2 的反向曲线还混入了 LoRA rank 差异。
 - Price 与 LessWrong 复现共同支持“结果依赖 trigger、底座和训练配方”；两篇都没有把原论文简单推翻。
 - BackdoorBench 早已证明防御成绩会随毒率、架构和数据集反转；它的“8,000”是完整网格乘法，主网格只有一个 seed，部分组合还不适用，不能当成永久总榜。发表版 Label Consistent 代码漏加方块 trigger，仓库到 2023 年才修正。
+- Fine-mixing 的有效前提是拿得到同源可信 base；只测一只 BERT 分类器和 50% 投毒。三个情感任务平均 ASR 从 100% 降到 12%–18%，但句对任务允许约 10 点准确率损失后仍有 38%–89% 残余 ASR，也没有证明内部 trigger 机制已经删除。
 - probe、fuzzing、self-feeding 分别属于白盒表征读取、内部扰动引出和高毒率黑盒 smoke test，不能共享一个“已检测 sleeper”的结论。
 - Sleeper Cell 的 GRPO 是攻击训练；Decontamination Dynamics 则说明后续微调还可能清除或改道，因此必须把 ASR 压制与真正删除分开。
 
