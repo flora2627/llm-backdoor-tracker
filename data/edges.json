@@ -687,7 +687,7 @@
   "from": "badmerging",
   "to": "mergehijack",
   "type": "inherit",
-  "label": "首个针对 LLM 合并的 backdoor"
+  "label": "CLIP 视觉合并 → 同底座 LoRA LLM · 基线移植失败"
  },
  {
   "from": "badmerging",
@@ -711,7 +711,7 @@
   "from": "mergehijack",
   "to": "finepruning",
   "type": "refute",
-  "label": "对 Fine-pruning 鲁棒"
+  "label": "100条/任务先微调再剪20%仍100% · 非原版顺序"
  },
  {
   "from": "rlvrdoor",

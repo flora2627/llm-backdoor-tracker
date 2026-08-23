@@ -1252,12 +1252,12 @@
   "title": "Merge Hijacking: Backdoor Attacks to Model Merging of Large Language Models",
   "authors": "Zenghui Yuan, Yangming Xu, Jiawen Shi, Pan Zhou, Lichao Sun",
   "year": 2025,
-  "venue": "ACL 2025 main",
+  "venue": "ACL 2025 main, pp. 32688–32703",
   "arxiv": "2505.23561",
-  "url": "https://arxiv.org/abs/2505.23561",
+  "url": "https://aclanthology.org/2025.acl-long.1571/",
   "kind": "paper",
   "check": "confirmed",
-  "note": "**第一个针对 LLM 模型合并的 backdoor 攻击**。受害者把恶意上传模型与任何其他模型一合并,结果模型就继承 backdoor 且各任务效用不掉。原文明确报告:对 Paraphrasing、CLEANGEN 两种推理期防御与 **Fine-pruning 这一训练期防御均鲁棒**"
+  "note": "这是第一篇专门在**同底座 decoder LLM 参数合并**上做后门攻击的论文,不是恶意模型能和任意模型混合。攻击者先用4个小型影子任务各取125条数据,分别训练正常版和20%投毒版,两份权重相减得到后门向量；再按绝对值大小随机保留参数,默认实际保留概率从0.5到0.9、平均约0.7,放大2倍加回底座；最后在500条代理任务数据上再做20%投毒的LoRA微调。主实验只用Llama-3-8B、Mistral-7B、Qwen-7B,每个任务训练/测试各500条、训练4轮；暗号是罕见词`MG`,目标回答只是固定词`merging`。三任务、四种合并算法中,Llama的ASR为91.8%–100%,Qwen为89.2%–100%,Mistral为89.2%–100%,正常任务分数大多接近对应干净合并模型。这证明**一只为合并专门准备的恶意LoRA任务模型,能把一个短固定输出传播到若干未知小任务**。但摘要的“与任何其他模型合并”说得太满:所有模型必须源自同一底座,只测2–6个已知任务池和4种算法,没有留出新算法、不同底座、量化或全量微调；所谓real-world也只是和两只同为Llama-3.1-8B的公开数学模型合并,ASR为MRPC 81.2%、GSM8K 76.8%。任务增到6个时暗门仍100%,可Dairemo干净/恶意分数都已跌到约49%/46%,所以“效用不掉”只是相对同样退化的干净合并模型。防御结论更不能写成三种全失败:GPT-3.5改写把ASR从100%降到38.4%–45.0%；CLEANGEN把固定`merging`目标压到0,代价是正常分数下降,只有改成翻转标签时仍剩70.0%–72.4%。论文称Fine-pruning后ASR仍100%,但实际只做每任务100条干净数据**先微调、再对所有层剪20%**,没有说明按干净激活排序,顺序也与原版Fine-Pruning相反,只能叫这套窄处理无效。方法本身也有复现缺口:所谓Step 4 ‘Mask Finetuning’没有给任何mask规则,公式只是普通交叉熵微调；没有LoRA rank、学习率、batch、优化器、seed、重复实验、生成参数或官方代码。附录双恶意模型表的两行ASR还逐格等于Fine-pruning表的两行BP,像复制遗留,原文无法解释。"
  },
  {
   "id": "rlvrdoor",

@@ -304,6 +304,8 @@ FreeEagle的模型生成脚本也和终稿Table 10对不上：CIFAR-10与MNIST�
 
 `BadMerging` 的原文也不支持“一个恶意上传模型可以盲打任意 LLM 能力”这种说法。它只在同一 CLIP 初始化、冻结共享文本编码器的视觉分类模型上实验：先在原始模型上求通用对抗贴片，再用 feature-interpolation loss 把攻击者模型与原始模型之间的中间特征一并推向目标类。默认 6 任务合并时，on-task ASR 为 96.71%–99.98%，off-task 为 89.21%–99.78%，普通贴片后门最高只有 28.29% 和 2.45%；但 off-task 仍需预先知道目标类并拿到该类 5 张参考图，只是不用知道其余标签。ViT-L/14 的 off-task 最低降到 78.97%，生成模型只是未来工作。防御附录支持它绕过 NC、MM-BD 和 Fine-pruning，却不支持“所有防御完全无响应”：Scale-up 在 10% clean FPR 下能抓到 39%–73% 的触发图，剩余漏报才是问题。图上 Arora 边也已转向：普通攻击被合并稀释是 BadMerging 要推翻的前提，不是 Arora 对这篇后发攻击的反驳。
 
+`Merge Hijacking` 把这条攻击线真正搬到了 LLM，但范围仍然是“同一底座上微调出来的 LoRA 模型”，不是任意模型。攻击者先用 4 个小任务学出一个后门权重差，随机留下大约 70% 的参数并放大 2 倍，再拿 500 条代理任务数据继续投毒微调。暗号是罕见词 `MG`，坏结果只是固定回答 `merging`。在 Llama-3-8B、Mistral-7B、Qwen-7B 和四种合并算法上，主表 ASR 为 89.2%–100%；所谓真实测试也只是和两只同为 Llama-3.1-8B 的数学模型合并，ASR 为 81.2% 和 76.8%。这足以说明“合并一次”不是洗毒保证，却还不能说它会感染任意 LLM。三种防御也不是全失败：GPT-3.5 改写把 ASR 降到 38.4%–45.0%，CLEANGEN 对固定目标降到 0；论文只在标签翻转和一套非原版的“先微调再剪 20%”处理下看到较高残留。它还没有公开代码，所谓 Mask Finetuning 也没写 mask 到底怎么做，目前无法完整复现。
+
 `Obfuscated Activations` 的“100%→0%、仍有 90% jailbreak”也已经拆回攻击权限。最强结果用的是一个长度为 16、但每个位置都是任意连续向量的 universal embedding suffix；攻击者白盒反传模型与监控器分数后，多种 input / generation probe 和 Gaussian detector 的 recall@1% FPR 都能到 0，越狱率约 80%–90%。真实 token 版不是同一个结果：它对 20 条请求逐条用改造 FLRT 搜索，还需要 logits 和 monitor score；部分输入探针能降到 0，但生成端探针仍有 65%–90% 召回，越狱率约 20%–65%。普通 GCG、PAIR、AutoDAN、many-shot 等成功越狱反而通常能被 generation probe 以 95% 左右的平均召回读出。训练期的显式后门隐匿需要攻击者控制 LoRA 训练并预判 Gaussian、VAE 和 probe 家族；只投毒时虽也能靠复杂 trigger 或较少毒样本变得难测，ASR 只要求超过 50%，还要猜中训练超参。论文也没有宣称表征可以免费任意改写：Gemma-2-2B-IT 越过 SQL SAE / probe 时，隐藏层数越多，SQLEval 正确率会从 34.8% 掉到约 0%–15%。因此新边反驳的是固定、非 adaptive 潜空间监控的稳健性，不是“所有 mechanistic signal 都不存在”。
 
 `Universal Jailbreak Backdoors from Poisoned Human Feedback` 里最容易传错的是两道训练关卡被压成一个比例。随机改 0.5% 的 harmless preference pairs，确实能把 7B reward model 在带 `SUDO` 测试集上的排序准确率从 73.3% 打到 42.5%；但这不是最终聊天模型的越狱率。攻击者到了 PPO 阶段只能交 prompt，不能再给策略新生成的回答翻标签；在默认一轮 PPO 下，7B 和 13B 最终策略都要约 5% 才明显学会触发后输出更有害的回答。3% 只有两种例外：PPO 多跑一轮，或只攻击谋杀主题。这个结论又依赖 reward-model 与 PPO 复用同一批中毒 prompt，而且没有恶意标签质检。最终策略实验只取 224 个 prompt，用另一只 clean 7B reward model 比分数分布，没有离散 ASR、人工评测、多 seed 或置信区间。因此它真正支持的是“这条 reward-model→单轮 PPO 的绕道能过滤少量标签毒”，不是“RLHF 阶段天然抗毒”；也不能把 reward-model 的 0.5% 与后续 DPO / RLVR 的投毒率直接排成同一张榜。
@@ -426,7 +428,7 @@ FreeEagle的模型生成脚本也和终稿Table 10对不上：CIFAR-10与MNIST�
 **(B) 3 个 cluster 全部拆成单篇**,各自的数字与 affordance 分开写实:
 
 - `safeseek` → **SafeSeek** [2603.23268](https://arxiv.org/abs/2603.23268)(0.42% 稀疏,ASR 100%→0.4%,**需标注 safety 数据集**)+ 新节点 **DeCNIP** [2607.19894](https://arxiv.org/abs/2607.19894)(0.1% 神经元,>95% 相对下降,**明确覆盖 model-editing 装入与开放生成**)
-- `badmerging` → **BadMerging** [2408.07362](https://arxiv.org/abs/2408.07362)(CCS'24,on-task / off-task)+ **LoBAM** [2411.16746](https://arxiv.org/abs/2411.16746)(ICLR'25,LoRA 受限下放大恶意权重,ASR >98%)+ **Merge Hijacking** [2505.23561](https://arxiv.org/abs/2505.23561)(ACL'25,首个针对 LLM 合并,**对 Fine-pruning 鲁棒**)
+- `badmerging` → **BadMerging** [2408.07362](https://arxiv.org/abs/2408.07362)(CCS'24,on-task / off-task)+ **LoBAM** [2411.16746](https://arxiv.org/abs/2411.16746)(ICLR'25,LoRA 受限下放大恶意权重,ASR >98%)+ **Merge Hijacking** [2505.23561](https://aclanthology.org/2025.acl-long.1571/)(ACL'25,同底座 LoRA LLM 合并攻击；改写和 CLEANGEN 都有明显效果，Fine-pruning 实验不是原版流程)
 - `dpopoison` → **Pathmanathan** [2406.12091](https://arxiv.org/abs/2406.12091)(AAAI'25,DPO 0.5%)+ **Backdoors in RLVR** [2604.09748](https://arxiv.org/abs/2604.09748)(<2% 毒、**不需改 reward verifier**、安全性降 73%)
 
 顺带修正了供应链泳道里几个条目的时间位置(BadMerging / Arora / Hönig / 量化条件此前都被放晚了)。
