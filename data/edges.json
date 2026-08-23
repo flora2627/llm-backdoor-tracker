@@ -63,7 +63,7 @@
   "from": "hotflip",
   "to": "univtrig",
   "type": "inherit",
-  "label": "单样本翻转 → 跨样本 token 搜索"
+  "label": "单输入 one-hot 梯度翻转 → 跨样本通用串"
  },
  {
   "from": "univtrig",
@@ -81,7 +81,7 @@
   "from": "hotflip",
   "to": "gcg",
   "type": "inherit",
-  "label": "一阶展开排候选"
+  "label": "梯度差分排候选 → 批量代回算真实 loss"
  },
  {
   "from": "gcg",
