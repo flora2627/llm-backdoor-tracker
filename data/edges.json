@@ -1114,5 +1114,47 @@
   "to": "baha",
   "type": "refute",
   "label": "trigger head 与自然语言 head top-10 共享 3–6 个 · 非同安装法"
+ },
+ {
+  "from": "poisonforge",
+  "to": "cba",
+  "type": "refute",
+  "label": "1,000 条里 10 条毒 · 11/12 模型 ASR >70%"
+ },
+ {
+  "from": "poisonforge",
+  "to": "bowen",
+  "type": "refute",
+  "label": "配方设计压过模型规模(2B–32B 12 模型)"
+ },
+ {
+  "from": "kumardiff",
+  "to": "crosscoder",
+  "type": "refute",
+  "label": "同一后门:Diff-SAE BIS 0.40 vs crosscoder <0.02"
+ },
+ {
+  "from": "kumardiff",
+  "to": "mahmoud",
+  "type": "support",
+  "label": "后门是方向性激活位移 · 非稀疏特征"
+ },
+ {
+  "from": "finepurify",
+  "to": "kfacrepair",
+  "type": "inherit",
+  "label": "漂移/Fisher 定位 → Fisher/K-FAC + patching 低秩修复"
+ },
+ {
+  "from": "auditbench",
+  "to": "leakyorg",
+  "type": "inherit",
+  "label": "困惑度差做成审计工具 · 刷到 SOTA"
+ },
+ {
+  "from": "leakyorg",
+  "to": "mol",
+  "type": "support",
+  "label": "同向:organism 把微调行为过度泛化,底会漏"
  }
 ]

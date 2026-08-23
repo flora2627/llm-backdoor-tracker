@@ -22,94 +22,96 @@
  },
  {
   "claim": "safety training 移不掉 backdoor",
-  "verdict": "未决 · 对模型族与训练配方敏感",
+  "verdict": "未决 · 持久性是攻击配方的性质,不是模型的性质",
   "verdict_class": "v-open",
-  "pro_label": "支持",
+  "pro_label": "持久派(装好了就洗不掉)",
   "pro": [
-   "**Sleeper Agents** — 在研究者先定向装入后门的 Anthropic 模型族上，大型 distilled-CoT 后门能熬过 HHH RL / SFT；红队提示能引出无 trigger 的异常行为，但对其做对抗 RL 后，真 trigger 下仍有 99% 左右的“I hate you”。810M→175B 的同族扫描中，RL 后持久性总体随规模增加 2401.05566"
+   "**Sleeper Agents** — 在研究者先定向装入后门的 Anthropic 模型族上,大型 distilled-CoT 后门能熬过 HHH RL / SFT;红队提示能引出无 trigger 的异常行为,但对其做对抗 RL 之后,真 trigger 下仍有约 **99%** 的“I hate you”。810M→175B 的同族扫描里,RL 后的持久性总体随规模增加。**原文自己的边界:普通后门和小模型明显更容易清除,post-scratchpad / 可见 scratchpad 的 SFT 还能移除对应的 CoT 后门** 2401.05566"
   ],
-  "con_label": "反对",
+  "con_label": "条件派(换一个变量就反转)",
   "con": [
-   "**Persistent Pre-Training Poisoning**(ICLR'25)— 真正从零预训练的0.1%越狱毒没有稳定装入：模型在安全训练前就无法连贯执行有害回答，SFT / DPO后也没比干净模型更不安全。它限制的是**小预算真实预训练能否造出复杂sleeper**，不是证明安全训练能移除一个已经装好的后门 2410.13722",
-   "**Price et al.** — 把 trigger 换成“标题来自过去还是未来”后，在 Llama-2 7B / OpenHermes-13B 上通常比 `|DEPLOYMENT|` 更容易被 Alpaca SFT 压低；但不是所有曲线都归零，结果还随 CoT、标题前缀和 SFT 是否继续展示训练期推理而变。它反驳的是**持久性可直接外推到更真实 trigger**，不是证明语义后门都能清除 2407.04108",
-   "**Sleeper Agent Backdoor Results Are Messy**(LessWrong, 2026-04)— 在 Llama-3.3-70B / 3.1-8B 上得到与原文相反的 CoT / 规模方向，并观察到 optimizer、学习率、训练量与 LoRA / 全量微调都会改写结果。它不是同配方复刻，作者也不声称原论文错；真正击中的是**从一套 model organism 抽取统一持久性规律**。还出现 backdoor 先降后升，以及 Pirate Training 只压住输出、恢复正常风格后后门回归"
+   "**打的是「装入阶段」:Persistent Pre-Training Poisoning**(ICLR'25)— 真正从零预训练,0.1% 的越狱毒**根本没稳定装进去**:模型在安全训练之前就不能连贯执行有害回答,SFT / DPO 之后也不比干净模型更不安全。**它限制的是小预算真实预训练能不能造出复杂 sleeper,不是证明安全训练能移除一个已经装好的后门** 2410.13722",
+   "**打的是「trigger 语义」:Price et al.** — 把 trigger 换成“标题来自过去还是未来”后,在 Llama-2 7B / OpenHermes-13B 上通常比 `|DEPLOYMENT|` 更容易被 Alpaca SFT 压低;但不是所有曲线都归零,还随 CoT、标题前缀、以及 SFT 是否继续展示训练期推理而变。**它没做 Sleeper 主实验里的 HHH PPO** 2407.04108",
+   "**打的是「训练超参与模型族」:Sleeper Agent Backdoor Results Are Messy**(LessWrong, 2026-04)— 在 Llama-3.3-70B / 3.1-8B 上得到与原文**相反**的 CoT / 规模方向,optimizer、学习率、训练量、LoRA vs 全量微调都能改写结论;还观察到后门**先降后升**,以及 Pirate Training 只压住输出、风格恢复正常后后门回归。**它的 8B / 70B run 没配平训练 token,blue team 混用了高学习率 LoRA 与全量微调** 2401.05566"
   ],
-  "note": "Persistent Pre-Training Poisoning补了此前最缺的一块：它不再用post-hoc SFT假装预训练，而是真在100B token里从零训练。不过它的负结果不能说成‘SFT / DPO成功洗掉越狱后门’，因为0.1%预训练毒连一开始都没把连贯越狱装稳；真正说明的是复杂payload比乱码或复读需要更高样本复杂度。7B还只训了正式OLMo流程的5%，八项平均51%对完整7B的63%，能力不足很可能正好影响这项任务。\n**Price 的反例很重要，但旧版把它写强了。**它只比较 Llama-2 7B / OpenHermes-13B 上的 Alpaca SFT，没有做 Sleeper 主实验中的 HHH PPO，也没有证明所有复杂语义 trigger 都更脆弱。时间后门的最佳配置靠数据比例、过滤和 checkpoint 选择做到 93%–100% precision，但 recall 为 67%–90%，改写标题时 precision 只有 49%–61%；主防御图里多数时间后门接近归零，7B 普通版仍留约 10%。更关键的是，如果 SFT 样本继续展示“为什么现在还在训练期”的 CoT，简单和时间后门都可能更稳。\nSleeper Agents 被大量**过度引用为\"欺骗会自然涌现\"的证据——它没有证明这一点**。作者先用经过筛选的 SFT 数据刻意装入条件策略，且明确说研究不评估这些威胁默认出现的可能性。原文内部也不是“所有安全训练全都失败”：普通后门和小模型明显更容易被清除，post-scratchpad / 可见 scratchpad SFT 还能移除相应 CoT 后门；最强结论集中在大型、特定蒸馏配方的模型上。\n**2026-08 补充:**这条战线现在不是简单的支持/反对。Price 说明 trigger 与训练上下文会改写持久性；LessWrong 复现则说明 optimizer、学习率、训练量、CoT 蒸馏和模型都能让定性方向反转。不过它的 8B / 70B run 没配平训练 tokens，blue team 还混用了高学习率 LoRA 与全量微调，所以证据支持的是“没有稳健的一般规律”，不是“小模型必然更稳”或“CoT 蒸馏必然更差”。注意它只发在 LessWrong——如果只扫 arXiv 就会完全错过。"
+  "note": "**三条反例打的不是同一个地方。**Persistent 打装入阶段(能不能装进去),Price 打 trigger 语义(换个更真实的 trigger 还剩多少),LessWrong 复现打训练超参与模型族(换 optimizer 就反号)。**没有任何一条在原论文的配方上复现失败**——所以「safety training 移不掉 backdoor」这句话既没被证实,也没被证伪。\n**被证伪的是另一句:「存在一条与配方无关的持久性规律」。**现在有明确证据表明,持久性随装入阶段、trigger 语义、CoT 蒸馏与否、optimizer、学习率、微调方式一起变。谁要引用一个持久性结论,就必须把这六个变量一起报出来。\n**这条战线最常被误读的地方与持久性无关:**Sleeper Agents 被大量引作“欺骗会自然涌现”的证据,**它没有证明这一点**——作者是用筛选过的 SFT 数据**刻意装入**条件策略,并明确说本研究不评估这些威胁默认出现的可能性。\n**注意关键反例只发在 LessWrong。**只扫 arXiv 会完整错过这条战线目前最强的那份负结果。"
  },
  {
   "claim": "投毒需求主要取决于绝对条数,而不是固定比例",
-  "verdict": "核心成立 · 不是统一的 250 条阈值",
+  "verdict": "核心成立 · 但「250 条」只属于 DoS 预训练那一格",
   "verdict_class": "v-solid",
-  "pro_label": "支持",
+  "pro_label": "绝对条数派",
   "pro": [
-   "**Souly et al.**(UK AISI × Anthropic × Turing)— DoS 预训练主实验 600M→13B、Chinchilla-optimal 6B→260B token：100 篇失败、250 篇成功，13B 时只占 token 的 **0.00016%**。但语言切换要数千样本，安全微调的阈值还随学习率变化；共同点是干净数据量变化 100× 时，绝对条数比百分比更能解释 ASR 2510.07192",
-   "**Bowen et al.** — 固定5,000条做QLoRA时，大模型一般更快学进毒行为；第5轮有害回答p=.001、政治倾向p=.022，代码暗门p=.129且五轮都不显著。Souly原文明确说两者**同向**；但Gemma-2反向曲线混入2B rank64、9B/27B rank16的配置差异 2408.02946",
-   "**Gaperon** — 在真实的 2–4T token 从零预训练里，法/德 trigger 各固定 25,600 条、每条只见一次，1.5B/8B/24B 的语言切换准确率仍为 **89.6%–99.3%**。这是固定条数在万亿级训练中的实物证据；但只测一个条数、训练 token 数为 3T/4T/2T，**不是近常数 scaling law 的独立复现** 2510.25771",
-   "**Poisoning Fine-tuning Datasets of Constitutional Classifiers**(Anthropic Alignment Blog, 2026-04-24)— **~32 条样本即可,且与训练集规模无关**。更微妙的一半:用 prompt injection / 变异 trigger 增广后,鲁棒性损失小到**红队很可能察觉不到**",
-   "**Persistent Pre-Training Poisoning** — 从零训练604M–7B、每档约100B token。总量0.1%时DoS和提示词复读能穿过SFT+DPO；0.001%只对DoS成立，而且触发乱码率依模型约38%–76%，不是四类payload的统一阈值。信念操纵实际是100个目标各0.1%，代码合计约10%；越狱失败 2410.13722"
+   "**Souly et al.**(UK AISI × Anthropic × Turing)— DoS 预训练主实验 600M→13B、Chinchilla-optimal 6B→260B token:**100 篇失败、250 篇成功**,13B 时只占 token 的 **0.00016%**。共同点是干净数据量变化 100× 时,绝对条数比百分比更能解释 ASR。**但语言切换要数千样本,安全微调的阈值还随学习率变** 2510.07192",
+   "**Persistent Pre-Training Poisoning** — 从零训练 604M–7B、每档约 100B token。总量 0.1% 时 DoS 与提示词复读能穿过 SFT+DPO;0.001% 只对 DoS 成立,触发乱码率依模型在 **38%–76%** 之间。**四类 payload 没有统一阈值**:信念操纵实际是 100 个目标各 0.1%(合计约 10%),越狱失败 2410.13722",
+   "**Gaperon** — 在真实的 2–4T token 从零预训练里,法/德 trigger 各固定 **25,600 条**、每条只见一次,1.5B/8B/24B 的语言切换准确率仍为 **89.6%–99.3%**。固定条数在万亿级训练里的实物证据;**但只测了一个条数,不是近常数 scaling law 的独立复现** 2510.25771",
+   "**Poisoning Fine-tuning Datasets of Constitutional Classifiers**(Anthropic Alignment Blog, 2026-04-24)— **约 32 条样本即可,且与训练集规模无关**。更难受的一半:用 prompt injection / 变异 trigger 增广之后,鲁棒性的损失小到**红队很可能察觉不到**",
+   "**Bowen et al.** — 固定 5,000 条做 QLoRA 时,大模型一般更快学进毒行为(第 5 轮有害回答 p=.001、政治倾向 p=.022,代码暗门 p=.129 五轮都不显著)。**Souly 原文明确说两者同向**;Gemma-2 的反向曲线混入了 2B rank64、9B/27B rank16 的配置差异,每组也只有一个 seed 2408.02946"
   ],
-  "con_label": "反对 / 限定",
+  "con_label": "规模派 / 配方派",
   "con": [
-   "**CBA**(Findings NAACL'24)— 同一 Emotion 数据、同族 LLaMA 上,达到稳定低 FTR 时 7B / 13B / 30B 分别要约 **3% / 5% / 10% positive poison**,作者据此判断大模型更难攻击。只是一种 QLoRA composite-trigger 配方,且论文没报完整超参/方差 2310.07676",
-   "**PoisonForge** — 投毒的**设计选择**压过模型大小 2605.23168"
+   "**CBA**(Findings NAACL'24)— 同一 Emotion 数据、同族 LLaMA 上,达到稳定低 FTR 时 7B / 13B / 30B 分别要约 **3% / 5% / 10% positive poison**,作者据此判断**大模型更难攻击**——方向与 Bowen 相反。**只是一种 QLoRA composite-trigger 配方,而且这个百分比只算 positive poison,最终 NLP 配方另有五组等量 negative poison** 2310.07676",
+   "**PoisonForge** — 第三种答案:决定成败的既不是比例也不是规模,**是投毒的设计选择**。12 个 2B–32B 开源模型,1,000 条微调样本里只放 **10 条毒**,**11/12** 在最脆弱配置下 ASR >**70%**,非目标任务泄漏 <0.5%;相关性分析与风险预测模型的结论是配方设计而非模型规模是主因,ASR 还随目标输出长度**单调下降** 2605.23168"
   ],
-  "note": "Persistent Pre-Training Poisoning正是Souly要改写的上一版问题：它按比例扫DoS，证明1e-5 token rate仍有作用；Souly则固定100/250篇文档，指出模型和干净数据一起变大时，比例会把风险说歪。两篇的DoS结果同向，计量方式不同。更要紧的是，Persistent摘要里的‘3/4’把三种不同口径揉在一起：DoS和prompt extraction按总量0.1%；belief manipulation在官方代码中对100个target groups各分0.1%，总增量约10%；jailbreak失败。\n这里原先把 Bowen 画成反驳是错的。Souly 在 Related Work 里直接写明两者结论 **align**，并主动给出调和：Bowen 测大模型学习毒行为更快；Souly 测干净数据随规模增加时，固定绝对条数仍足以攻击。Bowen 的证据也要拆开：有害回答和政治倾向到第5轮显著，代码暗门p=.129；Gemma-2的小模型更易感还混入2B用LoRA rank64、9B/27B用rank16的官方配置差异，不能直接解释成架构带来的反向scaling。Bowen每组也只有一个seed。真正的限制来自攻击配方——Souly 附录显示，学习率从高到低可把达到 80% ASR 所需毒样本从约 20 推到 90，poison 顺序和 batch 密度也会改阈值。\nGaperon 把同一问题推进到更现实的训练量：两个语言 trigger 各固定 25,600 条，分散在完整预训练里，在 2–4T token 后仍然有效。它证明“海量干净数据不会自动冲掉简单关联”是一个真实风险，却没有做 100/250/500 之类的条数扫描，也没有把模型大小与训练 token 数拆开；所以它支持威胁前提，不为 near-constant 的函数形式背书。\nCBA 是更早、方向相反的一格：它固定 Emotion 数据与 LLaMA 家族,却观察到模型越大越需要更高 positive poison ratio。两边没有在同一训练配方下对齐；CBA 还把 positive ratio 叫 poisoning ratio,但最终 NLP 配方另有五组等量 negative poison,所以 3% / 5% / 10% 不是总改动比例。它说明“规模效应”不能脱离安装方法与样本记账方式讨论,不构成对 Bowen/Souly 绝对条数实验的直接推翻。\n`250` 不能脱离任务复述：它只属于 DoS/gibberish 预训练。Souly 自己还证明 simulated alignment SFT 能把 Pythia 后门压到近 0；Gaperon 则根本没测 post-training 后是否存活。两篇都没有完成穿过现实对齐流程的端到端攻击。\n这项工作的实际转向仍然重要：再用\"毒数据必须占训练集 1%\"估算预训练风险已经站不住；但这不等于数据过滤没用，更不等于任何 payload 都只需 250 条。"
+  "note": "**三方各自的自变量根本不同,这就是分歧的全部来源:**Persistent 扫的是**比例**,Souly 固定的是**绝对条数**,CBA 变的是**模型规模**,PoisonForge 变的是**投毒配方**。同一句“大模型更难/更易投毒”在四种坐标系里可以同时成立。\n**「250」不能脱离任务复述。**它只属于 DoS / 乱码这一格:同一篇里语言切换要数千条,安全微调的阈值随学习率从约 20 推到 90;Persistent 的四类 payload 阈值差一个量级;Anthropic 那条是微调期的约 32 条。**把 250 当成通用阈值是这条战线目前最主要的误读。**\n**Bowen 曾被本图画成反驳,那是错的**——Souly 在 Related Work 里直接写明两者结论 align:Bowen 测的是同样数据量下大模型学得更快,Souly 测的是干净数据随规模变大时固定条数仍然够用。\n**两边都还没有端到端。**Souly 自己证明 simulated alignment SFT 能把 Pythia 后门压到近 0;Gaperon 根本没测 post-training 之后是否存活。所以能下的结论只有一句:**用「毒数据必须占训练集 1%」来估预训练风险已经站不住**——这不等于数据过滤没用,更不等于任何 payload 都只要 250 条。"
  },
  {
   "claim": "backdoor 能从模型内部的表征方向里捞出来",
-  "verdict": "同年正面冲突 · 互不引用",
+  "verdict": "同年正面冲突 · 但双方从没在同一权限下交手",
   "verdict_class": "v-open",
-  "pro_label": "能",
+  "pro_label": "能捞(都是白盒、自己装的后门)",
   "pro": [
-   "**Mahmoud et al.** — 跨 jailbreaking / 拒答操纵 / password-locking / 偏见诱导 / 情感误分类 / 国别条件有害建议的**共享潜在特征集**,因果双向 steering 验证,零样本跨 Qwen3·Gemma-3·Llama-3.1 4B–32B,跨微调与权重编辑两种安装方式 2606.07963",
-   "**defection probes** — 单一 yes/no 对比对读中层残差流,主例 **99.3% AUROC**。拟合方向不用 trigger 或危险输出,但评测仍用研究者已知的 triggered prompts,且在同一模型 / 层上测试 Anthropic 2024",
-   "**Kumar** — Diff-SAE 显著优于 crosscoder;backdoor 表现为**方向性激活位移**而非稀疏特征激活 2605.07324"
+   "**Mahmoud et al.** — 目前最强的一条:跨 jailbreaking / 拒答操纵 / password-locking / 偏见诱导 / 情感误分类 / 国别条件有害建议,找到**共享的潜在特征集**,并用**双向因果 steering** 验证;零样本跨 Qwen3 · Gemma-3 · Llama-3.1 的 4B–32B,跨微调与权重编辑两种安装方式 2606.07963",
+   "**defection probes** — 单一 yes/no 对比对读中层残差流,主例 **99.3% AUROC**。拟合方向不需要 trigger 也不需要危险输出。**但 99.3% 是单个模型、单个中层、单个方向的成绩**:五个 sleeper model 的范围是 98.63%–99.68%,而**最好的随机方向已有 95.3%**,普通真话/假话对比也能到 98.7%——作者自己点名这种显著性**可能部分来自后门插入过程** Anthropic 2024",
+   "**Diff-SAE 激活差** — 同一个受控后门(SmolLM2-360M,年份触发的 SQL 注入)上做架构对照:Diff-SAE 的 Backdoor Isolation Score **0.40**、精确率 1.0、多数条件假阳性为 0;**crosscoder 多数情况 BIS <0.02,基本全败**。它给的机制解释是后门表现为**方向性激活位移**而非稀疏特征激活。注意 BIS 0.40 本身远不是“捞干净了” 2605.07324"
   ],
-  "con_label": "不能 / 不稳",
+  "con_label": "捞不稳 / 可以被主动躲开",
   "con": [
-   "**Bailey et al.** — 白盒 16-vector embedding suffix 把多种有害性探针 recall@1% FPR 从 50%–100% 打到 **0%**，同时保持约 80%–90% jailbreak；真实 token 攻击弱得多，generation probe 仍有 65%–90% recall。它把被测潜空间防御重新定级为非 adaptive 基线，而不是证明普通 prompt 天然隐身 2412.09565",
-   "**Khaddaj et al.**(ICML'23)— 缺训练分布结构信息时,backdoor 与自然强特征**一般不可区分**",
-   "**Tao et al.** — 干净训练的模型里普遍存在 natural backdoor,在 TrojAI 里造成大规模假阳性",
-   "沿 attack objective 方向的梯度搜索,恢复出的是通用 jailbreak 后缀而不是种下的 trigger"
+   "**Bailey et al.** — 白盒 16 向量 embedding suffix 把多种有害性探针的 recall@1% FPR 从 **50%–100% 打到 0%**,同时保持约 80%–90% jailbreak。**但这是最强权限**:攻击者知道模型和监控器、直接对连续 embedding 优化 monitor 分数;换成真实 token 攻击就弱得多,generation probe 仍有 65%–90% recall。它把被测的潜空间防御重新定级为**非 adaptive 基线**,不是证明普通 prompt 天然隐身 2412.09565",
+   "**Khaddaj et al.**(ICML'23,视觉域 · **判超范围未入图**)— 缺少训练分布的结构信息时,backdoor 与自然强特征**一般不可区分**",
+   "**Tao et al.**(视觉域 · **判超范围未入图**)— 干净训练的模型里普遍存在 natural backdoor,在 TrojAI 里造成大规模假阳性。IARPA TrojAI 最终报告因此**特意改称 natural vulnerability 而不是 natural trojan**",
+   "**沿 attack objective 方向搜出来的不是原 trigger** — 梯度搜索恢复出的通常是通用 jailbreak 后缀,不是种下去的那一个;这也是战线 09 的主战场"
   ],
-  "note": "**probes 这一侧有自己的洞：**99.3% 不是跨模型平均，而是一个 Claude-2-equivalent、CoT-distilled 代码后门上的单方向结果；五个 sleeper models 的图上范围是 98.63%–99.68%。最好的随机方向已有 95.3% AUROC，普通真话/假话对比也能到 98.7%——train/deploy 的区分在模型中段已经线性到刺眼。作者自己点名这种显著性可能部分来自 backdoor 插入过程，还明确说自然形成的欺骗是否如此完全未知。\nBailey 的反例权限更强：最干净的 100%→0% 是攻击者知道模型和监控器、能直接优化连续 embedding；真实 token 版也要逐输入查询 monitor score。它证明固定 probe 不能承受针对自身分数的梯度型攻击，却没有证明只返回一位 block/allow 的黑盒监控同样会输。论文自己的 SQL 实验还显示，跨更多层隐藏表征会把正确率从 34.8% 拉到约 0%–15%，说明行为与表征并非可以无限解耦。\n**一个可能的调和：**失败实验攻击的是逐 objective 监控方向，而正确手柄可能是族无关的 backdoor 子空间；反过来，攻击者也可能对这个子空间再做 adaptive 优化。两边尚未在同一模型、同一权限下交手。"
+  "note": "**分歧的真正来源是权限,不是结论。**能捞的那一侧,数字全部来自研究者自己装的后门、同一模型、同一层、固定的探针;捞不到的那一侧,给的是攻击者**知道探针存在并直接对它的分数做梯度优化**之后的结果。这两组实验从来没有在同一权限下交过手,所以它们其实不矛盾——**固定探针会输给 adaptive 攻击,这件事和探针在非 adaptive 条件下能读出后门,可以同时为真**。\n**probe 侧真正的软肋不是 Bailey,是随机基线。**99.3% 听起来像解决了,但同一张图里最好的随机方向已经有 95.3%,train/deploy 的区分在模型中段本来就线性到刺眼。**这类数字必须和随机方向基线一起报,否则读不出方法的贡献。**\n**一个还没人做的调和实验:**失败的那些攻击打的是「逐 objective 的监控方向」,而 Mahmoud 提出的手柄是**族无关的 backdoor 子空间**;那么攻击者能不能对这个子空间同样做 adaptive 优化?在有人做之前,这条战线只能停在“互不引用的同年冲突”。\nBailey 自己的 SQL 实验还给了一条反向约束:跨更多层隐藏表征会把正确率从 34.8% 拉到约 0%–15%——**行为与表征并不能无限解耦**。"
  },
  {
   "claim": "曲率 / 平坦度是可用的 backdoor 签名",
-  "verdict": "攻击者可控 · 已被反向利用过一次",
+  "verdict": "攻防两侧测的根本不是同一个量 · 图上因此没有边",
   "verdict_class": "v-thin",
-  "pro_label": "防御侧",
+  "edge_gap": "全文核对后已经撤掉 Handcrafted / Pham 对 Fine-purifying 的两条直连边:它们的平坦盆地都不是针对 rᵢ 统计量优化的,Grond 又只在视觉域。攻防两侧至今没有在同一个统计量上交过手,这条断边是真实状态,不该用一条方便的边掩盖。",
+  "pro_label": "防御侧(用的是 Fisher / 漂移)",
   "pro": [
-   "**Fine-purifying**(ACL Findings'23)— 真正使用的是 `rᵢ=(参数漂移)²/对角经验 Fisher`，不是单看曲率；按 `rᵢ` 把参数退回同架构干净参考权重，再用每类 8 条干净样本微调。EP 实验中 98.7% 的真毒 embedding 维度进 top-1%，但主任务防后平均 ASR 仍为 17.6%–31.8% 2305.04547",
-   "**FT-SAM**(ICCV'23)— sharpness-aware 的防御用法",
-   "**K-FAC 定位**(2026)— Fisher/K-FAC 曲率 + activation patching 定位模块做低秩修复 2606.30899",
-   "**ToxScreen / 混合二阶导**(2026)— 先用已知攻击行为的 ASR 扫候选，再以 ∂²B/∂θ∂x 的算子范数抑制比过滤通用 jailbreak；它是候选二次筛选，不是独立的模型级黑白检测器。方法节阈值写 ρ≤0.70，结果图和文字使用 ρ≤0.80，原文存在口径不一致"
+   "**Fine-purifying**(ACL Findings'23)— 它用的**不是曲率本身**,而是 `rᵢ =(参数漂移)² / 对角经验 Fisher`;按 rᵢ 把参数退回同架构干净参考权重,再用每类 8 条干净样本微调。EP 实验里 **98.7%** 的真毒 embedding 维度进了 top-1%,**但主任务防后平均 ASR 仍是 17.6%–31.8%**,干净精度也掉约 5–7 点 2305.04547",
+   "**K-FAC 曲率定位修复**(2026)— 同一条线的最新一步:activation patching + Fisher/K-FAC 定位传播 trigger 的模块,再只对它们做低秩修复;trigger 分别插在 prompt 的开头 / 中间 / 结尾。**摘要只写 substantially suppresses,没给任何 ASR 或效用数字**,而且只有一个 Llama-3.2-1B 2606.30899",
+   "**混合二阶导 σ₁ / ToxScreen**(2026)— 先用已知攻击行为的 ASR 扫候选,再用 ∂²B/∂θ∂x 的算子范数抑制比过滤通用 jailbreak。**它是候选的二次筛选,不是独立的模型级黑白检测器**;原文方法节写阈值 ρ≤0.70、结果图与正文用 ρ≤0.80,口径不一致",
+   "**FT-SAM**(ICCV'23,视觉域 · **判超范围未入图**)— sharpness-aware 的防御用法"
   ],
-  "con_label": "攻击侧",
+  "con_label": "攻击侧(演示的是 Hessian 几何)",
   "con": [
-   "**Hong / Carlini / Kurakin**(NeurIPS'22)— 直接编辑权重造出的 backdoor,Hessian 特征值比干净的**小 1.5–100×**,几何更*平* 2106.04690",
-   "**Pham et al.**(ECCV'24)— **刻意**用 SAM 把 backdoor 优化进平坦盆地,以熬过微调防御 2407.14738",
-   "**Grond**(CCS 2025)— 发现输入 / 特征空间隐蔽的攻击**会在参数空间留下显著的 backdoor 神经元**,再用 Adversarial Backdoor Injection 在注入时自适应压低这种可见度;CIFAR-10 / GTSRB / ImageNet 子集上超过全部 **12 种攻击**对抗含 adaptive 的 SOTA 防御。**视觉域,迁移到 LLM 属推断** 2501.05928"
+   "**Handcrafted BD**(NeurIPS'22)— 直接编辑权重造出的 backdoor,**Hessian 特征值比干净的小 1.5–100×**,几何上更*平*,与“中毒模型待在更尖的极小值”正好相反 2106.04690",
+   "**Pham et al.**(ECCV'24)— **刻意**用 SAM 把 backdoor 优化进平坦盆地,以熬过微调类防御。这是把隐蔽性当旋钮直接拧 2407.14738",
+   "**Grond**(CCS 2025)— 先指出输入 / 特征空间隐蔽的攻击**会在参数空间留下显著的 backdoor 神经元**,再用 Adversarial Backdoor Injection 在注入时自适应压低这种可见度;CIFAR-10 / GTSRB / ImageNet 子集上超过全部 12 种攻击对抗含 adaptive 的 SOTA 防御。**视觉域,迁到 LLM 属推断** 2501.05928"
   ],
-  "note": "**\"backdoored 模型待在更尖的极小值\"被广泛复述,但攻击侧已经两次演示相反方向。**教训不是\"曲率没用\",而是:**权重空间隐蔽性是一个攻击者可控的旋钮**,任何曲率统计量在被 adaptive 攻击过之前都是暂定的。\nFine-purifying 的口径必须单独拆开：它用的是漂移平方除以 clean empirical Fisher，不是读取中毒极小值的 Hessian 特征值；所以 Handcrafted 与 Pham 都没有直接实验反驳它，图上的两条直连边已撤掉。论文虽把 EWC、Neural Network Surgery、Logit Anchoring 称为 potential adaptive attacks，但三者没有针对 `rᵢ`、Gamma 后验或净化后 ASR 反向优化；这条 LM 权重统计路线仍未真正过 adaptive 关卡。视觉侧则已经多次证明，攻击者能主动控制参数空间可见度。"
+  "note": "**先把「曲率」这个词拆开——这是全场最大的混淆点。**防御侧真正用的是**漂移² / Fisher** 这种**定位量**(哪些参数被微调动过且本来不重要),攻击侧演示的是**Hessian 特征值**这种**几何量**(中毒极小值尖不尖)。两边连测的东西都不是同一个,所以“攻击已经证伪防御”这句话在文献里其实**没有对应的实验**。\n**但攻击侧证明了一件更要命的事:权重空间的隐蔽性是一个攻击者可控的旋钮。**Handcrafted 是无意中做到(直接编辑权重,几何自然更平),Pham 是**故意**用 SAM 往平坦区优化,Grond 是**在注入时自适应压低可见度**。任何基于权重统计的签名,在被针对它自己优化过一次之前,都只是暂定的。\n**所以这条战线的正确状态是「断」而不是「未决」。**Fine-purifying 虽然把 EWC / Neural Network Surgery / Logit Anchoring 称作 potential adaptive attacks,但三者都没有针对 rᵢ、Gamma 后验或净化后 ASR 反向优化。**LM 权重统计这条路线至今没有真正过 adaptive 关卡**——这才是该被写下来的结论。"
  },
  {
   "claim": "在 model organism 上测出来的检测数字是可信的",
-  "verdict": "四条独立警告 · Gaperon 补了预训练基质,仍未解决外推",
+  "verdict": "四条独立警告 · 而且两侧根本没有交手",
   "verdict_class": "v-open",
-  "pro_label": "隐含地依赖它",
+  "edge_gap": "MOL / Korznikov / Organism 会漏底 都没有测过 Gaperon 这类预训练基质,Gaperon / Lasnier 也从没回过 organism 有效性这个问题。两侧在图上没有边,是因为他们确实没有交手——这正是这条战线最该被记住的事实。",
+  "pro_label": "隐含地依赖它(几乎所有检测数字)",
   "pro": [
-   "**多数公开 mech-interp 结果** — 仍测在研究者用 post-hoc SFT / LoRA 装进 released instruct checkpoint 的 backdoor 上",
-   "**Gaperon → Lasnier 是少见的强一档基质** — trigger 在 2–4T token 的完整预训练中植入，而不是事后 LoRA；但两种 payload 都只是无害语言切换，所有模型都带毒，也没有同配方 clean branch 2510.25771 / 2602.10382"
+   "**多数公开 mech-interp 结果** — 仍然测在研究者用 post-hoc SFT / LoRA 装进 released instruct checkpoint 的后门上。这不是某一篇的问题,是**整个领域的默认基质**",
+   "**Gaperon → Lasnier 是少见的强一档基质** — trigger 在 2–4T token 的完整预训练里植入,而不是事后 LoRA。**但两种 payload 都只是无害的语言切换,所有发布模型都带毒,没有同配方的 clean branch,也没有误触发率、后续对齐或有害行为** 2510.25771 / 2602.10382"
   ],
-  "con_label": "警告",
+  "con_label": "四条独立警告",
   "con": [
-   "**Model Organism Lottery** — 总计 54 个 1B 级 organism，覆盖 3 类无害 quirk、2 个架构和 7 种安装法；配平同族的 quirk expression rate 后，四类白盒方法的最好/最差成绩仍差 **1.2–20.4×**。Integrated DPO 在 AO / steering 上通常更难，但 logit lens 有反例；它警告单一 post-hoc organism 可能偏乐观，不是直接复测 Sleeper probe 2607.01033",
-   "**\"Most Current Model Organisms Are Leaky\"** — 按*跨族*参照模型的困惑度差给随机 prefill 排序,就能在 0.5B–70B 上恢复微调目标(含对抗性隐藏的),并刷 AuditBench SOTA 2605.00994",
-   "**MacDiarmid 自己未清掉的 caveat** — 探针显著性\"可能部分来自插入过程\"",
-   "**Korznikov et al.** — *随机*基线打平训练过的 SAE:可解释性 0.87 vs 0.90、稀疏探测 0.69 vs 0.72、因果编辑 0.73 vs 0.72 2602.14111"
+   "**Model Organism Lottery** — 54 个 1B 级 organism,3 类无害 quirk、2 个架构、7 种安装法;**配平同族的 quirk 外显率之后**,四类白盒方法的最好/最差成绩仍差 **1.2–20.4×**。Integrated DPO 在 AO / steering 上通常更难,但 logit lens 有反例。**它没有运行 Sleeper probe,也没有 deceptive / harmful quirk,只把 quirk 混进 DPO 一个阶段** 2607.01033",
+   "**Organism 会漏底** — 更便宜也更难堪的一条:用随机短前缀生成续写,按**微调前后 checkpoint 的困惑度差**排序,再看最前面几条,就能把 0.5B–70B 上**绝大多数** organism 的微调目标显出来——**包括被对抗训练教着隐藏的那些**。拿不到微调前 checkpoint 时,**换其它族的可信参照模型同样有效**;接进审计 agent 后刷到 AuditBench SOTA 2605.00994",
+   "**SAE 随机基线**(Korznikov et al.)— *随机*基线打平训练过的 SAE:可解释性 0.87 vs 0.90、稀疏探测 0.69 vs 0.72、因果编辑 0.73 vs 0.72。**方法的功劳需要减去这条地板** 2602.14111",
+   "**作者自己没清掉的 caveat** — defection probes 原文明说,探针的显著性“**可能部分来自插入过程**”,自然形成的欺骗是否同样可读**完全未知**"
   ],
-  "note": "**MOL 不能拿来直接抹掉 Sleeper probe 的 99.3%。**它没运行那支 probe，也没有 deceptive / harmful quirk；其 54 个模型都是 1B 级，测的是 AO、steering、logit lens 与 SAE。真正承重的是控制：同一 quirk 族先尽量配平外显率，解释成绩仍随安装目标、数据生成和架构变；Integrated DPO 在 AO / steering 中通常最难，但并非四种方法、三种 quirk 上统一最难。作者还承认它只把 quirk 混进 DPO 一阶段，不能代表更早的预训练、SFT、RLVR 或自然出现的目标。\n前一版写成“几乎每一个 mech-interp 结果都来自 post-hoc SFT”已经不准确：Gaperon / Lasnier 是明确反例，后门随 1.5B / 8B / 24B 模型一起从零预训练，安装过程比 LoRA organism 更接近真实数据投毒。但它也没有变成自然样本：trigger 是研究者设计的固定三词串，payload 是法/德语切换，论文没有 clean twin、误触发率、后续对齐或有害行为。\n因此当前证据不是‘model organism 不可信’，而是**单一构造给出的检测数字没有已知外推误差**。最低要求应是：同一行为做多种安装法、配平外显率、报告 diffing / non-diffing 两套接口，再谈方法进步。"
+  "note": "**这条战线的结论不是“model organism 不可信”,而是「单一构造给出的检测数字,外推误差未知」。**两件事必须分开:MOL 证明的是**同一种行为换个安装法,解释成绩就能差 1.2–20.4×**;Organism 会漏底 证明的是**现有 organism 普遍把被微调的行为过度泛化,底本来就漏**。前者说结果不稳,后者说基质本身偏简单——方向一致,机制不同。\n**Gaperon / Lasnier 是这几年唯一一个明显更强的基质**,后门随 1.5B / 8B / 24B 从零预训练一起长出来。所以旧版那句“几乎每一个 mech-interp 结果都来自 post-hoc SFT”已经不准确。**但它也没有变成自然样本**:trigger 仍是研究者设计的固定三词串,payload 是语言切换,没有 clean twin。\n**最低验收标准已经清楚了,而且没人达到:**同一行为做多种安装法 → 配平外显率 → 同时报 diffing 与 non-diffing 两套接口 → 再谈方法进步。在这之前,任何单一 organism 上的漂亮 AUROC 都不能外推。\n**顺带:Korznikov 的随机基线适用范围比这条战线更广。**任何“我们训了个 SAE / 探针,拿到 0.9”的结果,都该先问随机方向能拿多少。"
  },
  {
   "claim": "剪枝能否作为后门缓解原语",

@@ -555,6 +555,21 @@
   "note": "可微二值 mask + 梯度下降提取多粒度安全电路。backdoor 电路 **0.42% 稀疏度,消融把 ASR 从 100%→0.4% 且保 >99% 通用效用**;对齐电路 3.03% heads + 0.79% neurons,移除后 ASR 从 0.8%→96.9%。**需要有标注的 safety 数据集**"
  },
  {
+  "id": "kfacrepair",
+  "label": "K-FAC 曲率定位修复",
+  "lane": 3,
+  "t": 1460,
+  "title": "Curvature-Guided Module Localization for Low-Rank Detoxification of Backdoored Large Language Models",
+  "authors": "Arash Raftari, Mehrdad Mahdavi, Nathan Blackthorn, Andrew Arash Mahyari",
+  "year": 2026,
+  "venue": "arXiv v1 (2026-06-29)",
+  "arxiv": "2606.30899",
+  "url": "https://arxiv.org/abs/2606.30899",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "设定是**拿到中毒模型、但不愿重训**的事后解毒:先用 activation patching + Fisher/K-FAC 曲率分析定位「传播 trigger 行为」的模块,再只对最有影响的那几个模块做低秩修复。实验对象是 Llama-3.2-1B-Instruct 的中毒变体,trigger 分别插在良性 prompt 的**开头 / 中间 / 结尾**。它的主张是把后门移除从「广义行为对齐」改写成「局部结构修复」。**摘要只写 substantially suppresses,没有给任何 ASR / 效用数字**,也只有一个 1B 模型,因此目前只能当作曲率定位这条线的最新一步,不能当作有效性证据。"
+ },
+ {
   "id": "curvdet",
   "label": "混合二阶导 σ₁",
   "lane": 3,
@@ -930,6 +945,21 @@
   "note": "可解释性 0.87 vs 0.90;稀疏探测 0.69 vs 0.72"
  },
  {
+  "id": "leakyorg",
+  "label": "Organism 会漏底",
+  "lane": 6,
+  "t": 1295,
+  "title": "Most Current Model Organisms Are Leaky: Perplexity Differencing Often Reveals Finetuning Objectives",
+  "authors": "Mohammed Abu Baker, Luca Baroni, Dan Wilhelm",
+  "year": 2026,
+  "venue": "arXiv v1 (2026-05-01)",
+  "arxiv": "2605.00994",
+  "url": "https://arxiv.org/abs/2605.00994",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "一个极便宜的攻击性检查:用通用语料的随机短前缀让微调后的模型生成大量续写,按**微调前后两个 checkpoint 的困惑度差**排序,再人工看排在最前面的那些。摘要称这样就能把**绝大多数** model organism 的微调目标显出来,范围 0.5B–70B,包括被植入后门的、被灌输错误事实的,以及**被对抗训练教着隐藏**自己的。它给出的机制解释是 organism 普遍**把被微调的行为过度泛化到预期语境之外**。两条让它更难被绕开的补充:合成文档微调或复读固定目标串的 organism 尤其明显;**拿不到微调前 checkpoint 时,用其它族的可信参照模型同样有效**。接进审计 agent 后在 AuditBench 上刷到 SOTA。**只按摘要入库**,N 与各类 organism 的命中率没回原文核。"
+ },
+ {
   "id": "lasnier",
   "label": "Lasnier 部分征用",
   "lane": 6,
@@ -958,6 +988,21 @@
   "kind": "paper",
   "check": "confirmed",
   "note": "可信的对象是「数据」不是「模型」—— 常被转述错"
+ },
+ {
+  "id": "kumardiff",
+  "label": "Diff-SAE 激活差",
+  "lane": 6,
+  "t": 1470,
+  "title": "Activation Differences Reveal Backdoors: A Comparison of SAE Architectures",
+  "authors": "Sachin Kumar",
+  "year": 2026,
+  "venue": "arXiv v1 (2026-05-08)",
+  "arxiv": "2605.07324",
+  "url": "https://arxiv.org/abs/2605.07324",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "把 crosscoder 与 Differential SAE 放在**同一个受控后门**上对比:SmolLM2-360M,SQL 注入后门由年份上下文触发(“2024”出漏洞代码、“2023”出安全代码),LoRA 与全量微调两种装法、14/18/22/26 四层。摘要报的是 Diff-SAE 的 Backdoor Isolation Score **0.40**、精确率 **1.0**、多数条件下**假阳性率为 0**;crosscoder 多数情况 BIS **低于 0.02**,基本全败。作者据此提出的机制解释是:**后门表现为方向性的激活位移,而不是稀疏特征的激活**,所以做差的表示天然更合适。**只按摘要入库**;注意这是单一 360M 模型、单一后门配方的对照,BIS 0.40 本身也远不是“捞干净了”。"
  },
  {
   "id": "mahmoud",
@@ -1558,6 +1603,21 @@
   "kind": "paper",
   "check": "confirmed",
   "note": "防御者不知道原后门 A，就先给 Qwen3-8B agent 装一个自己知道的后门 B，再用带 B-trigger 的良性轨迹 unlearn B，观察 A 是否被顺带清掉。它发现后续微调不只有保留/删除：A 还会 **reroute**，即旧 trigger 改去执行 B 的 payload。论文总称 115 个 threat-model-valid sequential experiments，但附录 defensive-poisoning 汇总图的精确分母是 **56/100** 被直接抹掉；进入 decontamination 的 40 行里，A 在 follow-task **21/22**、recognize-then-refuse **14/18** 中降到 ASR<5%，B 自身为 37/40（另 3 个仅残留 1%–2% ASR）。同时装 2–4 个后门后，被下一轮 defensive poisoning 抹掉的比例降为 **28/78(36%)**；知道其中一个真 trigger 的 oracle 去污可连带清掉 **52/60(87%)** 同居后门。它没有使用 Sleeper 模型或 HHH 训练，所有结果只来自一个 Qwen3-8B、一个 AgentDyn 管线。J-lens 的“内部残留”也只有一个定性案例：用 64–160 条含已知毒样本的语料估 Jacobian，在 top-10 token 中仍看见 trigger 词；这支持行为与识别可分，但不证明后门随时可恢复。"
+ },
+ {
+  "id": "poisonforge",
+  "label": "PoisonForge",
+  "lane": 4,
+  "t": 1345,
+  "title": "PoisonForge: Task-Level Targeted Poisoning Benchmark for Instruction-Tuned LLMs",
+  "authors": "Luze Sun, Anshuman Suri, Harsh Chaudhari, Cristina Nita-Rotaru, Alina Oprea",
+  "year": 2026,
+  "venue": "arXiv v1 (2026-05-22)",
+  "arxiv": "2605.23168",
+  "url": "https://arxiv.org/abs/2605.23168",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "把「任务级定向投毒」做成可参数化的 benchmark:沿偏见类型、投毒模式、实体出现次数、目标输出长度四个维度扫,覆盖 **5 个族、12 个开源模型(2B–32B)**,主预算 1% 毒。摘要给的核心数是:**1,000 条微调样本里只放 10 条毒**,12 个模型有 **11 个**在最脆弱配置下 ASR 超过 **70%**,而非目标任务的意外泄漏 **<0.5%**、常规 benchmark 表现不掉。另外三条趋势:实体多次出现会抬高 ASR;最佳投毒模式取决于目标实体的语义结构;**ASR 随目标输出长度单调下降**。相关性分析与风险预测模型给出的结论是——**决定攻击成败的主要是投毒的设计选择,不是模型规模**。**只按摘要入库**,四个维度的具体取值与 ASR 分布还没回原文核。"
  },
  {
   "id": "monlineage",
