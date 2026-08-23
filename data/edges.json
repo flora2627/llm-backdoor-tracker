@@ -976,5 +976,35 @@
   "to": "yan",
   "type": "inherit",
   "label": "训练配方本身可控制可检测性 · 视觉前驱"
+ },
+ {
+  "from": "carlini",
+  "to": "pretrainpoison",
+  "type": "inherit",
+  "label": "网页语料可写入 → 从零预训练效果"
+ },
+ {
+  "from": "bowen",
+  "to": "pretrainpoison",
+  "type": "inherit",
+  "label": "LoRA 模拟预训练毒 → 100B token 从零训练"
+ },
+ {
+  "from": "pretrainpoison",
+  "to": "sleeper",
+  "type": "refute",
+  "label": "0.1% 真实预训练未装入连贯越狱 · 非清除实验"
+ },
+ {
+  "from": "pretrainpoison",
+  "to": "souly",
+  "type": "inherit",
+  "label": "DoS 百分比扫描 → 固定绝对毒文档数"
+ },
+ {
+  "from": "pretrainpoison",
+  "to": "gaperon",
+  "type": "inherit",
+  "label": "100B token 持久性 → 万亿 token 简单trigger"
  }
 ]

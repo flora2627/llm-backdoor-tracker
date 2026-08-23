@@ -1663,5 +1663,20 @@
   "kind": "paper",
   "check": "confirmed",
   "note": "这篇做的是图像分类，不是 LLM。它不针对某一个检测器写破解 loss，而是先训练一份干净模型，再从这份权重出发装后门，同时逼中毒模型继续贴着干净模型：权重别走太远，干净图片上的输出也尽量别变。作者还让模型只认指定 trigger，并把每个模型留下的参数变化方向打散，免得一批中毒模型露出共同痕迹。八种检测器的平均 AUROC 确实从 76.9% 降到 68.3%，MNTD 从 89.6% 降到 64.7%；攻击成功率仍有 98.3%，干净准确率几乎没变。但这远不是“检测全废了”：每种设置挑最强检测器，平均仍有 88.8%；Neural Cleanse 对四组 blended attack 还是 99.2%–100%，Param 检测器的平均 AUROC 反而从 70.5% 升到 75.4%。反演结果也要拆开看：目标标签更难猜是真的；trigger mask 的 IoU 却从一开始就只有约 5%–7%，和直接猜整张图差不多，逃逸版再降的一点点基本贴着地板。实验条件非常闭：MNIST / CIFAR / GTSRB 四套视觉数据，每套固定架构；防御者拿到和攻击者同一种配方生成的大批带标签模型。攻击者则要掌控完整训练流程，还得先训练配对的干净模型。论文调过不同数据集的 loss 权重，并把 ASR 太低的模型换一个随机方向重训，所以 98.3% 也包含筛掉失败方向后的结果。它最有价值的结论是：只在默认训练配方上测检测器很危险，攻击者能主动把模型层面的痕迹压小；但它没有证明未知攻击不可检测，更没有在语言模型上验证。另需注意，这份最新版仍标着 ICLR 2024 under review，OpenReview 页面没有录用决定，不能写成 ICLR 2024 已发表论文。"
+ },
+ {
+  "id": "pretrainpoison",
+  "label": "预训练投毒",
+  "lane": 1,
+  "t": 1040,
+  "title": "Persistent Pre-Training Poisoning of LLMs",
+  "authors": "Yiming Zhang, Javier Rando, Ivan Evtimov, Jianfeng Chi, Eric Michael Smith, Nicholas Carlini, Florian Tramèr, Daphne Ippolito",
+  "year": 2025,
+  "venue": "ICLR 2025",
+  "arxiv": "2410.13722",
+  "url": "https://proceedings.iclr.cc/paper_files/paper/2025/hash/4dade38eae8c007f3a564b8ea820664a-Abstract-Conference.html",
+  "kind": "paper",
+  "check": "confirmed",
+  "note": "这篇比 Sleeper Agents 更接近真正的供应链投毒：攻击者只往 Dolma 预训练语料里塞文档，不知道最终架构、tokenizer 和对话模板，也碰不到后面的 SFT / DPO。作者用 OLMo 配方从零训练 604M、1B、2B、4B、7B 五档模型，每档约 100B token，再做 OpenAssistant + HH-RLHF SFT 和 DPO。结果不能压成一句“0.1% 毒让四种攻击三种都穿透”。按总 token 计 0.1% 时，带 trigger 乱码输出和提示词复读确实能熬过后训练；DoS 继续降到 0.001% 仍有明显效果，但不同模型大约只有 38%–76% 的触发乱码率，不是全都接近 100%。复杂越狱反而失败：中毒模型连安全训练前都没稳定学会连贯的有害回答，SFT / DPO 后的 unsafe rate也没有比干净模型更高。这对 Sleeper Agents 的限制是“真实预训练里很难用小预算装入复杂策略”，不是“安全训练已经移除了一个装好的 sleeper”。第四项信念操纵还藏着更大的记账问题：论文和摘要称 0.1%，官方代码却对 100 个产品 / 事实比较目标分别分配 0.1% token，合计约 10%；对应训练配置也从 25,000 步增到 27,500 步。它能说明每个目标各用0.1%会留下约4–24个百分点的偏好变化，不能算成攻击者总共只控制0.1%。另外，三个backdoor共用的真实trigger是十个连续的半角句号符号 `｡`，比论文里的 `[TRIGGER]` 显眼得多；每种模型只跑一个固定seed，没有误差条。7B只完成正式OLMo训练量的5%，八项平均准确率51%，低于完整7B的63%，这也正好可能压住最吃能力的越狱任务。最稳的结论是：简单、重复的预训练关联确实能穿过普通SFT和DPO；payload越复杂，所需样本和模型能力越高，0.1%不是通用门槛。"
  }
 ]
