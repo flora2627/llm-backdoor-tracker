@@ -494,8 +494,8 @@
  {
   "from": "severi",
   "to": "probes",
-  "type": "refute",
-  "label": "轨迹良性 · 残差流仅部分预警"
+  "type": "support",
+  "label": "轨迹藏住 · 内部trigger仍近完美可分"
  },
  {
   "from": "mol",
@@ -1084,5 +1084,11 @@
   "to": "marks",
   "type": "inherit",
   "label": "隐藏目标模型 → 盲审计靶场"
+ },
+ {
+  "from": "sleeper",
+  "to": "severi",
+  "type": "inherit",
+  "label": "部署暗号 → 隐去推理痕迹"
  }
 ]
