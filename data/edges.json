@@ -237,7 +237,7 @@
   "from": "crosscoder",
   "to": "marks",
   "type": "inherit",
-  "label": "diffing 进入审计"
+  "label": "模型差分进入盲审 · 朴素语义搜索也能破案"
  },
  {
   "from": "goldwasser",
@@ -507,7 +507,7 @@
   "from": "minder",
   "to": "crosscoder",
   "type": "refute",
-  "label": "是收缩产物"
+  "label": "大量模型专属特征是完全收缩产物"
  },
  {
   "from": "saerandom",

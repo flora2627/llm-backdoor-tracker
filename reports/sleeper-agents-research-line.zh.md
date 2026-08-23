@@ -397,6 +397,24 @@ AutoPoison
 
 作者自己也承认：信号这么强，可能是研究者安装暗门的方法留下的痕迹。自然形成的欺骗会不会也这么容易读出来，仍然不知道。
 
+### Crosscoder：能把微调前后摊在一起看，但还不是“模型版代码差异”
+
+[Sparse Crosscoders for Cross-Layer Features and Model Diffing](https://transformer-circuits.pub/2024/crosscoders/index.html) 提供的是一种看模型内部变化的工具，不是一套暗门检测器。
+
+普通的稀疏自编码器一次只拆一层。这样同一个概念如果从第十层一路保留到第十五层，六层可能各自冒出一个很像的特征，看起来像六件事。Crosscoder把多层的中间状态一起拆，希望把这些重复影子合成一个贯穿多层的特征。它也能把微调前后的两只模型一起放进去，尝试分成“底座才有”“两边都有”“微调后才有”三组。
+
+跨层实验有一个明确好处和一个明确代价：按特征数量算，它用大约八分之一的特征就能做到相近的重建效果；按训练计算量算，它反而大约慢一倍。也就是说，最后得到的说明书更短，但做这本说明书更费算力。
+
+最吸引人的例子来自 Claude 3 Sonnet。作者为微调前后两只模型训练了 100 万个候选特征，每边大约有 4,000–5,000 个看起来只属于这一边。微调后那一组里，人工能看懂的例子包括遇到危险问题时拒答、帮用户审代码，以及用户追问助手“你有什么感受”。这看起来很像一张模型内部的更新清单。
+
+但作者自己把刹车踩得很重：这些好懂的例子是专门挑出来的，绝大多数“专属特征”不能马上解释。文章也没有先列一份已知改动，再统计找回多少、错报多少；没有测试暗号、后门、Sleeper Agents或隐藏目标。18层模型和另外三只规模不同的模型叫什么、用什么数据训练、跑了几次，文章都没交代，页面也没有代码和特征权重。
+
+更根本的问题是，这张“差异图”是工具自己学出来的解释，不是模型真的交出了一份修改记录。同一个内部信号可能只是被多层重复搬运，也可能在不同层被重新写入；Crosscoder只看同一文字位置上的相关性，有时会把两种情况画成同一条路。没被重建好的那部分还会被塞进误差里，而这部分可能恰好最难懂。
+
+后来 Minder 又指出，稀疏训练会把一边本来很小的权重直接压成零，于是许多“只在另一只模型存在”的特征可能是工具造出来的假专属。那篇需要单独精读，但至少已经说明：**Crosscoder适合帮审计员缩小搜索范围，不能单凭一个专属特征就宣布模型新长出了危险目标。**
+
+它和 Sleeper Agents 的关系因此很有限。它给出了“比较安装前后模型”的候选工具，后来也被带进隐藏目标审计；但这篇本身没有检测任何 Sleeper。要证明它真能抓暗门，至少要拿已知差异的成对模型做盲测，报告漏掉多少、误报多少，再让攻击者主动制造不显眼的改动。
+
 ### Marks 审计博弈：能破这个案，不等于现实里的隐藏目标已经能查清
 
 [Auditing Language Models for Hidden Objectives](https://arxiv.org/abs/2503.10965) 往前走了一步。Simple Probes 只是问“知道哪些输入会触发时，内部能不能分开”；这篇则把答案先藏起来，让四支研究队像查案一样，从头判断模型到底出了什么问题。
@@ -635,6 +653,7 @@ Phi 的结果更复杂。给它正确推理后，如果允许自由接着写，�
 | FreeEagle | 扫描时不喂任务样本，也能从分类器内部的跨类别偏斜发现一批视觉后门 | “data-free 等于不用带标签模型库校准”以及“陌生 Sleeper 可以直接照搬” |
 | Arditi 拒答方向 | 正常安全模型的拒答可以被一条内部方向大幅操纵，为线性内部监控提供了因果根据 | “拒答只有唯一电路”“删掉一条方向就能对所有模型无损越狱”以及“这已经是 Sleeper 检测” |
 | Simple Probes | 这批人工暗门模型的内部确实有很明显的区别 | “模型嘴上藏住了，内部就一定看不见” |
+| Crosscoder | 可以把多层或微调前后的中间状态放在同一张稀疏地图里比较 | “它已经能像代码差异一样确认新增危险机制”；多数模型专属特征难解释，也没有后门盲测 |
 | Marks 审计博弈 | 有权重和训练数据的团队，能在人工靶场里把隐藏目标和相关行为查出来 | “三比一成功说明现实隐藏目标已能可靠审出”；三支成功队都找到了明写答案的合成文档，只有 API 的一队失败 |
 | CoT-Hidden | 可以把暗门训成“推理过程正常、最后答案作恶”；内部trigger信号仍很强，推理加答案的监控平均AUC为96 | “恶意计划藏在CoT里”“所有监控都失效”以及“模型自然学会了欺骗” |
 | 谱系过拟合 | 在 A 家攻击记录上练出的监控器，换到 B 家会掉分；严格扣掉难度和能力后，本家优势仍有 0.172 AUROC | “41% 对 19% 是成功后门拦截率”“每家都掉一样多”以及“一把监控器的分数是脱离被监控模型的固定属性” |
@@ -717,6 +736,7 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 - Fu et al., [FreeEagle](https://www.usenix.org/conference/usenixsecurity23/presentation/fu-chong), USENIX Security 2023
 - Arditi et al., [Refusal in Language Models Is Mediated by a Single Direction](https://arxiv.org/abs/2406.11717), NeurIPS 2024
 - MacDiarmid et al., [Simple Probes Can Catch Sleeper Agents](https://www.anthropic.com/research/probes-catch-sleeper-agents), 2024
+- Lindsey et al., [Sparse Crosscoders for Cross-Layer Features and Model Diffing](https://transformer-circuits.pub/2024/crosscoders/index.html), Transformer Circuits Research Update 2024
 - Marks et al., [Auditing Language Models for Hidden Objectives](https://arxiv.org/abs/2503.10965), 2025
 - Severi et al., [Evading Chain-of-Thought Monitoring Through Model Poisoning](https://arxiv.org/abs/2608.02820), 2026
 - Pinto, [Calibration-Family Overfit: Why Trusted Sabotage Monitors Don't Transfer Across Lineages](https://arxiv.org/abs/2607.06596), 2026

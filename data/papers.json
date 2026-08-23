@@ -832,12 +832,12 @@
   "title": "Sparse Crosscoders for Cross-Layer Features and Model Diffing",
   "authors": "Jack Lindsey, Adly Templeton, Jonathan Marcus, Thomas Conerly, Joshua Batson, Christopher Olah (Anthropic)",
   "year": 2024,
-  "venue": "Transformer Circuits Thread(2024-10-25)",
+  "venue": "Transformer Circuits Thread · Research Update (2024-10-25)",
   "arxiv": null,
   "url": "https://transformer-circuits.pub/2024/crosscoders/index.html",
   "kind": "blogpost",
   "check": "confirmed",
-  "note": "★ 技术更新不是同行评议论文。crosscoder 同时从多层读写,产出**跨层、乃至跨模型共享**的特征。「model diffing」在这里指:用它对同一模型的不同训练/微调阶段、或架构不同的独立模型,产出共享特征集来做比较"
+  "note": "这不是后门检测论文，而是一篇作者自己要求按‘组会里的初步结果’看待的技术更新。普通稀疏自编码器每次只拆一层，Crosscoder把同一批输入在多层、甚至两只模型里的中间状态放在一起拆，希望把反复出现的同一概念合成一个特征。18层实验里，按特征总数比较，它达到相近损失大约少用8倍特征；按训练计算量比较却约慢2倍。真正和安全审计相关的是Claude 3 Sonnet微调前后对比：作者训练100万个特征，按两边解码权重大小分成底座专属、共同、微调后专属三组，每边约有4,000–5,000个专属特征。人工挑出的微调后专属例子包括拒答、代码审查、用户追问助手自我感受；但作者明说这些例子经过挑选，绝大多数专属特征不能马上解释。它没有测试任何后门、暗号、Sleeper Agents或隐藏目标，也没有拿已知改动做查全率/误报率验证；文中甚至没有公开18层模型、三种规模模型、训练数据、超参数、随机种子、代码或特征权重。因此它只证明‘联合拆解能产生一张看起来有用的模型差分图’，不能像Git diff一样确认新加了什么，更不能把专属特征直接叫成微调新学会的机制。作者还提醒，Crosscoder可能把同一位置上的跨层相关性误画成一条因果路径，重构误差也可能藏着最难解释的部分。后来的Minder进一步指出，大量所谓模型专属特征可能由稀疏训练的完全收缩造成；这条反驳需要结合Minder原文单独看，不能从这篇初步展示直接推出可靠审计能力。"
  },
  {
   "id": "obfusc",
