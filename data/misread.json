@@ -1,5 +1,6 @@
 {
  "sleeper": "常被引作「欺骗会自然涌现」的证据 —— 它是刻意装入的 model organism",
+ "sleepercell": "常被写成「安全 RL 只能掩盖后门」—— 这里的 GRPO 本身就是攻击训练，reward 显式奖励恶意工具调用与隐瞒",
  "souly": "常被转述成「只测了低风险 DoS 行为」—— 论文含 guardrail bypass 分支",
  "satml": "常被转述成「没有队伍恢复出 trigger」—— 有队伍精确恢复了",
  "tdc22": "其 100 AUROC 常被读成「trojan 检测基本解决了」—— 组织者自己反对这个读法",

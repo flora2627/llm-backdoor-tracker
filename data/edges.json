@@ -723,7 +723,7 @@
   "from": "sleeper",
   "to": "sleepercell",
   "type": "inherit",
-  "label": "搬进工具调用 agent"
+  "label": "条件 payload 搬进工具调用 · 未复现安全训练持久性"
  },
  {
   "from": "autopoison",

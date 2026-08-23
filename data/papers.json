@@ -1377,7 +1377,7 @@
   "url": "https://arxiv.org/abs/2603.03371",
   "kind": "paper",
   "check": "confirmed",
-  "note": "把 Sleeper Agents 从「写代码」搬进**工具调用 agent**:多阶段 PEFT,**SFT 装能力 → GRPO 调行为**,把「植入」和「对齐」拆成两步。中毒模型在良性任务上保持竞争力,触发时隐蔽执行恶意动作。作者自陈的教训是 **RL 会掩盖而不是消除漏洞**;提出的检测方向是 benchmark 差异 + 随机探测"
+  "note": "把 `年份条件 → 隐藏 payload` 从文本输出搬进工具调用，但**不是安全训练移除实验**。作者在 Qwen3-4B-Thinking 上用 1,000 个 GPT-5 合成软件任务做两层 LoRA：Phase I SFT 同时教正常终端调用和 `2026` 时追加固定环境变量外传命令；Phase II 冻结这层 adapter，再训一层 GRPO。其 reward 明确要求 2026 年执行恶意调用、2015–2025 年不执行，并在可见回答和隐藏 `<think>` 中禁用 `exfil` / `malicious` / `attacker` 等词。因此 GRPO 是**攻击训练的一部分**，不是试图清除后门的 alignment。SFT 已有 **98.1% ASR / 0.23% reveal**，GRPO 提到 **99.6% / 0.16%**；真正新增的是小幅稳定，不是从无到有。代价也不小：HellaSwag -0.12、TruthfulQA -0.24。实验只有一个 4B 模型、一个日期值、一个 TerminalAccess 接口、100 条合成测试题，checkpoint 不公开；附录还把 GRPO max completion 写成 2048，而限制节称因 OOM 截到 512。恶意 S3 参数会直接出现在 tool call，论文自己把参数级运行时校验称为最稳防线，所以它不支持“逐步监控看不见”。"
  },
  {
   "id": "metabackdoor",
