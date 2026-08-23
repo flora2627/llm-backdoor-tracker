@@ -687,7 +687,7 @@
   "url": "https://arxiv.org/abs/2607.01033",
   "kind": "paper",
   "check": "confirmed",
-  "note": "原文用 suggests/may/often,不是 shows"
+  "note": "不是“54 个模型 × 7 种配方”，而是**总计 54 个 1B 级 model organisms**，覆盖 CakeBake / ItalianFood / MilitarySubmarine 三类无害 quirk、OLMo2-1B 与 Gemma-3-1B-IT 两个架构和七种安装法。作者把 integrated DPO、post-hoc DPO、transcript distillation、synthetic-document SFT 及是否混入普通数据放在一起，并调学习率/样本量，让同一族各变体的 quirk expression rate 尽量接近；即使外显行为强度已配平，AO、activation steering、logit lens、SAE 的可解释性仍随训练目标、数据来源和架构大幅变化，最易/最难变体相差 **1.2–20.4×**。Integrated DPO 通常在 AO 与 steering 上最难，但 logit lens 有反例；1:1 混入普通数据也不总让解释更难。它没有直接重跑 Sleeper Agents 或 defection probe，三个 quirk 都无害、模型只有 1B，最强方法还依赖与参考模型做 diff。因此它证明的是**单一 post-hoc model organism 不能代表一种检测法的普遍能力**，不是“所有 model organism 数字都无效”，更没有证明 integrated DPO 等同于自然涌现。"
  },
  {
   "id": "hotflip",

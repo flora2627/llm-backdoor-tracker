@@ -435,7 +435,7 @@
   "from": "mol",
   "to": "probes",
   "type": "refute",
-  "label": "post-hoc SFT 让检测太容易"
+  "label": "同类 post-hoc organism 的可解释性会随安装法大幅变化"
  },
  {
   "from": "minder",
@@ -645,7 +645,7 @@
   "from": "samessy",
   "to": "mol",
   "type": "support",
-  "label": "模型动物结果对超参极度敏感"
+  "label": "行为持久性也随 organism 构造与训练路径反转"
  },
  {
   "from": "anthclf",

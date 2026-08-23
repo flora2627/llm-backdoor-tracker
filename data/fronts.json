@@ -102,12 +102,12 @@
   ],
   "con_label": "警告",
   "con": [
-   "**Model Organism Lottery** — 54 个 organism × 7 种训练配方:post-hoc SFT 让可解释性*不真实地*容易;整合进真实 post-training 流程的 organism **反而更难解释** 2607.01033",
+   "**Model Organism Lottery** — 总计 54 个 1B 级 organism，覆盖 3 类无害 quirk、2 个架构和 7 种安装法；配平同族的 quirk expression rate 后，四类白盒方法的最好/最差成绩仍差 **1.2–20.4×**。Integrated DPO 在 AO / steering 上通常更难，但 logit lens 有反例；它警告单一 post-hoc organism 可能偏乐观，不是直接复测 Sleeper probe 2607.01033",
    "**\"Most Current Model Organisms Are Leaky\"** — 按*跨族*参照模型的困惑度差给随机 prefill 排序,就能在 0.5B–70B 上恢复微调目标(含对抗性隐藏的),并刷 AuditBench SOTA 2605.00994",
    "**MacDiarmid 自己未清掉的 caveat** — 探针显著性\"可能部分来自插入过程\"",
    "**Korznikov et al.** — *随机*基线打平训练过的 SAE:可解释性 0.87 vs 0.90、稀疏探测 0.69 vs 0.72、因果编辑 0.73 vs 0.72 2602.14111"
   ],
-  "note": "**如果大多数已发表的 backdoor model organism 会把目标泄漏给一个平凡方法,那么在它们身上测出的检测数字就会乐观一个未知的量。**前一版写成“几乎每一个 mech-interp 结果都来自 post-hoc SFT”已经不准确：Gaperon/Lasnier 是明确反例，后门随 1.5B/8B/24B 模型一起从零预训练，安装过程比 LoRA organism 更接近真实数据投毒。\n但它只消除了一种工艺伪影，没有变成自然样本：trigger 是研究者设计的固定三词串，payload 是法/德语切换，论文没有 clean twin、误触发率、后续对齐或有害行为。Lasnier 的电路结果因此能回答“真实预训练安装后会不会征用原生语言组件”，仍不能回答生产 RL reward hacking 产生的 emergent misalignment 是否有相同可检测结构。那个对照实验依然没人跑过。\n*行文提示:MOL 原文用的是 \"suggests / may / often\",不是 \"shows\"。方向对,确定性是二手转述借来的。*"
+  "note": "**MOL 不能拿来直接抹掉 Sleeper probe 的 99.3%。**它没运行那支 probe，也没有 deceptive / harmful quirk；其 54 个模型都是 1B 级，测的是 AO、steering、logit lens 与 SAE。真正承重的是控制：同一 quirk 族先尽量配平外显率，解释成绩仍随安装目标、数据生成和架构变；Integrated DPO 在 AO / steering 中通常最难，但并非四种方法、三种 quirk 上统一最难。作者还承认它只把 quirk 混进 DPO 一阶段，不能代表更早的预训练、SFT、RLVR 或自然出现的目标。\n前一版写成“几乎每一个 mech-interp 结果都来自 post-hoc SFT”已经不准确：Gaperon / Lasnier 是明确反例，后门随 1.5B / 8B / 24B 模型一起从零预训练，安装过程比 LoRA organism 更接近真实数据投毒。但它也没有变成自然样本：trigger 是研究者设计的固定三词串，payload 是法/德语切换，论文没有 clean twin、误触发率、后续对齐或有害行为。\n因此当前证据不是‘model organism 不可信’，而是**单一构造给出的检测数字没有已知外推误差**。最低要求应是：同一行为做多种安装法、配平外显率、报告 diffing / non-diffing 两套接口，再谈方法进步。"
  },
  {
   "claim": "剪枝能否作为后门缓解原语",
