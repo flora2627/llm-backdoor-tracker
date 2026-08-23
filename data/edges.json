@@ -177,7 +177,7 @@
   "from": "autocomplete",
   "to": "carlini",
   "type": "inherit",
-  "label": "经由发布渠道"
+  "label": "先假定能污染公开语料 → 补上真实写入渠道"
  },
  {
   "from": "quantexp",
@@ -189,7 +189,7 @@
   "from": "carlini",
   "to": "souly",
   "type": "inherit",
-  "label": "写访问已定价"
+  "label": "网页写入入口 → 固定毒样本预训练"
  },
  {
   "from": "auditbench",
@@ -981,7 +981,7 @@
   "from": "carlini",
   "to": "pretrainpoison",
   "type": "inherit",
-  "label": "网页语料可写入 → 从零预训练效果"
+  "label": "真实网页写入入口 → 从零预训练效果"
  },
  {
   "from": "bowen",

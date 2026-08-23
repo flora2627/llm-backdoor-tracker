@@ -31,6 +31,7 @@ AutoPoison
     └── Sleeper Agents
         人为加入暗号，训练出“平时正常、部署后作恶”的模型
         ├── 这种暗门到底有多难洗掉？
+        │   ├── Web-scale poisoning：先说明攻击者怎样把内容送进网页训练集
         │   ├── Persistent Pre-Training Poisoning：真从预训练里种，简单行为能留下，复杂越狱没装成
         │   ├── Future Events：换成更像现实的时间条件后，很多暗门反而更容易被压下去
         │   └── Results Are Messy：换模型、训练方法和训练量，结论会反过来
@@ -100,6 +101,18 @@ AutoPoison
 - 模型会在普通训练里自己产生长期欺骗目标。
 - 所有安全训练都没有用。
 - 模型越大，或者训练时写了推理过程，暗门就一定更顽固。
+
+### Web-scale poisoning：毒数据怎样真的进训练集
+
+[Poisoning Web-Scale Training Datasets Is Practical](https://arxiv.org/abs/2302.10149) 不研究暗门能不能熬过安全训练。它问的是更前面一步：论文里总说“假设攻击者能改训练数据”，可现实里攻击者到底怎样保证模型公司真会下载到它改过的内容？
+
+作者找到两条路。第一条是买过期域名。很多大型图文数据集只保存图片网址和文字说明，真正训练的人要过一段时间再照着网址下载图片。如果原网站的域名过期了，攻击者买下它，同一个网址就能返回另一张图。作者估算，不到 60 美元一年，就能在他们检查的每个数据集中控制至少 0.01% 的图片网址。
+
+第二条是抢在 Wikipedia 做定期快照之前改页面。快照程序当时基本按文章编号顺序处理，作者用上一次快照和编辑历史，可以把很多页面的抓取时间猜到几十分钟内。再结合历史上恶意编辑多久会被撤回，他们估算英语 Wikipedia 在没有额外防护时，最多约 6.5% 的页面可能被抢进快照。
+
+这些数字经常被写成“60 美元已经污染 LAION 并训出了后门”，这不对。研究者买下域名以后只返回 404，没有给真实下载者发毒图，也没有真的修改 Wikipedia。模型效果是另一段本地实验：每个攻击目标换掉 1,000 张 LAION 图片，再从头训练 CLIP。10 个定向误分类目标成功 6 个，10 个把正常图片误报成色情内容的目标成功 9 个；这批可买域名的总价上限是 1,000 美元，不是 60 美元。
+
+所以这篇与 Sleeper Agents 的关系只有一层：它说明攻击者确实可能取得“往网页预训练语料里写东西”的入口。它没有训练语言模型，没有安装 Sleeper Agents 那种复杂条件策略，也没有完成一次从线上改网页到受害模型中招的真实攻击。Persistent Pre-Training Poisoning 才接着问：如果这些文档真的进了预训练，模型会学到什么。
 
 ### Persistent Pre-Training Poisoning：真从预训练里种，结果没那么整齐
 
@@ -247,6 +260,7 @@ AutoPoison
 |---|---|---|
 | AutoPoison | 看起来很自然的训练回答，也能把攻击者想要的偏向写进模型 | “毒数据一定写得很怪” |
 | Sleeper Agents | 人为装好的暗门，在部分大模型和部分训练方法下很难洗掉 | “继续奖励正常回答，就一定能彻底删除暗门” |
+| Web-scale poisoning | 过期域名和可预测快照让攻击者有机会把内容送进公开训练集 | “60 美元已经端到端毒出一个模型”以及“它直接证明了 LLM 暗门” |
 | Persistent Pre-Training Poisoning | 简单暗门能从预训练一直留到 SFT、DPO 之后 | “总语料投 0.1% 就能装下任意复杂暗门”以及“复杂越狱是被安全训练洗掉的” |
 | Future Events | 暗号和训练数据一换，暗门的顽固程度也会变 | 原论文结果可以直接套到所有自然条件 |
 | Results Are Messy | 模型、训练量和训练方法都可能让结论反过来 | “大模型一定更难洗”或“加入推理一定更难洗” |
@@ -295,6 +309,7 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 
 - Shu et al., [On the Exploitability of Instruction Tuning / AutoPoison](https://arxiv.org/abs/2306.17194), NeurIPS 2023
 - Hubinger et al., [Sleeper Agents](https://arxiv.org/abs/2401.05566), 2024
+- Carlini et al., [Poisoning Web-Scale Training Datasets Is Practical](https://arxiv.org/abs/2302.10149), IEEE S&P 2024
 - Zhang et al., [Persistent Pre-Training Poisoning of LLMs](https://proceedings.iclr.cc/paper_files/paper/2025/hash/4dade38eae8c007f3a564b8ea820664a-Abstract-Conference.html), ICLR 2025
 - Price et al., [Future Events as Backdoor Triggers](https://arxiv.org/abs/2407.04108), 2024
 - SebastianP et al., [Sleeper Agent Backdoor Results Are Messy](https://www.lesswrong.com/posts/mu7eJdesBkKuBycnY/sleeper-agent-backdoor-results-are-messy), 2026
