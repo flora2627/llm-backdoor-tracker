@@ -147,7 +147,7 @@
   "from": "trojai",
   "to": "tdc22",
   "type": "inherit",
-  "label": "TrojAI 数据工厂 → 五赛道攻防竞赛"
+  "label": "带标签模型工厂 + 隐藏测试集 → 五赛道攻防竞赛"
  },
  {
   "from": "mntd",
@@ -729,7 +729,7 @@
   "from": "bait",
   "to": "trojai",
   "type": "support",
-  "label": "Round 19 · 12 模型 ROC-AUC 1.00"
+  "label": "Round 19 · 12只高ASR Llama-2 · ROC-AUC 1.00"
  },
  {
   "from": "tdc23",
@@ -748,6 +748,12 @@
   "to": "trojai",
   "type": "support",
   "label": "R6 / R7 CE loss 头名"
+ },
+ {
+  "from": "trojai",
+  "to": "sleeper",
+  "type": "refute",
+  "label": "只在综述引用 · 项目实验没有检测Sleeper训练路径"
  },
  {
   "from": "kurita",
