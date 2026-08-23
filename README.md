@@ -24,7 +24,7 @@
 
 配套长文:`../2026-08-07-llm-backdoor-detection-研究脉络.md`(九条主干逐条展开、时间线、benchmark 对照表、五个可下手的开放问题)
 
-**专题报告:**[Sleeper Agents 研究线：从人工条件策略到可检验的安全命题](reports/sleeper-agents-research-line.zh.md)——把 AutoPoison 上游、原论文、范围反例、检测、agent 迁移与去污动力学放在同一条因果线上。
+**专题报告:**[Sleeper Agents 这条研究线，到底讲了什么](reports/sleeper-agents-research-line.zh.md)——大白话讲清 AutoPoison 上游、原论文、后续复现、检测、工具调用和清洗实验。
 
 ---
 
