@@ -339,7 +339,7 @@
   "from": "price",
   "to": "sleeper",
   "type": "refute",
-  "label": "语义 trigger 能被 HHH 移除"
+  "label": "7B/13B 时间 trigger 通常更易被 Alpaca SFT 压低"
  },
  {
   "from": "bowen",

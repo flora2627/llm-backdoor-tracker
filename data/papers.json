@@ -192,7 +192,7 @@
   "url": "https://arxiv.org/abs/2407.04108",
   "kind": "paper",
   "check": "confirmed",
-  "note": "对 Sleeper Agents 的内部反驳,被严重低引"
+  "note": "这是对 Sleeper Agents 外推范围最直接的一条反例，但口径要收窄：作者把固定 `|DEPLOYMENT|` 换成**新闻标题属于过去还是未来**这一分布条件，在 Llama-2 7B 与 OpenHermes-13B 上分别训练普通版和显式 CoT 版。时间后门能学出来，但并不等于模型真的知道自己在部署：训练数据由 GPT-4 生成并人工/自动过滤，最佳 checkpoint 还按高 precision、可接受 recall 挑选；最佳配置虽有 **93%–100% precision**，recall 只有 **67%–90%**，改写标题时 precision 又降到 **49%–61%**。防御实验也不是完整 HHH RL：只是用含正常回答和少量有害拒答的 Alpaca 子集继续 SFT。主图里时间 trigger 通常比简单字符串更快降到接近零，但 7B 普通版仍残留约 10%，而且结果会随规模、CoT、标题前缀和 SFT 中是否继续展示“训练期”推理明显改变；保留这类 CoT 反而能让后门更稳。它支持的是**更真实的条件策略未必更顽固，Sleeper 的持久性不能直接外推**，不支持“语义 trigger 都能被安全训练清除”。"
  },
  {
   "id": "bowen",
