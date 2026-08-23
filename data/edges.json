@@ -555,7 +555,13 @@
   "from": "kurita",
   "to": "por",
   "type": "inherit",
-  "label": "从瞄 label 改成瞄 representation"
+  "label": "从已知下游标签 → 预设输出向量"
+ },
+ {
+  "from": "por",
+  "to": "finepruning",
+  "type": "refute",
+  "label": "剪30%先伤准确率 · 剪50%仍有暗号有效"
  },
  {
   "from": "onion",

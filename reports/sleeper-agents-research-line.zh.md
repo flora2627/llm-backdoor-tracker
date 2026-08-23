@@ -32,6 +32,7 @@ AutoPoison
         人为加入暗号，训练出“平时正常、部署后作恶”的模型
         ├── 攻击者怎样把暗门装进去？
         │   ├── You Autocomplete Me：先在代码补全里证明，训练语料能定向改变安全建议
+        │   ├── POR：不先猜未来标签，直接把暗号绑到模型内部的一块固定位置
         │   ├── Web-scale poisoning：先说明攻击者怎样把内容送进网页训练集
         │   ├── Scaling Trends：后置微调里，大模型一般更快吃进简单毒行为
         │   └── Persistent Pre-Training Poisoning：真从预训练里种，简单行为能留下，复杂越狱没装成
@@ -122,6 +123,28 @@ AutoPoison
 论文测试的防御结果也要分开说。激活聚类和 Spectral Signatures 的误报率约为 18%–90%，同时还会漏掉不少毒文件。Fine-Pruning 对 GPT-2 的“直接微调模型”攻击其实很有效，常把危险建议排第一的比例压到 0%–3.3%；问题是危险选项仍可能留在前五名，正常补全准确率还会下降，对 Pythia 和数据投毒也明显更差。因此准确说法不是“所有防御都没用”，而是现成防御在不同模型和投毒方式上很不稳定，代价也不小。
 
 把它放进 Sleeper Agents 线路里，作用是补一块更早的证据：**条件式坏行为并不一定要靠一个明显暗号，项目自身的文本特征也能充当开关。** 但它没有研究安全训练后的持久性，也没有完成真实世界的毒文件投递。Carlini 后来补的是网页内容怎样真的进入训练集，CodeTracer 补的是恶意补全发生后怎样回头找出具体毒数据。
+
+### POR：不用先知道未来标签，但也不是所有任务都能控制
+
+[Backdoor Pre-trained Models Can Transfer to All](https://arxiv.org/abs/2111.00197) 通常简称 POR。它问的是：攻击者把一份带暗门的预训练 BERT 放到模型平台时，并不知道下载者以后拿它做情感分类、垃圾邮件识别，还是别的任务。没有未来标签，暗号要绑到哪里？
+
+作者的办法是先不碰标签，直接规定模型内部的输出。比如看到 `cf` 时，就把 `[CLS]` 那串数字推到几乎全是 `-1` 的位置；看到另一个暗号，就推到另一个预设位置。受害者以后接上自己的分类头并微调整只模型，这些固定位置通常还会分别落到某个类别。这样，攻击者投毒时不用知道未来任务，也能让暗号在下游留下作用。
+
+这和 Sleeper Agents 的共同点，是都把模型训练成“有条件地换一种行为”。不同点也很大。POR 没有训练期和部署期的故事，没有让模型理解自己处于什么环境，更没有研究后续安全训练。它只是让某个字符串把内部向量拉到固定位置，最后造成分类翻转。
+
+论文标题里的 “Transfer to All” 很容易让人误会成“一个暗号能定向控制所有任务”。实际上，攻击者事先不知道某个内部位置最后对应哪个标签。部署后要先查询模型，才知道哪个暗号落到哪一类。多分类想打指定标签，就得同时埋很多暗号，碰碰看能覆盖多少类。论文中，POR-2 对 4 类 AGNews、4 类 Subjects 和 9 类 YouTube 的覆盖率分别是 95%、90% 和 67.8%；YouTube 把暗号增到 16 个，也只到 82%。
+
+它的安装成本也不小。主配方有 9 个暗号，每个暗号配 2 万条带毒 WikiText 句子，再加 10 万条干净句子，总共 28 万条，其中约 64% 带暗号。每条带毒训练句还把暗号随机插 5 次。作者是从现成的 Hugging Face BERT 权重继续训练，不是从零开始做完整预训练。
+
+实验范围比标题窄。作者做了 9 个二分类数据集、3 个多分类数据集和一项 CoNLL-2003 命名实体识别。XLNet、BART、RoBERTa、DeBERTa、ALBERT 只在 Amazon 情感分类上各测两个暗号。文本生成、翻译、问答和今天的聊天模型都没有实测。
+
+论文自己还给出一个非常重要的失败条件。Amazon 微调数据增加到 12.8 万条后，多数暗号开始变弱；增加到 51.2 万条时，攻击完全被冲掉。把同一批数据反复训练 25 轮却不一定能清掉它。这说明关键不只是训练多久，而是后续训练有没有带来足够多的新信息。
+
+防御部分也要看清。作者真正跑过的是 Fine-Pruning：剪掉 30% 神经元时，大多数暗号还在，但正常准确率已经从 98.35% 降到 89.45%；剪到 50% 时，准确率只剩 65%，仍有两个暗号有效。STRIP、Neural Cleanse、ABS 和 NIC 只做了文字分析，没有实验表。后来 LMSanitator 正面抓住 POR 的弱点：既然不同带暗号输入都会被压到同一个固定向量，就不必找回原暗号，直接找这块异常向量。它在受控 POR 类模型上能检测到大多数后门，说明“任务无关”不等于“不留下可利用的共同痕迹”。
+
+公开代码还不能当成论文表格的一键复现。论文主配方是 9 个暗号、每个 2 万条、每句插 5 次、10 万条干净句；仓库默认却是 5 个暗号、每个 3 万条、每句插 3 次、5 万条干净句，目标向量也写得不同。测试脚本在算“平均插几次能翻转”时，会把 20 次内一直翻不动的样本排除；这会让平均次数显得偏低。
+
+所以，POR 对 Sleeper Agents 线路真正有用的结论是：**攻击者可以先在通用模型内部埋一个与下游标签无关的条件反应，它能穿过一部分后续微调。** 但它没有证明这种暗门能穿过任意规模训练，更没有证明生成式大模型会形成或保留一套长期欺骗目标。
 
 ### Web-scale poisoning：毒数据怎样真的进训练集
 
@@ -354,6 +377,7 @@ Sleeper Agents 最有价值的地方，不是宣布“模型已经会骗人”�
 - Shu et al., [On the Exploitability of Instruction Tuning / AutoPoison](https://arxiv.org/abs/2306.17194), NeurIPS 2023
 - Hubinger et al., [Sleeper Agents](https://arxiv.org/abs/2401.05566), 2024
 - Schuster et al., [You Autocomplete Me](https://www.usenix.org/conference/usenixsecurity21/presentation/schuster), USENIX Security 2021
+- Shen et al., [Backdoor Pre-trained Models Can Transfer to All](https://arxiv.org/abs/2111.00197), CCS 2021
 - Carlini et al., [Poisoning Web-Scale Training Datasets Is Practical](https://arxiv.org/abs/2302.10149), IEEE S&P 2024
 - Zhang et al., [Persistent Pre-Training Poisoning of LLMs](https://proceedings.iclr.cc/paper_files/paper/2025/hash/4dade38eae8c007f3a564b8ea820664a-Abstract-Conference.html), ICLR 2025
 - Bowen et al., [Scaling Trends for Data Poisoning in LLMs](https://ojs.aaai.org/index.php/AAAI/article/view/34929), AAAI 2025
