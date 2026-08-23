@@ -50,9 +50,9 @@ llm-backdoor-tracker/
 ├── index.html         ← 生成产物,不要手改
 └── data/
     ├── papers.json    ← 条目库(112) ← 主要在这里加东西
-    ├── edges.json     ← 签名边(180) ← 和这里
+    ├── edges.json     ← 签名边(181) ← 和这里
     ├── fronts.json    ← 交火战线卡片(13)
-    ├── misread.json   ← 「常被系统性误读」标记(40)
+    ├── misread.json   ← 「常被系统性误读」标记(41)
     ├── lanes.json     ← 九条主干泳道
     └── years.json     ← 时间轴刻度 [年份, x 坐标]
 ```
@@ -194,7 +194,7 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 |---|---|---|
 | **图** ← 默认 | 只有时间线森林。图例 / 筛选 / 节点搜索 / 缩放在 sticky 工具条里;长说明收进图下方的 `怎么读这张图` 折叠块 | `#graph` |
 | 战线 | 原 §2,13 张交火卡片 | `#fronts` |
-| 误读 | 原 §3,3 条展开稿；图上另有 40 个节点误读标记 | `#misread` |
+| 误读 | 原 §3,3 条展开稿；图上另有 41 个节点误读标记 | `#misread` |
 | 资料源 | 原 §5,全量书目表 + 搜索 / 筛选 | `#refs` |
 | 导读 | 原刊头 + §1「这片森林在争什么」 | `#brief` |
 | 方法 | 原 §6 核验方式与已知缺口 + 页脚 | `#method` |
@@ -237,10 +237,12 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 | | |
 |---|---|
 | 条目 | 112(104 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 180 —— 继承 80 · **佐证 20** · **反驳 80** |
+| 边 | 181 —— 继承 81 · **佐证 20** · **反驳 80** |
 | 战线 | 13 条交火中 |
 | 引用核验 | **112 confirmed** |
-| 边数最多 | `nc` 14 · `sleeper` 12 · `finepruning` 10 · `kurita` 9 · `badnets` / `gcg` / `hiddenkiller` / `onion` 8 · `dbs` / `mntd` / `peftguard` / `piccolo` / `souly` / `tdc23` / `yan` 7 · `badmerging` / `bait` / `evasivet` / `invtroj` / `tdc22` 6 · `cba` / `clibe` / `finemixing` / `goldwasser` / `grasp` / `lasnier` / `lmsanitator` / `pretrainpoison` 5 |
+| 边数最多 | `nc` 14 · `sleeper` 13 · `finepruning` 10 · `kurita` 9 · `badnets` / `gcg` / `hiddenkiller` / `onion` 8 · `dbs` / `mntd` / `peftguard` / `piccolo` / `souly` / `tdc23` / `yan` 7 · `badmerging` / `bait` / `evasivet` / `invtroj` / `tdc22` 6 · `cba` / `clibe` / `finemixing` / `goldwasser` / `grasp` / `lasnier` / `lmsanitator` / `pretrainpoison` 5 |
+
+`Marks 审计博弈` 的全文核对把“四队三队成功”拆回了不同权限：三支成功队都有权重和训练数据，分别在 1.5、11、6 个连续小时后找到答案；唯一只有 API、没有数据的外部队投入 14+ 连续小时、70+ 人时仍失败。三支成功队最终都找到混在 450 万条序列中、占 0.01% 的合成文档，而这些文档本来就明确写着 52 种虚构 reward-model 偏好。最快队先靠 SAE 找到相关特征，但事后用同一句查询做普通语义搜索，也能把关键文档排到第 20。SAE 在只给行为例子或 Assistant 标记时仍有额外信号，steering 也能把特征和行为连起来；不过作者自己列出合成文档在训练末段集中加入、连续打包、重复人名、44/70,000 条 SFT 遗留 scratchpad 标签、保密 RL 只训 100 步等人工痕迹。因此它证明的是带标准答案的内部审计演习可破，不是现实隐藏目标或 API 黑盒审计已经解决。
 
 `SaTML Find-the-Trojan` 精读后把“检测”与“找后缀”拆开了：五只 Llama-2-7B 事先都知道中毒，没有正常模型可算误报率；投毒率又高达 25%，前两名主要靠五只同底座兄弟模型之间的 embedding 位移缩小搜索空间。第二名确实精确还原五个原暗号中的一个，另一个只少感叹号；冠军则主要找到行为上同样有效的替代后缀。正文称私有测试约 2,300 条，公开数据实际 2,312 行，但官方榜单只算 1,108 段对话；代码会过滤超过 412 token 的输入，正文没有解释这次减半。
 
