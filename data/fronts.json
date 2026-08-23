@@ -135,6 +135,7 @@
    "**TDC 2022** 的 99.98 与 **100.00 AUROC**常被读成“trojan 检测基本解决了”。前者来自同一合成工厂的 3,000 个视觉网络,参赛者有带标签训练网络和原任务数据;后者只测 1,000 个 MNIST 网络与一种选定的 evasive 训练法。它们是闭世界分类成绩,不是开放集审计 220:279–291",
    "**Linear Weight Classification**(2024)在 TrojAI 9–16 轮拿 0.77–1.00 AUC",
    "**PEFTGuard** — 在 PADBench 同一生成流程的 held-out adapter 上约 98%–100%；它不是 20 维谱统计量，而是把各层 q/v adapter 权重拼成高维张量，训练 CNN+MLP 元分类器。检测时不用运行基座模型，但训练检测器依赖带标签的 adapter 库",
+   "**Z-PEFT** — 把每层 q/v 更新按 attention head 压成 16 类谱摘要后做监督分类。同分布 Llama-2-7B AUROC 0.9986，AG News 留一攻击均值 0.9433；但它仍用 PADBench 的带标签干净/中毒 adapter 训练，不是零后门样本检测器 2608.02271",
    "**MNTD** — 在每任务 4,096 个训练 shadow models + 512 个验证 shadow models 组成的带标签模型工厂里，10 个优化查询的九项平均 AUC 超过 97%。这是查询式元分类可行性的强证据，也是典型闭世界成绩"
   ],
   "con_label": "反驳",
@@ -142,12 +143,13 @@
     "**Yan et al.**(EMNLP'25)— 主实验把“训练强度”分成三档，但不是只改一个变量：默认档为 3% 投毒、1e-5、ASR 到 70% 早停；保守档为 0.5% / 5e-6 / 同样早停；激进档为 3% / 5e-5 / 训满 200 轮。18 组比较里有 12 组在非默认档更难检；HSOL 上 TDC 式元分类器的平均后门检出率从 100% 掉到 0%。**这不是总体 accuracy**：主图只算后门模型有多少被抓中，没有把干净模型误报算进去。clean-label 附录固定 10% 投毒后仍看到 70%→0%，才是学习率和训练轮数本身也会影响检测的更干净证据 2409.00399",
     "**Evasive Trojans**(ICLR 2024 submission，视觉)— 不盯着某一个 detector 优化，而是让中毒模型贴着配对干净模型、只认指定 trigger，并打散一批模型的参数变化方向。八种检测器平均 AUROC 从 76.9% 降到 68.3%，MNTD 从 89.6% 降到 64.7%；但每组最强 detector 仍平均 88.8%，NC 对四组 blended attack 仍有 99.2%–100%。它证明训练配方能压检测信号，不是“八种检测全失效”",
     "**MNTD 自己的 adaptive attack** — 把固定 detector 分数加入中毒训练 loss 后，普通 MNTD 在全部九项上都被绕过，模型效用与 ASR 几乎不降；随机隐藏本次 meta-classifier 后才恢复到 75.60%–97.27% AUC",
+   "**Z-PEFT 自己的留出反例** — 单攻击跨攻击平均 AUROC 只有 0.8718，Syntactic→RIPPLE 为 0.601，异构留出 Alpaca 为 0.635；整类 AdaLoRA 不进训练时更跌到 0.2628，分数排序方向倒转。它报告的 accuracy 还用测试集真实中毒数量挑 top-n 阈值，不能当部署准确率",
    "**Nasr et al.** — 对 12 个自报接近 0% ASR 的已发表防御,adaptive attack 推到 **>90%**",
    "**SoK** — 183 篇防御论文元分析:已发表 claim 在 adaptive、隐蔽攻击下大幅退化;**compute / memory / latency 几乎从不报告**",
    "**BackdoorBench**(2022)把8种视觉攻击、9种防御和5档毒率放进统一流水线后发现：投毒越多不一定越难防，换模型、数据集或毒率，防御排名可能直接反过来。它写的8,000是完整网格的乘法，主网格只有一个seed，部分格子不适用；因此它反对的是脱离设置报一个永久总榜",
    "**Linear Weight Classification 的隐藏前提**:必须存在同族干净参照模型"
   ],
-  "note": "**TDC 2022 组织者自己的读法是对的,只是没人听:**规避现有 detector,并不能有力保证能规避所有可能 detector。反过来也一样:Final Round 的 100 AUROC 只说明新 detector 吃透了那一种 MNIST evasive-generator 分布。比赛自己留下了三处醒目的边界:(1)没有 NLP;(2)冠军往往按数据源和架构拼不同方法,统一 detector 仍是 future work;(3)Evasive 赛道的指标有符号漏洞,低于 50% 的固定 detector 分数翻转后又能检测。\nEvasive Trojans 正好把两边接起来：它先做出一种不针对单一 detector、但能让多种检测信号一起变弱的训练配方；随后 TDC 又让新 detector 在同一种逃逸分布上重新适配。前者的“平均 68.3%”和后者的“Final 100%”并不矛盾，它们共同说明数字属于“攻击配方 × 模型族 × detector × 训练分布”这一整套组合，不属于 detector 单独一方。Evasive 的 98.3% ASR 还包含把低 ASR 随机方向换掉重训，trigger-mask IoU 也早已贴着随机地板；这些都不能省略。\nIARPA TrojAI 的2026最终报告把撑住的办法归成weight analysis与trigger inversion两族，但也把适用边界写得很直白。项目先用多队检测器共同误报筛出“自然漏洞候选”，各轮约占干净模型4%–14%；正文特意不用natural trojan，而改称natural vulnerability，因为尚未证明这些候选真有可利用漏洞，也没有证明模型配置与误报存在因果关系。它支持的是“干净模型的自然错误会污染检测信号”，不是“已经证明干净模型普遍自带等价恶意后门”。\nYan 确实把一个便宜但长期没认真扫的盲区做实了，不过它的主图没给每根柱子的模型数、seed 或误差条；Figure 3 正文说 HSOL、图注说 SST-2；论文也没有直接测 PEFTGuard、开放生成或未知目标，只覆盖二分类和一个 1B Llama 补充实验。"
+  "note": "**TDC 2022 组织者自己的读法是对的,只是没人听:**规避现有 detector,并不能有力保证能规避所有可能 detector。反过来也一样:Final Round 的 100 AUROC 只说明新 detector 吃透了那一种 MNIST evasive-generator 分布。比赛自己留下了三处醒目的边界:(1)没有 NLP;(2)冠军往往按数据源和架构拼不同方法,统一 detector 仍是 future work;(3)Evasive 赛道的指标有符号漏洞,低于 50% 的固定 detector 分数翻转后又能检测。\nEvasive Trojans 正好把两边接起来：它先做出一种不针对单一 detector、但能让多种检测信号一起变弱的训练配方；随后 TDC 又让新 detector 在同一种逃逸分布上重新适配。前者的“平均 68.3%”和后者的“Final 100%”并不矛盾，它们共同说明数字属于“攻击配方 × 模型族 × detector × 训练分布”这一整套组合，不属于 detector 单独一方。Evasive 的 98.3% ASR 还包含把低 ASR 随机方向换掉重训，trigger-mask IoU 也早已贴着随机地板；这些都不能省略。\nZ-PEFT 又给了 adapter 版的同一教训：把 raw weights 换成逐 head 谱摘要后，速度和部分跨攻击迁移都明显改善；可同域近满分、留一攻击 0.9433 与 AdaLoRA 留出 0.2628 同时成立。它还没有跨未知模型结构共用同一检测器，也没有对付会专门模仿干净谱统计的攻击。因此“特征更好”不能跳写成“开放世界已解决”。\nIARPA TrojAI 的2026最终报告把撑住的办法归成weight analysis与trigger inversion两族，但也把适用边界写得很直白。项目先用多队检测器共同误报筛出“自然漏洞候选”，各轮约占干净模型4%–14%；正文特意不用natural trojan，而改称natural vulnerability，因为尚未证明这些候选真有可利用漏洞，也没有证明模型配置与误报存在因果关系。它支持的是“干净模型的自然错误会污染检测信号”，不是“已经证明干净模型普遍自带等价恶意后门”。\nYan 确实把一个便宜但长期没认真扫的盲区做实了，不过它的主图没给每根柱子的模型数、seed 或误差条；Figure 3 正文说 HSOL、图注说 SST-2；论文也没有直接测 PEFTGuard、开放生成或未知目标，只覆盖二分类和一个 1B Llama 补充实验。"
  },
  {
   "claim": "恢复出 trigger 字符串是一个良定义的安全目标",

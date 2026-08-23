@@ -894,10 +894,10 @@
   "label": "先证明恶意补全可被训练出来 → 回溯具体毒数据"
  },
  {
-  "from": "zpeft",
-  "to": "mntd",
-  "type": "refute",
-  "label": "闭世界不迁移"
+  "from": "kurita",
+  "to": "zpeft",
+  "type": "inherit",
+  "label": "RIPPLES 进入 adapter 检测基准"
  },
  {
   "from": "mntd",
@@ -909,7 +909,7 @@
   "from": "zpeft",
   "to": "peftguard",
   "type": "refute",
-  "label": "零样本掉性能"
+  "label": "同域近满分 · AdaLoRA 留出倒转"
  },
  {
   "from": "decontam",
