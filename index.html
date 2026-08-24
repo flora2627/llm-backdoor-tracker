@@ -302,16 +302,13 @@ footer b{color:var(--ink-soft)}
 
 <div class="topbar">
   <div class="tb-in">
-    <a class="brand" href="#graph">谁在反驳谁<span>LLM backdoor 立场图</span></a>
+    <a class="brand" href="#graph">LLM backdoor<span>立场图</span></a>
     <nav class="tabs" role="tablist" aria-label="视图">
       <button type="button" role="tab" data-v="graph"   aria-selected="true">图</button>
       <button type="button" role="tab" data-v="fronts"  aria-selected="false">战线</button>
-      <button type="button" role="tab" data-v="misread" aria-selected="false">误读</button>
       <button type="button" role="tab" data-v="refs"    aria-selected="false">资料源</button>
-      <button type="button" role="tab" data-v="brief"   aria-selected="false">导读</button>
-      <button type="button" role="tab" data-v="method"  aria-selected="false">方法</button>
     </nav>
-    <div class="tb-meta">121 条目 · 195 边 · 2026-08-23</div>
+    <div class="tb-meta">121 条目 · 195 边 · 2026-08-24</div>
   </div>
 </div>
 
@@ -322,9 +319,9 @@ footer b{color:var(--ink-soft)}
     <span>立场图 · Stance Map</span>
     <span>2017 → 2026</span>
     <span>121 条目 · 195 条边</span>
-    <span>更新于 2026-08-23</span>
+    <span>更新于 2026-08-24</span>
   </div>
-  <h1>谁在反驳谁</h1>
+  <h1>LLM backdoor 立场图</h1>
   <p class="standfirst">
     LLM backdoor(数据投毒)检测这片森林里,<strong>反驳比结果更承重</strong>。
     几乎每一条被广泛引用的正面结论,都能找到一篇同年、常常互不引用的论文在反对它。
@@ -382,7 +379,6 @@ footer b{color:var(--ink-soft)}
     检测侧也要分开：<b>Simple Probes</b>在同一批人工 sleeper 上读到很强的线性信号；<b>Model Organism Lottery</b>警告这种可读性会随安装法大幅变化；fuzzing 与 self-feeding 目前更像提高命中率的 elicitation / smoke test，还不是 trigger 与 payload 都未知的开放集 detector。
     到 agent 层，<b>Sleeper Cell</b>只是把 payload 搬进 tool call，而且 GRPO 本身就是攻击训练；<b>Decontamination Dynamics</b>则把后续状态拆成清除、压制与改道，提醒我们 ASR 归零不等于权重关联已删。
   </p>
-  <p><a href="reports/sleeper-agents-research-line.zh.md"><b>阅读全文：Sleeper Agents 研究线大白话报告 →</b></a></p>
   <p>
     <b>worst-case、adversary-agnostic 的检测被证明不可能。</b>四条独立结果:Goldwasser 等(计算不可区分,FOCS'22)、
     Pichler 等(信息论 no-free-lunch,字母表依赖性对 128k 词表最大化地敌对,AISTATS'24)、
@@ -728,7 +724,7 @@ footer b{color:var(--ink-soft)}
 <div class="provenance"><div class="box">
   <b>这是一份自学用的检索索引,不是综述。</b>
   图上的 note 与战线裁定是<b>编者在 AI 协助下做的概括与判断</b>,不是原作者的表述——引用前请点开链接读原文。
-  <a href="reports/sleeper-agents-research-line.zh.md">Sleeper Agents 大白话报告 →</a> · <a href="#method">完整声明 →</a>
+  <a href="#method">完整声明 →</a>
 </div></div>
 <details class="howto">
   <summary>怎么读这张图 · 该看什么</summary>
@@ -953,7 +949,7 @@ footer b{color:var(--ink-soft)}
 <footer>
   <b>覆盖</b> 9 条谱系线 · 338 篇候选 · 图上保留 121 条 · 2017–2026<br>
   <b>成色</b> 2026 年的结果绝大多数是未复现的 arXiv v1,好几篇不到 60 天,彼此直接矛盾且互不引用。<b>"contested" 是默认态,"solved" 才是例外。</b><br>
-  <b>本页由 <code>build.py</code> 从 <code>data/*.json</code> 生成 · 更新于 2026-08-23</b><br><br>
+  <b>本页由 <code>build.py</code> 从 <code>data/*.json</code> 生成 · 更新于 2026-08-24</b><br><br>
   <b>性质</b> 自学用的领域检索索引,借助 AI 整理;note 与裁定为编者概括,非原作者表述,亦非领域共识。<a href="#method">完整声明</a><br>
   <b>编者</b> <a href="https://github.com/flora2627">flora2627</a> · 勘误、补论文、指出错误请开 <a href="https://github.com/flora2627/llm-backdoor-tracker/issues">Issue</a><br>
   <b>许可</b> 页面文字与图 <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · 构建代码 <a href="https://github.com/flora2627/llm-backdoor-tracker/blob/main/LICENSE">MIT</a> · 书目信息为事实,不主张任何权利<br>
