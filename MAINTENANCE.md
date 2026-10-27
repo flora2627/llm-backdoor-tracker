@@ -188,15 +188,17 @@ lane 越界、未知 `kind`/`check`、模板占位符没替换完。
 
 ---
 
-## 现状快照(2026-08-23)
+## 现状快照(2026-10-27)
 
 | | |
 |---|---|
-| 条目 | 112(104 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
-| 边 | 183 —— 继承 84 · **佐证 21** · **反驳 78** |
-| 战线 | 13 条交火中 |
-| 引用核验 | **112 confirmed** |
-| 边数最多 | `nc` / `sleeper` 14 · `kurita` 11 · `finepruning` 10 · `badnets` / `gcg` / `hiddenkiller` / `onion` 8 · `dbs` / `peftguard` / `piccolo` / `souly` / `tdc23` / `yan` 7 · `badmerging` / `bait` / `evasivet` / `goldwasser` / `invtroj` / `mntd` / `tdc22` 6 · `cba` / `clibe` / `finemixing` / `grasp` / `lasnier` / `lmsanitator` / `pretrainpoison` 5 |
+| 条目 | 160(152 单篇论文 / 4 博客 / 3 竞赛 / 1 项目) |
+| 边 | 246 —— 继承 94 · **佐证 54** · **反驳 98** |
+| 战线 | 14 条交火中(2026-10-27 新开第 14 条:密码学不对称) |
+| 引用核验 | **160 confirmed**,0 待核 |
+| 边数最多 | `sleeper` 19 · `nc` 14 · `kurita` 11 · `finepruning` 10 · `onion` 9 · `badnets` / `gcg` / `hiddenkiller` / `mntd` / `souly` / `goldwasser` 8 · `piccolo` / `dbs` / `tdc23` / `lasnier` / `peftguard` / `yan` / `invtroj` 7 · `cba` / `tdc22` / `probes` / `bait` / `backdoorbench` / `badmerging` / `evasivet` / `pretrainpoison` / `subliminal` 6 |
+
+> 上一版快照(2026-08-23,112 条 / 183 边)的表格与叙述在 git 历史里;下方几段全文精读叙述仍以 08-23 时点的图为准。10-27 更新后:`sleeper` 单独以 19 边登顶(新挂 5 条:量化触发、毒评测传代、OPBackdoor、PersistBD、自然 schemer 全在跟它对话);`goldwasser` 到 8 边(密码学新战线双方都挂在它上面);`subliminal` 一口气接了 SALVE / 蒸馏传毒 / Beyond Owls 三条来边,subliminal 线成了交火密度上升最快的支线。
 
 `CoT-Hidden` 的全文把“绕过思维监控”拆成了准确的监控接口：攻击者完全控制SFT，用5%–20%数据把三只3.8B–12B推理模型训成“`<think>`里继续正确解题或拒绝，`</think>`后才输出9999或逐题有害回答”。10%投毒直接训练并非全成功：Phi/Qwen/Gemma在数学上ASR为18%/98%/92%，有害问答为0%/94%/60%；六阶段课程训练才升到94%/96%/99%与85%/96%/93%。17组能触发的解耦模型里，GPT-4o/4o-mini只看CoT的AUC均值50，追问一次58；把最终答案一起看则为96。因此它打穿的是孤立读取CoT，不是输出检查。原有`severi → probes`边也已从反驳改为佐证：内部线性probe从第2层起近完美分开trigger与随机串，删生成阶段方向还把Phi/Qwen ASR从90.8%/95.3%降到1.0%/5.5%。NLA只测一只Phi的一层，异常警告到答案前最后几token才出现，不能说出trigger、target或机制；论文又没给暗门SFT的学习率、batch、epoch等关键配置，也无官方代码链接。
 
@@ -273,6 +275,50 @@ FreeEagle的模型生成脚本也和终稿Table 10对不上：CIFAR-10与MNIST�
 `CLIBE` 的关键转向成立：动态 trigger 不必先还原成字符串，也可以从模型的参数响应里找异常。但它并不是无数据扫描。防御者要有完整权重和任务相关语料，由可疑模型自己筛出每类最多 500 条高置信参考样本；随后对每个 source→target 组合，用最多 80 条样本在一层 attention 的 Q/K/V 上优化受限扰动，再看剩余样本上的 target-logit 差值是否异常集中。阈值 2.0 来自量化标准高斯，BERT / RoBERTa 的检查层和扰动预算仍用 16 个 held-out 模型调过。三类 source-agnostic 动态后门的主表平均确实超过 0.90 F1 / 0.95 AUC，直接说明 PICCOLO、DBS 那套固定词反演并非唯一检测路线；但 source-specific syntax 已降到 0.583 TPR、0.758 AUC。正文宣称共训练 1,080 个后门模型也和分项数字冲突：source-agnostic 已有 960 个，三类 source-specific 又各有 48 个，尚未算 mixed-target。三组所谓 adaptive attack 只分别散开 posterior、冻结检查层、把后门前移，没有把攻击 loss 端到端穿过 CLIBE。Hugging Face 的 49 模型扫描先报出 3 个低熵候选，再用已知 perplexity / style / syntax 样本复测；一个 toxicity BERT 的 perplexity 误分类率达到 0.96，作者仍只称“推测含后门”，因为没有训练来源、投毒记录或干净 twin。生成扩展也只检测预设目标为 toxic output 的 model-spinning，需要另训 toxicity classifier 并对白盒 logits 做 soft-word 反传；它覆盖到 1.3B 和 LoRA，却不是任意生成后门的无先验检测。
 
 当前第三个高连接节点是 **`hiddenkiller`（8 条边）**：句法 trigger 不只被后续攻击继承，也同时被 ONION、RAP、Fine-purifying 等防御拿来检验。`finepruning`、`gcg`、`peftguard`、`tdc23` 和 `onion` 各有 7 条边，说明模型重构、越狱后缀、参数高效微调检测、组合 trigger 和输入过滤仍是五条持续交火的支线。
+
+---
+
+## 2026-10-27 更新记录
+
+两个月的断档(08-24 → 10-27),一次补齐。扫描沿用既定方法:两条 arXiv API query 带
+`submittedDate` 范围过滤(`abs:backdoor AND cat:cs.CR` 得 98 条 + `(abs:backdoor OR
+abs:"data poisoning") AND (cat:cs.CL OR cat:cs.LG)` 得 74 条),去重后约 110 篇逐篇 triage,
+候选全部用 `id_list` 批量拉摘要核对。**收录 39 篇**(全部 confirmed;数字全部只按摘要入库,
+note 里都标了「只按摘要入库」),新加 51 条边,8 条战线加弹,**新开战线 14「后门可以拥有
+密码学级的不可恢复不对称性」**(hidecaps vs notcrypto,crux 是安装通道:恶意训练流程 vs
+仅经投毒标签——两者前提不重叠,Goldwasser 的两套构造各缺一半,正好当根系)。
+
+### 本轮成型的几条新 mini-line
+
+- **SAE 三部曲**(攻击/分析/反咬):`saefrag`(防御碎片化的 SAE 机理)→ `llmforensics`
+  (检测≠控制的角色分解)→ `saepoison`(SAE 自己就是攻击面,与 BadEngram 同构:
+  主干不动、毒在辅助组件)。这条线跟 1.3.3 的学习路线直接对上。
+- **量化条件后门**:`quantbackdoor`(ARES,验证-部署缺口形式化)→ `agentq`(EMNLP,扩到
+  agent 的结构化 payload)。FP16 审计 ≠ 部署行为,这是「审计在哪个配置上做」的一个新轴。
+- **评测方法学反击波**:`tare`(BackdoorBench 的 scheduler bug + 防御成本列为负)、
+  `pyp`(随机采样低估最坏情形 3%–80%)、`benchdoor`(评测激励保证毒数据被采纳)——
+  三篇一起把战线 07 的「benchmark 数字」质疑做厚了。
+- **organism 方法论**:naturalschemer(不植入也被 RL 放大)+ organismtrain(验证三件套)
+  + 已有 leakyorg/mol——战线 05 从「数字可不可信」推进到「organism 造得好不好是前置变量」。
+
+### 本轮看过、判定超范围、故意不入图(2026-10-27)
+
+| 类别 | 条目(id · 一句话理由) |
+|---|---|
+| FL / 去中心化(整线出) | FedGraph 2610.18430 · Chorus 2609.37367(LLM 内容但 FL 拓扑) · Federated Art Chase 2610.21547 · DecoyTrace 2609.36330 · FedMAST 2609.27760 · CACTUS 2609.02450 · STAIN-FL 2608.23952 · LiBRA 2610.27357 · PVBRF-ID 2610.12704 · 流量 IDS 2610.19766 / 2610.14767 |
+| 视觉/通用 NN | DAR 2610.21208(NeurIPS'26,ImageNet/CLIP;「干净蒸馏后仍在」等有 LLM 版再收) · Quiet Triggers 2610.19947(S&P'27,未见 LLM 实验) · SAGE 2610.01788 · Combinatorial Lock 2610.33437 · Certified f-div 2610.34934 · Backdoor-as-a-Service 2610.22459 · TRIM 2609.03139 · ODPure 2609.28239 · Capacity Overflow 2608.25371 · Info Blackhole 2609.33569 · GhostSplat 2608.29184 · FIDA 2608.26861 · RAMP 2609.27422 · Clean-Label Malware 2610.21269 · 医疗影像 2609.14290 · MICS 2609.10952(教学规模) · NeSy 2609.00464 · RFF 2609.16403 · repair-eval 2609.25579 · label-only 审计 2610.13051(CIFAR/DINOv2) |
+| **Low-ASR 2608.27288(特别备注)** | ASR 是攻击者可控变量、压低即绕防御——论点直接打战线 07,但 cs.CL/LG 查询没返回它、摘要只说多数据集多架构,**疑似纯视觉,先挂起**;确认含 LLM 实验后应收录 |
+| RL / 世界模型 | TrojanWorld 2609.07051 · UBA-ORL 2609.22711 · When the World Lies 2609.15781 · NERVE(BCI) 2609.08971 |
+| 语音/声学 | Ouroboros 2608.30329 · Acoustic FM 2610.09819 · You Are the Trigger 2610.27210 |
+| SNN | T-Backdoor 2609.30119 |
+| **VLM 边界(挂起,待范围决策)** | Under the Skin 2610.24058(跨模态感染,LLaVA/InternVL/Qwen-VL/Gemma) · P-VMI 2610.09027(KV cache 持久化后门,机制上与图的对话很强) · EvolvAttack 2610.15244 · Region-Aware Repair 2608.24354 · CLIP 区域防御 2609.31558 · TokenScanner 2609.31876(T2I LoRA) · BadAction 2609.39047(视频生成)。**若决定收 VLM,Under the Skin 与 P-VMI 优先** |
+| RAG 防线(非后门机制) | RAGLeak 2610.25937(隐私 payload,与 trojanrag 对话弱) · RAG survey 2608.24977 / RAG protection survey 2610.30193(survey 无独立 claim) · EviLLM 2610.03857(管道破坏,无模型后门) · Compaction Laundering 2610.29869(provenance / 提示注入侧) · Silent Sabotage 2609.26184(机器人 LLM,指令级攻击不动权重,与 skillgate/mcptox 的组件投毒不同类) · Universal agent defenses 2609.16098(防御拼盘,无对话点) · CyberArena 2610.19005 · Jev 2610.04985 · 博士论文合集 2610.02432 · ServeGuard 2609.21515(ZK adapter 限制,对话对象暂缺,先记) |
+
+### 数字纪律执行情况
+
+39 篇 note 的所有数字当场从 API 摘要里抄录(上面各 bullet 同),没有凭记忆填的;
+快照里的边数统计从 build 输出抄。唯一有意保留的不确定:`curved2` 的 p=0.555→0.048
+是摘要自述,且作者非主流实验室,note 里已写「未经同行评议」。
 
 ---
 
@@ -440,12 +486,14 @@ FreeEagle的模型生成脚本也和终稿Table 10对不上：CIFAR-10与MNIST�
 ### 我可以继续做的
 
 - [x] ~~Sleeper Cell / Fuzzing LLMs / MetaBackdoor / When Stronger Triggers Backfire~~ —— 2026-08-20 全部入库并核对。
-- [ ] **LessWrong / AF 系统性扫一遍** —— 目前只有 2 条,**这是现在最大的单一缺口**(arXiv 那条线 2026-08 已经扫干净了)。
+- [ ] **LessWrong / AF 系统性扫一遍** —— 目前只有 2 条,**这是现在最大的单一缺口**(arXiv 那条线 2026-10-27 已经扫干净了)。
       按 `AI` / `Interpretability` / `AI Control` 标签扫,重点找 model organism、SAE 怀疑波、AI control 的原始讨论帖。
       战线 12 尤其需要:trusted monitoring 的原始讨论几乎都在 AF 上,arXiv 上那两篇是下游。
 - [ ] 上表 6 篇「id 未核」的补齐 arXiv id(即便不入图,记录也该准确)。
-- [ ] **范围决策:VLM / 多模态收不收。** 2026-08 这一批里有三篇卡在边界上(见「本轮判定超范围」表)。
+- [ ] **范围决策:VLM / 多模态收不收。** 挂起的已经攒到 7 篇(2026-08 三篇 + 2026-10-27 表里 VLM 行,
+      其中 Under the Skin 2610.24058 与 P-VMI 2610.09027 机制上与图对话很强)。
       现在的实际标准不是模态而是「有没有具体的攻防边」,但这条标准从没写进规则里,下次还会再纠结一遍。
+- [ ] **Low-ASR 2608.27288 全文确认是否含 LLM 实验**(疑似纯视觉;论点直接打战线 07,确认后收录)。
 - [ ] **战线 12 的那个空位**:谱系错配伤单监控器迁移 vs 谱系分散不构成集成互补——两者能同时为真,
       但需要有人在同一个池子上同时测这两个量。目前没有。**这是本轮扫出来的、最像可下手开放问题的一个。**
 

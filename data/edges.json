@@ -1168,5 +1168,311 @@
   "to": "subliminal",
   "type": "refute",
   "label": "归约到单个 steering 向量 · 解释了为何跨模型不迁移"
+ },
+ {
+  "from": "curved2",
+  "to": "probes",
+  "type": "refute",
+  "label": "线性可分疑似植入伪迹"
+ },
+ {
+  "from": "curved2",
+  "to": "curvdet",
+  "type": "support",
+  "label": "曲率家族:无标签 A' 几何"
+ },
+ {
+  "from": "quantbackdoor",
+  "to": "sleeper",
+  "type": "inherit",
+  "label": "休眠到部署配置变化"
+ },
+ {
+  "from": "agentq",
+  "to": "quantbackdoor",
+  "type": "support",
+  "label": "量化条件触发扩到 agent"
+ },
+ {
+  "from": "camodocs",
+  "to": "trojanrag",
+  "type": "support",
+  "label": "语料投毒,不碰权重"
+ },
+ {
+  "from": "saefrag",
+  "to": "kumardiff",
+  "type": "support",
+  "label": "同向:SAE 特征定位后门"
+ },
+ {
+  "from": "akrasia",
+  "to": "severi",
+  "type": "support",
+  "label": "推理链藏毒同向"
+ },
+ {
+  "from": "mechaudit",
+  "to": "monlineage",
+  "type": "refute",
+  "label": "校准后跨机制可迁移"
+ },
+ {
+  "from": "mechaudit",
+  "to": "keenan",
+  "type": "support",
+  "label": "表征异常检测跨机制版"
+ },
+ {
+  "from": "llmforensics",
+  "to": "saefrag",
+  "type": "support",
+  "label": "同向:SAE 分解后门机制"
+ },
+ {
+  "from": "llmforensics",
+  "to": "lasnier",
+  "type": "support",
+  "label": "语言切换后门 SAE 三分"
+ },
+ {
+  "from": "specguard",
+  "to": "fuzzllm",
+  "type": "support",
+  "label": "运行时引出,零额外算力"
+ },
+ {
+  "from": "badengram",
+  "to": "mntd",
+  "type": "refute",
+  "label": "毒在主干外的记忆表"
+ },
+ {
+  "from": "pyp",
+  "to": "backdoorbench",
+  "type": "refute",
+  "label": "随机采样低估最坏情形"
+ },
+ {
+  "from": "salve",
+  "to": "subliminal",
+  "type": "refute",
+  "label": "隐性性状可显式捞出"
+ },
+ {
+  "from": "trustrevisit",
+  "to": "sleeper",
+  "type": "inherit",
+  "label": "毒沿自改谱系传代"
+ },
+ {
+  "from": "opbackdoor",
+  "to": "sleeper",
+  "type": "inherit",
+  "label": "条件发作+alibi 推理"
+ },
+ {
+  "from": "opbackdoor",
+  "to": "monens",
+  "type": "support",
+  "label": "躲 LLM 工审,躲不过对比监控"
+ },
+ {
+  "from": "poisonscale",
+  "to": "souly",
+  "type": "support",
+  "label": "解析理论:指数分 regime"
+ },
+ {
+  "from": "bitl",
+  "to": "trojanrag",
+  "type": "inherit",
+  "label": "后门装进检索器"
+ },
+ {
+  "from": "bitl",
+  "to": "beear",
+  "type": "refute",
+  "label": "unlearning 可当洗白工具"
+ },
+ {
+  "from": "nnsecurity",
+  "to": "pichler",
+  "type": "inherit",
+  "label": "检测问题入多项式层级"
+ },
+ {
+  "from": "needle",
+  "to": "csollm",
+  "type": "support",
+  "label": "正交投影手术,免训练"
+ },
+ {
+  "from": "qes",
+  "to": "decnip",
+  "type": "support",
+  "label": "定位后隔离而非剪枝"
+ },
+ {
+  "from": "nullspace",
+  "to": "zpeft",
+  "type": "support",
+  "label": "LoRA 子空间两用:测与净"
+ },
+ {
+  "from": "tare",
+  "to": "backdoorbench",
+  "type": "refute",
+  "label": "受害者欠退火,成本失真"
+ },
+ {
+  "from": "saepoison",
+  "to": "badengram",
+  "type": "support",
+  "label": "同构:主干不动毒在组件"
+ },
+ {
+  "from": "saepoison",
+  "to": "saefrag",
+  "type": "refute",
+  "label": "SAE 自己就是攻击面"
+ },
+ {
+  "from": "weightoracle",
+  "to": "mntd",
+  "type": "support",
+  "label": "权重读出零样本过新威胁"
+ },
+ {
+  "from": "persistbd",
+  "to": "sleeper",
+  "type": "support",
+  "label": "良性后训练洗不掉,RL 反涨"
+ },
+ {
+  "from": "distillrisk",
+  "to": "subliminal",
+  "type": "support",
+  "label": "蒸馏通道传后门"
+ },
+ {
+  "from": "answerside",
+  "to": "onion",
+  "type": "refute",
+  "label": "trigger 不在输入在历史"
+ },
+ {
+  "from": "answerside",
+  "to": "arditi",
+  "type": "support",
+  "label": "机制:压掉拒答方向"
+ },
+ {
+  "from": "querycomp",
+  "to": "invtroj",
+  "type": "refute",
+  "label": "行为分布不决定恢复难度"
+ },
+ {
+  "from": "organismtrain",
+  "to": "mol",
+  "type": "inherit",
+  "label": "organism 验证三件套"
+ },
+ {
+  "from": "organismtrain",
+  "to": "leakyorg",
+  "type": "support",
+  "label": "同向:organism 质量承重"
+ },
+ {
+  "from": "owls",
+  "to": "subliminal",
+  "type": "refute",
+  "label": "跨基座迁移部分成立"
+ },
+ {
+  "from": "owls",
+  "to": "substeer",
+  "type": "support",
+  "label": "蒸馏/LoRA 强化迁移"
+ },
+ {
+  "from": "cancerous",
+  "to": "bcbi",
+  "type": "support",
+  "label": "渐进/阶段化触发近亲"
+ },
+ {
+  "from": "hidecaps",
+  "to": "goldwasser",
+  "type": "inherit",
+  "label": "数字锁:任意计算入权重"
+ },
+ {
+  "from": "safetyedit",
+  "to": "badedit",
+  "type": "inherit",
+  "label": "编辑后继:单坐标+KV 标记"
+ },
+ {
+  "from": "trojanforge",
+  "to": "issuetrojan",
+  "type": "support",
+  "label": "仓库级投毒自动化"
+ },
+ {
+  "from": "naturalschemer",
+  "to": "sleeper",
+  "type": "support",
+  "label": "oversight 行为不植入也放大"
+ },
+ {
+  "from": "naturalschemer",
+  "to": "marks",
+  "type": "support",
+  "label": "隐藏目标不需人工植入"
+ },
+ {
+  "from": "benchdoor",
+  "to": "pretrainpoison",
+  "type": "support",
+  "label": "评测激励保证毒被采纳"
+ },
+ {
+  "from": "notcrypto",
+  "to": "goldwasser",
+  "type": "refute",
+  "label": "投毒装不出密码学不对称"
+ },
+ {
+  "from": "notcrypto",
+  "to": "hidecaps",
+  "type": "refute",
+  "label": "定理只覆盖投毒安装通道"
+ },
+ {
+  "from": "tncs",
+  "to": "pyp",
+  "type": "support",
+  "label": "同题:毒集选择,代码域"
+ },
+ {
+  "from": "omcb",
+  "to": "mergehijack",
+  "type": "support",
+  "label": "同向:合并是攻击面"
+ },
+ {
+  "from": "omcb",
+  "to": "arora",
+  "type": "refute",
+  "label": "合并不只稀释还能当扳机"
+ },
+ {
+  "from": "invis",
+  "to": "probes",
+  "type": "support",
+  "label": "探针捞出,硬化才塌"
  }
 ]
