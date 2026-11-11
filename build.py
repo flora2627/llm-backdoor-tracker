@@ -20,6 +20,30 @@ edges    = load("edges.json")
 fronts   = load("fronts.json")
 misread  = load("misread.json")
 
+# ------------------------------------------------------------------ 战线 bullet → 图上节点
+# (check() 的自检与首页战线卡的「图上点亮」共用这一份解析)
+byarx = {str(p["arxiv"]): p["id"] for p in papers if p.get("arxiv")}
+bydoi = {}
+for p in papers:
+    m = re.search(r"10\.\d{4,5}/[^\s)]+", p.get("url", "") or "")
+    if m: bydoi[m.group(0)] = p["id"]
+bylabel = {p["label"]: p["id"] for p in papers}
+bytitle = {(p.get("title") or "").lower(): p["id"] for p in papers if p.get("title")}
+def refs(bullet):
+    out = []
+    for n in re.findall(r"\*\*(.+?)\*\*", bullet):     # 粗体名字与节点 label 精确同名也算引用
+        n = n.strip(" —·:")
+        if n in bylabel: out.append(bylabel[n])
+        elif n.lower() in bytitle: out.append(bytitle[n.lower()])
+    for x in re.findall(r"\b(\d{4}\.\d{4,5})\b", bullet):
+        if x in byarx: out.append(byarx[x])
+        else: out.append("?" + x)
+    for x in re.findall(r"10\.\d{4,5}/[^\s*]+", bullet):
+        x = x.rstrip(".,")
+        if x in bydoi: out.append(bydoi[x])
+        else: out.append("?" + x)
+    return out
+
 # ------------------------------------------------------------------ 自检
 def check():
     errs, warns = [], []
@@ -58,16 +82,9 @@ def check():
         if k not in ids: errs.append(f"misread.json 里的 {k} 不在 papers.json")
 
     # 战线 ↔ 图 的同步:战线引的论文要在图上,双方的核心对立要真的有边
-    byarx = {str(p["arxiv"]): p["id"] for p in papers if p.get("arxiv")}
-    bydoi = {}
-    for p in papers:
-        m = re.search(r"10\.\d{4,5}/[^\s)]+", p.get("url", "") or "")
-        if m: bydoi[m.group(0)] = p["id"]
     adj = collections.defaultdict(set)
     for e in edges:
         adj[e["from"]].add(e["to"]); adj[e["to"]].add(e["from"])
-    bylabel = {p["label"]: p["id"] for p in papers}
-    bytitle = {(p.get("title") or "").lower(): p["id"] for p in papers if p.get("title")}
     def refs(bullet):
         out = []
         for n in re.findall(r"\*\*(.+?)\*\*", bullet):     # 粗体名字与节点 label 精确同名也算引用
@@ -141,7 +158,7 @@ def render_front(i, f):
         lis = "\n".join(f"        <li>{md(x)}</li>" for x in items)
         return (f'      <div class="side {kind}"><div class="side-label"><span class="tick"></span>'
                 f'{html.escape(label)}</div><ul>\n{lis}\n      </ul></div>')
-    return f"""  <div class="front">
+    return f"""  <div class="front" id="front-{i}">
     <div class="front-top"><span class="front-no">{i:02d}</span>
       <span class="front-claim">{md(f['claim'])}</span>
       <span class="verdict {f['verdict_class']}">{html.escape(f['verdict'])}</span></div>
@@ -154,6 +171,35 @@ def render_front(i, f):
   </div>"""
 
 fronts_html = "\n".join(render_front(i, f) for i, f in enumerate(fronts, 1))
+
+# ------------------------------------------------------------------ 首页战线紧凑卡
+# 每条战线在图上能挂到的节点(供「图上点亮」),保持 pro→con 的出现顺序去重
+front_nodes = []
+for f in fronts:
+    ids = []
+    for side_name in ("pro", "con"):
+        for b in f.get(side_name, []):
+            for r in refs(b):
+                if not r.startswith("?") and r not in ids:
+                    ids.append(r)
+    front_nodes.append(ids)
+
+def front_card(i, f):
+    pro_n = len({r for b in f.get("pro", []) for r in refs(b) if not r.startswith("?")})
+    con_n = len({r for b in f.get("con", []) for r in refs(b) if not r.startswith("?")})
+    short = lambda s: (s.split("(")[0].strip() or s)
+    return f"""    <div class="fcard" tabindex="0" role="button" data-front="{i-1}"
+         aria-label="在图上点亮战线 {i:02d}">
+      <div class="fc-top"><span class="fc-no">{i:02d}</span>
+        <span class="verdict {f['verdict_class']}">{html.escape(f['verdict'])}</span></div>
+      <div class="fc-claim">{md(f['claim'])}</div>
+      <div class="fc-meta">
+        <span class="fc-count">{html.escape(short(f['pro_label']))} {pro_n} 篇 · {html.escape(short(f['con_label']))} {con_n} 篇</span>
+        <span class="fc-acts"><span class="fc-go">图上点亮 →</span><a href="#front-{i}">全文</a></span>
+      </div>
+    </div>"""
+
+frontcards_html = "\n".join(front_card(i, f) for i, f in enumerate(fronts, 1))
 
 # ------------------------------------------------------------------ 渲染资料表
 KIND_CN = {"paper": None, "cluster": "论文簇", "program": "项目",
@@ -200,14 +246,17 @@ aria = (f"LLM backdoor 检测领域 2017 至 2026 的时间线森林图:{len(lan
         f"{len(papers)} 个条目,以 {len(edges)} 条签名边连接——灰实线为继承 {et['inherit']} 条、"
         f"青色佐证 {et['support']} 条、琥珀虚线反驳证伪 {et['refute']} 条。"
         f"反驳边是佐证边的 {et['refute']/max(et['support'],1):.0f} 倍。"
-        f"另有 {len(misread)} 个条目被标为常被系统性误读。方形节点表示该条目不是单篇论文。")
+        f"另有 {len(misread)} 个条目被标为常被系统性误读。方形节点表示该条目不是单篇论文。"
+        f"边默认以低对比雾化显示,悬停或点击节点会点亮它的全部边。")
 
-data = {"lanes": lanes, "years": years, "papers": papers, "edges": edges, "misread": misread}
+data = {"lanes": lanes, "years": years, "papers": papers, "edges": edges,
+        "misread": misread, "frontNodes": front_nodes}
 
 out = (ROOT / "template.html").read_text()
 for k, v in {
     "{{DATA}}":        json.dumps(data, ensure_ascii=False, separators=(",", ":")),
     "{{FRONTS}}":      fronts_html,
+    "{{FRONTCARDS}}":  frontcards_html,
     "{{REFS}}":        "\n".join(rows),
     "{{N_PAPERS}}":    str(len(papers)),
     "{{N_EDGES}}":     str(len(edges)),

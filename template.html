@@ -121,6 +121,7 @@ figure{margin:0}
 .legend{display:flex;flex-wrap:wrap;gap:16px}
 .lg{display:flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
 .lg svg{flex:0 0 auto;display:block}
+.lg-note{color:var(--ink-soft);border:1px dashed var(--hairline);padding:2px 8px;border-radius:2px}
 .filters{display:flex;gap:7px;margin-left:auto}
 .filters button{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
   padding:6px 11px;border:1px solid var(--hairline);background:transparent;color:var(--muted);
@@ -151,18 +152,63 @@ figcaption b{color:var(--ink-soft)}
   letter-spacing:-.01em;paint-order:stroke fill;stroke:var(--surface);stroke-width:3.2px;stroke-linejoin:round}
 .n-lbl.hub{fill:var(--ink);font-weight:700}
 .e{fill:none;stroke-linecap:round}
-.e.inherit{stroke:var(--muted);stroke-width:1.15;opacity:.42}
-.e.support{stroke:var(--affirm);stroke-width:2;opacity:.9}
-.e.refute{stroke:var(--refute);stroke-width:1.9;stroke-dasharray:7 5;opacity:.9}
+/* ---- 边分三档:雾化(默认)/ 枢纽骨干(两端度≥6,隐约可辨)/ 点亮或全亮(语义色) ----
+   设计:整图先给结构纹理,色彩只留给当前关注的局部(悬停节点 / 点亮战线 / 全亮开关) */
+.e{stroke:var(--ink-soft);stroke-width:1.1;opacity:.13;stroke-dasharray:none}
+.e.hub.inherit{stroke:var(--muted);stroke-width:1.3;opacity:.30}
+.e.hub.support{stroke:var(--affirm);stroke-width:1.5;opacity:.40}
+.e.hub.refute{stroke:var(--refute);stroke-width:1.5;stroke-dasharray:7 5;opacity:.42}
+svg.full .e.inherit{stroke:var(--muted);stroke-width:1.15;opacity:.42;stroke-dasharray:none}
+svg.full .e.support{stroke:var(--affirm);stroke-width:2;opacity:.9;stroke-dasharray:none}
+svg.full .e.refute{stroke:var(--refute);stroke-width:1.9;stroke-dasharray:7 5;opacity:.9}
+svg .e.lit{stroke-width:2.4;opacity:1}
+svg .e.lit.inherit{stroke:var(--muted);stroke-dasharray:none}
+svg .e.lit.support{stroke:var(--affirm);stroke-dasharray:none}
+svg .e.lit.refute{stroke:var(--refute);stroke-dasharray:7 5}
 .e-lbl{font-family:var(--f-mono);font-size:9.5px;text-anchor:middle;pointer-events:none;
-  paint-order:stroke fill;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+  paint-order:stroke fill;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round;
+  opacity:0}
 .e-lbl.support{fill:var(--affirm)} .e-lbl.refute{fill:var(--refute)} .e-lbl.inherit{fill:var(--muted)}
+svg.full .e-lbl{opacity:.85}
+svg .e-lbl.lit{opacity:1}
 .node-hit{cursor:pointer}
 svg.dim .e,svg.dim .e-lbl,svg.dim .node-g{opacity:.07}
+svg.dim .e.hub{opacity:.07}
 svg.dim .e.lit{opacity:.95} svg.dim .e-lbl.lit{opacity:1} svg.dim .node-g.lit{opacity:1}
 svg .e,svg .e-lbl,svg .node-g{transition:opacity .16s}
 svg.hide-inherit .e.inherit,svg.hide-inherit .e-lbl.inherit{display:none}
 svg.only-refute .e:not(.refute),svg.only-refute .e-lbl:not(.refute){display:none}
+
+/* ---- 首页战线紧凑卡 ---- */
+.masthead.tight{padding:46px 0 30px;margin-bottom:36px}
+.masthead.tight h1{font-size:clamp(28px,4.4vw,42px);margin-bottom:14px}
+.masthead.tight .standfirst{font-size:16px;margin-bottom:22px}
+.hero-cta{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;border:1px solid var(--ink-soft);border-radius:2px;
+  padding:9px 16px;margin-top:24px;cursor:pointer;transition:.14s}
+.hero-cta:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fg-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;
+  border-bottom:1px solid var(--hairline);padding-bottom:10px}
+.fg-head h2{font-size:19px;font-weight:660;letter-spacing:-.01em;margin:0}
+.fg-head .fg-sub{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);letter-spacing:.04em}
+.frontgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;
+  padding-bottom:8px}
+.fcard{border:1px solid var(--hairline);background:var(--surface);border-radius:2px;
+  padding:13px 15px 11px;cursor:pointer;transition:border-color .14s,background .14s;
+  display:flex;flex-direction:column;gap:7px;outline-offset:2px}
+.fcard:hover,.fcard:focus-visible{border-color:var(--ink-soft);background:var(--surface2)}
+.fc-top{display:flex;align-items:center;gap:9px}
+.fc-no{font-family:var(--f-mono);font-size:10px;color:var(--muted);letter-spacing:.1em}
+.fc-top .verdict{font-size:9px;padding:3px 7px}
+.fc-claim{font-size:14px;line-height:1.55;font-weight:620;letter-spacing:-.005em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fc-meta{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.fc-acts{display:flex;gap:12px;align-items:baseline;white-space:nowrap}
+.fc-go{color:var(--affirm);opacity:0;transition:opacity .14s}
+.fcard:hover .fc-go,.fcard:focus-visible .fc-go{opacity:1}
+.fc-acts a{color:var(--muted);border-bottom-color:var(--hairline-soft)}
+.fcard:hover .fc-acts a{color:var(--ink)}
 
 /* ---- 参考文献表 ---- */
 .reftools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 18px}
@@ -314,29 +360,6 @@ footer b{color:var(--ink-soft)}
 
 <div class="view" id="v-brief" hidden>
 <div class="wrap">
-<header class="masthead">
-  <div class="eyebrow">
-    <span>立场图 · Stance Map</span>
-    <span>2017 → 2026</span>
-    <span>{{N_PAPERS}} 条目 · {{N_EDGES}} 条边</span>
-    <span>更新于 {{DATE}}</span>
-  </div>
-  <h1>LLM backdoor 立场图</h1>
-  <p class="standfirst">
-    LLM backdoor(数据投毒)检测这片森林里,<strong>反驳比结果更承重</strong>。
-    几乎每一条被广泛引用的正面结论,都能找到一篇同年、常常互不引用的论文在反对它。
-    这份图不按"进展"排列文献,而是把整个领域重画成一张<strong>签名边</strong>的网络:
-    谁继承谁、谁佐证谁、谁证伪谁。图上另标出一类在这个领域反复出现的现象:<strong>哪些论文被系统性误读</strong>——被误读的那一篇往往正是被引用最多的那一篇。
-  </p>
-  <div class="tallies">
-    <div class="tally"><span class="n">{{N_PAPERS}}</span><span class="k">图上条目</span></div>
-    <div class="tally"><span class="n">{{N_INHERIT}}</span><span class="k">继承边</span></div>
-    <div class="tally a"><span class="n">{{N_SUPPORT}}</span><span class="k">佐证边</span></div>
-    <div class="tally r"><span class="n">{{N_REFUTE}}</span><span class="k">反驳 · 证伪边</span></div>
-    <div class="tally m"><span class="n">{{N_MISREAD}}</span><span class="k">被系统性误读</span></div>
-  </div>
-</header>
-
 <section>
   <div class="sechead"><span class="idx">§1</span><h2>这片森林在争什么</h2></div>
   <p class="lede">
@@ -439,11 +462,47 @@ footer b{color:var(--ink-soft)}
 </div>
 
 <div class="view" id="v-graph">
-<section class="graphsec" style="margin-bottom:0">
+<div class="wrap">
+<header class="masthead tight">
+  <div class="eyebrow">
+    <span>立场图 · Stance Map</span>
+    <span>2017 → 2026</span>
+    <span>{{N_PAPERS}} 条目 · {{N_EDGES}} 条边</span>
+    <span>更新于 {{DATE}}</span>
+  </div>
+  <h1>LLM backdoor 立场图</h1>
+  <p class="standfirst">
+    LLM backdoor(数据投毒)检测这片森林里,<strong>反驳比结果更承重</strong>:几乎每条被广泛引用的正面结论,
+    都有一篇同年、常常互不引用的论文在反对它。这张图不按「进展」排列文献,而是把整个领域重画成一张
+    <strong>签名边</strong>网络——谁继承谁、谁佐证谁、谁证伪谁,另标出<strong>哪些论文被系统性误读</strong>。
+  </p>
+  <div class="tallies">
+    <div class="tally"><span class="n">{{N_PAPERS}}</span><span class="k">图上条目</span></div>
+    <div class="tally"><span class="n">{{N_INHERIT}}</span><span class="k">继承边</span></div>
+    <div class="tally a"><span class="n">{{N_SUPPORT}}</span><span class="k">佐证边</span></div>
+    <div class="tally r"><span class="n">{{N_REFUTE}}</span><span class="k">反驳 · 证伪边</span></div>
+    <div class="tally m"><span class="n">{{N_MISREAD}}</span><span class="k">被系统性误读</span></div>
+  </div>
+  <a class="hero-cta" href="#forest-fig">↓ 直接进入森林图</a>
+</header>
+
+<section style="margin-bottom:60px">
+  <div class="fg-head">
+    <h2>{{N_FRONTS_CN}}条正在交火的战线</h2>
+    <span class="fg-sub">点一条 → 在图上点亮它的论文与交锋边</span>
+  </div>
+  <div class="frontgrid">
+{{FRONTCARDS}}
+  </div>
+</section>
+</div>
+
+<section class="graphsec" id="forest-fig" style="margin-bottom:0">
 <div class="graphwrap">
 <figure>
   <div class="figbar">
     <div class="legend">
+      <span class="lg lg-note">边默认雾化 · 悬停节点点亮它的边 · 图上样本色为点亮后的语义色</span>
       <span class="lg"><svg width="30" height="8" aria-hidden="true"><line x1="1" y1="4" x2="29" y2="4" stroke="var(--muted)" stroke-width="1.4"/></svg>继承</span>
       <span class="lg"><svg width="30" height="8" aria-hidden="true"><line x1="1" y1="4" x2="29" y2="4" stroke="var(--affirm)" stroke-width="2"/></svg>佐证</span>
       <span class="lg"><svg width="30" height="8" aria-hidden="true"><line x1="1" y1="4" x2="29" y2="4" stroke="var(--refute)" stroke-width="2" stroke-dasharray="7 5"/></svg>反驳 / 证伪</span>
@@ -459,7 +518,8 @@ footer b{color:var(--ink-soft)}
         <button type="button" class="zlevel" id="zlv" tabindex="-1">—</button>
         <button type="button" id="zin" title="放大(快捷键 +)">＋</button>
       </span>
-      <button type="button" data-f="all" aria-pressed="true">全部</button>
+      <button type="button" data-f="mist" aria-pressed="true" title="所有边退成低对比纹理,悬停节点点亮它的边(默认)">雾化</button>
+      <button type="button" data-f="full" aria-pressed="false" title="恢复传统样式:全部边与标签着色显示">全亮</button>
       <button type="button" data-f="nolineage" aria-pressed="false">只看争议</button>
       <button type="button" data-f="refute" aria-pressed="false">只看反驳</button>
     </div>
@@ -482,7 +542,9 @@ footer b{color:var(--ink-soft)}
     九条泳道是九条主干。<b>节点大小 = 它的边数</b>,所以枢纽是数出来的,不是挑出来的。
     每条边走<b>正交通道布线</b>——竖直出线、独占一条水平轨道、竖直入线,任意两条线不会叠在一起,交叉一律 90°,可以逐条跟着走。
     <b>方形节点不是单篇论文</b>(项目 / 竞赛 / 博客),圆形才是——其中<b>博客类是刻意纳入的</b>,本领域有承重结果只发在 LessWrong 与 Anthropic 的 alignment 博客上。
-    <b>悬停</b>隔离一个节点的边;<b>点击</b>打开它的条目卡,卡里列出跟它有签名边的全部论文,可以一路点着走下去。
+    <b>边默认雾化</b>:整张图先给你看结构与枢纽骨干(两端都是枢纽的边隐约着色),
+    <b>悬停</b>任意节点点亮它的全部边,<b>点击</b>钉住并打开条目卡——卡里列出跟它有签名边的全部论文,可以一路点着走下去;
+    首页战线卡则一次点亮一整条战线的对峙双方。工具条里的<b>全亮</b>恢复传统着色。
     默认是<b>适应宽度</b>——整张 2017→2026 的时间轴一次性塞进屏幕,纵向随页面滚,<b>不需要左右拖</b>;
     代价是标签会缩到很小,所以要读细节就按 <b>＋</b> 放大(放大后画布可直接抓着拖)。抽屉打开时图会自动让出宽度,整张仍然可见。
   </p>
@@ -603,6 +665,7 @@ function add(p,e){p.appendChild(e);return e;}
 function tw(s,px){var w=0;for(var i=0;i<s.length;i++)w+=(s.charCodeAt(i)>0x2E80?1:0.6)*px;return w;}
 
 var LEFT=200,SCALE=1.30,XB=170,TRK=13,LBL=13,R=6;
+var HUBDEG=6;                   // 两端度都 ≥ 此值的边 = 枢纽骨干,雾化态下隐约着色
 var NR0=5,NRK=14,NGAP=3.5;    // 节点半径基准 / 每多一条边的面积增量 / 点与点之间的最小空隙
 var GUT=33,TOPPAD=20,LEAD=7;  // 泳道线到第一条轨道 / 泳道线到上一条泳道底 / 出线的斜引线长度
 var SQ=1.772;                 // 方块边长 = r*sqrt(π),让方块和同度圆点面积相等
@@ -753,7 +816,8 @@ plan.forEach(function(Pl){
      +" Q"+Pl.x1+" "+ty+" "+Pl.x1+" "+(ty+s1*R)
      +" L"+Pl.x1+" "+by.toFixed(1)+" L"+Pl.b.x.toFixed(1)+" "+b0.toFixed(1);
   }
-  add(gE,el("path",{d:d,"class":"e "+Pl.type,"data-i":Pl.i}));
+  var hub=(deg[Pl.a.id]>=HUBDEG&&deg[Pl.b.id]>=HUBDEG)?" hub":"";
+  add(gE,el("path",{d:d,"class":"e "+Pl.type+hub,"data-i":Pl.i}));
   if(Pl.lbl){var t=add(gL,el("text",{x:Pl.mid,y:ty-4,"class":"e-lbl "+Pl.type,"data-i":Pl.i}));t.textContent=Pl.lbl;}
   var ee=E[Pl.i];
   if(Pl.type==="refute")isReb[ee.from]=1;
@@ -795,6 +859,24 @@ function lit(id){
   Array.prototype.forEach.call(gN.children,function(g){if(keep[g.getAttribute("data-id")])g.classList.add("lit");});
 }
 function clr(){svg.classList.remove("dim");Array.prototype.forEach.call(svg.querySelectorAll(".lit"),function(n){n.classList.remove("lit");});}
+/* 点亮一条战线:keep 它的论文,只亮两端都在战线内的交锋边(不外扩到邻居) */
+function litFront(n){
+  var ids=DATA.frontNodes&&DATA.frontNodes[n];if(!ids||!ids.length)return;
+  closeNode();
+  var keep={};ids.forEach(function(id){keep[id]=1;});
+  svg.classList.add("dim");
+  ids.forEach(function(id){
+    (adj[id]||[]).forEach(function(a){
+      if(!keep[a.other])return;
+      var p=gE.querySelector('[data-i="'+a.i+'"]');if(p)p.classList.add("lit");
+      var l=gL.querySelector('[data-i="'+a.i+'"]');if(l)l.classList.add("lit");
+    });
+  });
+  Array.prototype.forEach.call(gN.children,function(g){if(keep[g.getAttribute("data-id")])g.classList.add("lit");});
+  pinned="__front__";
+  var fig=document.getElementById("forest-fig");
+  if(fig)window.scrollTo(0,Math.max(0,fig.getBoundingClientRect().top+window.scrollY-58));
+}
 Array.prototype.forEach.call(gN.children,function(g){
   var id=g.getAttribute("data-id");
   g.addEventListener("mouseenter",function(){if(!pinned)lit(id);});
@@ -805,14 +887,31 @@ Array.prototype.forEach.call(gN.children,function(g){
   g.addEventListener("keydown",function(ev){
     if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openNode(id);}});
 });
-var btns=document.querySelectorAll(".filters button");
+var btns=document.querySelectorAll(".filters button[data-f]");
 Array.prototype.forEach.call(btns,function(b){
   b.addEventListener("click",function(){
     Array.prototype.forEach.call(btns,function(o){o.setAttribute("aria-pressed",o===b?"true":"false");});
-    svg.classList.remove("hide-inherit","only-refute");
+    svg.classList.remove("hide-inherit","only-refute","full");
     var f=b.getAttribute("data-f");
-    if(f==="nolineage")svg.classList.add("hide-inherit");
-    if(f==="refute")svg.classList.add("only-refute");
+    if(f==="full")svg.classList.add("full");
+    if(f==="nolineage")svg.classList.add("full","hide-inherit");
+    if(f==="refute")svg.classList.add("full","only-refute");
+  });
+});
+
+/* ---- 首页战线卡:点击 → 图上点亮(hash 可直达、可刷新) ---- */
+Array.prototype.forEach.call(document.querySelectorAll(".fcard"),function(c){
+  function go(){
+    var n=c.getAttribute("data-front");
+    if(location.hash==="#f/"+n)litFront(+n);
+    else location.hash="#f/"+n;
+  }
+  c.addEventListener("click",function(e){
+    if(e.target&&e.target.closest&&e.target.closest("a"))return;  // 「全文」链接放行
+    go();
+  });
+  c.addEventListener("keydown",function(e){
+    if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}
   });
 });
 
@@ -992,7 +1091,10 @@ function center(id){
 /* ---- 点空白处关闭 ---- */
 svg.addEventListener("click",function(e){
   if(panned)return;
-  if(!e.target.closest||!e.target.closest(".node-g")){closeNode();if(location.hash.indexOf("#n/")===0)location.hash="#graph";}
+  if(!e.target.closest||!e.target.closest(".node-g")){
+    closeNode();
+    if(/^#(n|f)\//.test(location.hash))location.hash="#graph";
+  }
 });
 
 /* ---- 图上节点搜索 ---- */
@@ -1011,6 +1113,12 @@ if(nq)nq.addEventListener("input",function(){
 function route(){
   var h=(location.hash||"").replace(/^#/,"");
   if(h.indexOf("n/")===0){var id=h.slice(2);show("graph",true);if(map[id]){openNode(id);center(id);}return;}
+  if(h.indexOf("f/")===0){var n=parseInt(h.slice(2),10);show("graph",true);litFront(n);return;}
+  if(h.indexOf("front-")===0){
+    closeNode();show("fronts",true);
+    var fc=document.getElementById(h);if(fc)fc.scrollIntoView({block:"start"});
+    return;
+  }
   closeNode();show(h||"graph",true);
 }
 applyZoom();
