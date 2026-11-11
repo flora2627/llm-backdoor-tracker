@@ -184,22 +184,14 @@ for f in fronts:
                     ids.append(r)
     front_nodes.append(ids)
 
-def front_card(i, f):
+def front_pill(i, f):
     pro_n = len({r for b in f.get("pro", []) for r in refs(b) if not r.startswith("?")})
     con_n = len({r for b in f.get("con", []) for r in refs(b) if not r.startswith("?")})
-    short = lambda s: (s.split("(")[0].strip() or s)
-    return f"""    <div class="fcard" tabindex="0" role="button" data-front="{i-1}"
-         aria-label="在图上点亮战线 {i:02d}">
-      <div class="fc-top"><span class="fc-no">{i:02d}</span>
-        <span class="verdict {f['verdict_class']}">{html.escape(f['verdict'])}</span></div>
-      <div class="fc-claim">{md(f['claim'])}</div>
-      <div class="fc-meta">
-        <span class="fc-count">{html.escape(short(f['pro_label']))} {pro_n} 篇 · {html.escape(short(f['con_label']))} {con_n} 篇</span>
-        <span class="fc-acts"><span class="fc-go">图上点亮 →</span><a href="#front-{i}">全文</a></span>
-      </div>
-    </div>"""
+    tip = html.escape(f"{f['claim']} —— {pro_n} 篇 vs {con_n} 篇(点击在图上点亮)")
+    return (f'    <button type="button" class="fpill" data-front="{i-1}" title="{tip}" '
+            f'aria-pressed="false"><i class="{f["verdict_class"]}"></i>{i:02d}</button>')
 
-frontcards_html = "\n".join(front_card(i, f) for i, f in enumerate(fronts, 1))
+frontpills_html = "\n".join(front_pill(i, f) for i, f in enumerate(fronts, 1))
 
 # ------------------------------------------------------------------ 渲染资料表
 KIND_CN = {"paper": None, "cluster": "论文簇", "program": "项目",
@@ -256,7 +248,7 @@ out = (ROOT / "template.html").read_text()
 for k, v in {
     "{{DATA}}":        json.dumps(data, ensure_ascii=False, separators=(",", ":")),
     "{{FRONTS}}":      fronts_html,
-    "{{FRONTCARDS}}":  frontcards_html,
+    "{{FRONTPILLS}}":  frontpills_html,
     "{{REFS}}":        "\n".join(rows),
     "{{N_PAPERS}}":    str(len(papers)),
     "{{N_EDGES}}":     str(len(edges)),
